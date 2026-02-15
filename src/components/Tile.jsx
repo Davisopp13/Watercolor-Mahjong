@@ -30,19 +30,22 @@ export default function Tile({
       ? SEASON_IMAGES[value]
       : null
 
+  // Scale border width proportionally
+  const borderWidth = selected ? Math.max(2, Math.round(3 * (tileWidth / 60))) : 1
+
   return (
     <button
       onClick={free ? onClick : undefined}
       disabled={!free}
       aria-label={`${suit} ${value}${free ? '' : ' (blocked)'}`}
-      className="tile"
+      className={`tile${free ? ' tile-free' : ''}`}
       style={{
         width: tileWidth,
         height: tileHeight,
         position: 'relative',
-        borderRadius: 4,
+        borderRadius: Math.max(3, Math.round(4 * (tileWidth / 60))),
         border: selected
-          ? '3px solid var(--color-lavender)'
+          ? `${borderWidth}px solid var(--color-lavender)`
           : '1px solid var(--color-tan)',
         backgroundColor: hasImage ? 'var(--color-cream)' : colors.bg,
         boxShadow: selected
@@ -75,7 +78,7 @@ export default function Tile({
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             opacity: 0.3,
-            borderRadius: 3,
+            borderRadius: Math.max(2, Math.round(3 * (tileWidth / 60))),
           }}
         />
       )}
@@ -100,12 +103,12 @@ export default function Tile({
         style={{
           position: 'relative',
           zIndex: 1,
-          fontSize: Math.round(10 * (tileWidth / 60)),
+          fontSize: Math.max(8, Math.round(10 * (tileWidth / 60))),
           fontWeight: 500,
           color: colors.symbol,
           opacity: 0.7,
           lineHeight: 1,
-          marginTop: 2,
+          marginTop: Math.max(1, Math.round(2 * (tileWidth / 60))),
           textShadow: hasImage ? '0 0 3px rgba(255,255,255,0.9)' : 'none',
         }}
       >

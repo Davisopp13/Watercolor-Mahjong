@@ -43,27 +43,31 @@ export default function App() {
 
   return (
     <div
-      className="flex flex-col items-center w-full min-h-full"
+      className="flex flex-col w-full h-full overflow-hidden"
       style={{ backgroundColor: 'var(--color-background)' }}
     >
-      <h1
-        className="text-2xl lg:text-3xl font-semibold mt-4 mb-3"
-        style={{
-          fontFamily: "'Playfair Display', Georgia, serif",
-          color: 'var(--color-charcoal)',
-        }}
-      >
-        Watercolor Mahjong
-      </h1>
+      {/* Header — compact on mobile, more spacious on desktop */}
+      <header className="flex-shrink-0 flex items-center justify-center py-2 lg:py-3">
+        <h1
+          className="text-lg sm:text-xl lg:text-3xl font-semibold"
+          style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            color: 'var(--color-charcoal)',
+          }}
+        >
+          Watercolor Mahjong
+        </h1>
+      </header>
 
-      <div className="flex-1 flex items-start justify-center overflow-auto p-2 lg:p-6">
+      {/* Board — fills remaining space, board auto-scales to fit */}
+      <main className="flex-1 min-h-0">
         <Board
           tiles={tiles}
           selectedId={selectedId}
           freeTileIds={freeTileIds}
           onTileClick={handleTileClick}
         />
-      </div>
+      </main>
     </div>
   )
 }

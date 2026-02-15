@@ -44,3 +44,17 @@ body {
   height: 100vh;
   height: 100dvh;
 }
+
+/* Desktop hover states — only on pointer devices (not touch) */
+@media (hover: hover) and (pointer: fine) {
+  .tile-free:hover:not(:disabled) {
+    box-shadow: 0 3px 8px rgba(184, 165, 208, 0.35), 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(-1px) !important;
+  }
+}
+
+/* Active/tap feedback for all devices */
+.tile:active:not(:disabled) {
+  transform: scale(0.96) !important;
+  transition-duration: 50ms !important;
+}

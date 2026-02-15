@@ -67,3 +67,31 @@
   - Free tile detection runs on every tiles state change — may need optimization later if slow
   - Build verified with `npx vite build` - passes clean
 ---
+
+## Iteration 4 - Responsive Design (Desktop + Mobile)
+- Rewrote Board.jsx to auto-scale tiles to fit available viewport space
+  - Measures container content area (accounting for padding) on mount and resize
+  - Calculates max tile width that fits both dimensions using layout bounds and aspect ratio
+  - Clamped to min 32px (touch target) / max 60px (desktop cap)
+  - Layer offsets scale proportionally with tile size (ratio-based instead of fixed pixels)
+- Updated App.jsx layout structure:
+  - Header uses flex-shrink-0 with compact padding on mobile (py-2) and more on desktop (lg:py-3)
+  - Title text scales: text-lg on mobile, sm:text-xl tablet, lg:text-3xl desktop
+  - Board area uses flex-1 min-h-0 to fill remaining viewport height
+  - overflow-hidden on root container prevents scrolling
+- Updated Tile.jsx:
+  - Added `tile-free` CSS class for hover targeting
+  - Border width scales proportionally with tile size
+  - Border radius scales proportionally
+  - Font sizes have minimum floors to stay readable at small tile sizes
+- Added CSS hover/touch states in index.css:
+  - `@media (hover: hover) and (pointer: fine)` — desktop-only hover: lavender glow + slight lift
+  - `.tile:active` — tap feedback with scale(0.96) on all devices
+- Files changed: src/components/Board.jsx (rewritten), src/components/Tile.jsx (updated), src/App.jsx (updated), src/index.css (updated), PRD.md
+- Learnings for future iterations:
+  - Board auto-scaling math: gridW = bounds.width + layers * |layerOffXRatio|, gridH = bounds.height / TILE_ASPECT + layers * |layerOffYRatio| / TILE_ASPECT. tileW = min(availW/gridW, availH/gridH)
+  - Must subtract padding from clientWidth/Height when measuring container (getComputedStyle)
+  - `@media (hover: hover) and (pointer: fine)` correctly excludes touch devices from hover effects
+  - MIN_TILE_W of 32px is safe — tiles overlap in layout so effective touch targets are larger than individual tile size
+  - Build verified with `npx vite build` - passes clean
+---
