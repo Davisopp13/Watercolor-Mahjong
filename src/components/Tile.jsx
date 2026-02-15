@@ -30,26 +30,26 @@ export default function Tile({
       ? SEASON_IMAGES[value]
       : null
 
-  // Scale border width proportionally
+  // Scale border width proportionally — thicker when selected for visibility
   const borderWidth = selected ? Math.max(2, Math.round(3 * (tileWidth / 60))) : 1
 
   return (
     <button
       onClick={free ? onClick : undefined}
       disabled={!free}
-      aria-label={`${suit} ${value}${free ? '' : ' (blocked)'}`}
-      className={`tile${free ? ' tile-free' : ''}`}
+      aria-label={`${suit} ${value}${selected ? ' (selected)' : ''}${free ? '' : ' (blocked)'}`}
+      className={`tile${free ? ' tile-free' : ''}${selected ? ' tile-selected' : ''}`}
       style={{
         width: tileWidth,
         height: tileHeight,
         position: 'relative',
         borderRadius: Math.max(3, Math.round(4 * (tileWidth / 60))),
         border: selected
-          ? `${borderWidth}px solid var(--color-lavender)`
+          ? `${borderWidth}px solid var(--color-rose)`
           : '1px solid var(--color-tan)',
         backgroundColor: hasImage ? 'var(--color-cream)' : colors.bg,
         boxShadow: selected
-          ? '0 4px 8px rgba(0,0,0,0.15)'
+          ? `0 0 ${Math.max(4, Math.round(6 * (tileWidth / 60)))}px rgba(232, 123, 152, 0.5), 0 4px 8px rgba(0,0,0,0.15)`
           : '2px 2px 4px rgba(0,0,0,0.10)',
         transform: selected ? 'translateY(-2px)' : 'none',
         transition: 'transform 150ms ease-out, box-shadow 150ms ease-out, border 150ms ease-out',

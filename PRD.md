@@ -58,7 +58,7 @@ Her 60th birthday is in 3 days. A handmade game featuring her watercolors is a g
 - [x] **Tile rendering** — Tiles with watercolor backgrounds, clear symbols
 - [x] **Classic layout** — Pyramid/turtle formation with 144 tiles
 - [x] **Responsive design** — Desktop optimized AND mobile optimized
-- [ ] **Tile selection** — Click/tap to select, visual highlight
+- [x] **Tile selection** — Click/tap to select, visual highlight
 - [ ] **Free tile detection** — Only unblocked tiles are clickable
 - [ ] **Match logic** — Two identical tiles selected → remove both
 - [ ] **Win detection** — All tiles cleared → celebration screen

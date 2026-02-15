@@ -47,7 +47,7 @@ body {
 
 /* Desktop hover states — only on pointer devices (not touch) */
 @media (hover: hover) and (pointer: fine) {
-  .tile-free:hover:not(:disabled) {
+  .tile-free:hover:not(:disabled):not(.tile-selected) {
     box-shadow: 0 3px 8px rgba(184, 165, 208, 0.35), 0 2px 4px rgba(0, 0, 0, 0.1) !important;
     transform: translateY(-1px) !important;
   }
@@ -57,4 +57,10 @@ body {
 .tile:active:not(:disabled) {
   transform: scale(0.96) !important;
   transition-duration: 50ms !important;
+}
+
+/* Keyboard focus indicator */
+.tile:focus-visible {
+  outline: 2px solid var(--color-blue);
+  outline-offset: 2px;
 }

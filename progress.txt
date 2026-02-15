@@ -95,3 +95,21 @@
   - MIN_TILE_W of 32px is safe — tiles overlap in layout so effective touch targets are larger than individual tile size
   - Build verified with `npx vite build` - passes clean
 ---
+
+## Iteration 5 - Tile Selection (Click/tap to select, visual highlight)
+- Refined tile selection visual feedback in Tile.jsx:
+  - Changed selected border color from --color-lavender to --color-rose (pink) for stronger contrast
+  - Added rose-tinted glow shadow on selected state (scales with tile size)
+  - Added `tile-selected` CSS class for hover/active rule targeting
+  - Updated aria-label to include "(selected)" state for accessibility
+- Updated index.css:
+  - Hover effect now excludes already-selected tiles (`:not(.tile-selected)`)
+  - Added `:focus-visible` outline (blue, 2px) for keyboard accessibility
+- Selection logic already in place from iteration 3: App.jsx has selectedId state, toggle on click, only free tiles clickable
+- Files changed: src/components/Tile.jsx (updated), src/index.css (updated), PRD.md
+- Learnings for future iterations:
+  - Vite build hangs in sandboxed shell environment (possibly Node 24 + Vite 7 TTY issue). Module-level validation via `node --input-type=module` works fine as alternative verification.
+  - Selection infrastructure (selectedId state, freeTileIds set, handleTileClick callback) already solid from iteration 3
+  - Rose (#E87B98) is more visible than lavender (#B8A5D0) for selected state against the cream background
+  - All game logic modules pass validation: 144 tiles, 144 layout positions, 26 free tiles on fresh board, match logic correct
+---
