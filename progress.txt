@@ -113,3 +113,19 @@
   - Rose (#E87B98) is more visible than lavender (#B8A5D0) for selected state against the cream background
   - All game logic modules pass validation: 144 tiles, 144 layout positions, 26 free tiles on fresh board, match logic correct
 ---
+
+## Iteration 6 - Free Tile Detection (Only unblocked tiles clickable)
+- Feature was already fully implemented across iterations 3-5:
+  - isTileFree() in layout.js checks vertical blocking (tiles above) and horizontal blocking (both sides)
+  - App.jsx computes freeTileIds via useMemo and passes to Board
+  - Board.jsx creates a Set of free IDs and passes free={true/false} to each Tile
+  - Tile.jsx disables non-free tiles (disabled attribute, onClick=undefined), dims them (opacity 0.75, saturate 0.7)
+- Verified: 26 free tiles on fresh board, peak is free, center bottom blocked, wing tiles correct
+- Verified: removing peak tile correctly frees both layer-3 tiles below
+- No code changes needed — just marked PRD task complete
+- Files changed: PRD.md (marked task [x]), progress.txt
+- Learnings for future iterations:
+  - Free tile detection was built incrementally across multiple iterations — sometimes tasks are already done when you get to them
+  - Vite build continues to hang in sandboxed shell (Node 24 + Vite 7 TTY issue) — use `node --input-type=module` validation instead
+  - 26 free tiles is the correct count for the turtle layout on a fresh board
+---
