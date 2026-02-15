@@ -243,3 +243,18 @@
   - Brand guidelines: button hover is #9B8BB8 (slightly darker lavender)
   - Build verified with `npx vite build` (377ms)
 ---
+
+## Iteration 12 - Shuffle Button
+- Feature was already fully implemented in iteration 11 (GameControls.jsx):
+  - Shuffle button rendered in GameControls.jsx (outlined style, shuffle icon, calls onShuffle)
+  - handleShuffle in App.jsx shuffles tile faces among remaining positions via Fisher-Yates
+  - Button wired up in both desktop header and mobile fixed bottom bar
+- Verified: shuffle preserves positions (x, y, z) and IDs, only reassigns faces (suit, value, copy)
+- Verified: removed tiles preserved through shuffle, 144 total tiles maintained
+- No code changes needed — just marked PRD task complete
+- Files changed: PRD.md (marked task [x]), progress.txt
+- Learnings for future iterations:
+  - This is the second time a task was already done when reached (first was iteration 6 - Free Tile Detection)
+  - GameControls was built with both buttons in iteration 11 (New Game button task) — both shipped together
+  - Build verified with `npx vite build` (340ms)
+---
