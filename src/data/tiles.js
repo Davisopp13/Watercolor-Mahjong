@@ -74,9 +74,9 @@ export const SUIT_COLORS = {
   seasons: { bg: 'rgba(184, 165, 208, 0.15)', symbol: '#7B3F9E' },
 }
 
-// Flower tile image mappings (from ASSET_GUIDE)
+// Flower tile image mappings
 export const FLOWER_IMAGES = {
-  1: '/assets/watercolors/tiles_1.png',   // Peony -> Flower 1 (Hydrangea in PRD but using peony)
+  1: '/assets/watercolors/tiles_2.png',   // Hydrangea
   2: '/assets/watercolors/tiles_3.png',   // Sunflower
   3: '/assets/watercolors/tiles_8.png',   // Pink Rose
   4: '/assets/watercolors/tiles_7.jpg',   // Yellow Tulips
@@ -85,9 +85,18 @@ export const FLOWER_IMAGES = {
 // Season tile image mappings
 export const SEASON_IMAGES = {
   1: '/assets/watercolors/tiles_4.jpg',   // Mixed Bouquet
-  2: '/assets/watercolors/tiles_5.jpg',   // Daisies in pitcher
-  3: '/assets/watercolors/tiles_1.png',   // Peony in bottle
-  4: '/assets/watercolors/tiles_6.png',   // Wildflowers in blue bottle
+  2: '/assets/watercolors/tiles_5.jpg',   // Daisies
+  3: '/assets/watercolors/tiles_1.png',   // Peony
+  4: '/assets/watercolors/tiles_6.png',   // Wildflowers
+}
+
+// Background images for each suit to make them feel more "painterly"
+export const SUIT_BACKGROUND_IMAGES = {
+  dots: '/assets/watercolors/tiles_2.png',    // Blue/Purple tones
+  bams: '/assets/watercolors/tiles_5.jpg',    // Green tones
+  craks: '/assets/watercolors/tiles_1.png',   // Pink/Green tones
+  winds: '/assets/watercolors/tiles_6.png',   // Airy tones
+  dragons: '/assets/watercolors/tiles_4.jpg', // Vibrant tones
 }
 
 // Check if two tiles match

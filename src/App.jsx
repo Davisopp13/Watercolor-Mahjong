@@ -12,7 +12,7 @@ function shuffle(arr) {
   const a = [...arr]
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
-    ;[a[i], a[j]] = [a[j], a[i]]
+      ;[a[i], a[j]] = [a[j], a[i]]
   }
   return a
 }
@@ -113,39 +113,45 @@ export default function App() {
       style={{ backgroundColor: 'var(--color-background)' }}
     >
       {/* Header — compact on mobile, more spacious on desktop */}
-      <header className="flex-shrink-0 flex items-center justify-between px-4 py-2 lg:py-3">
-        <h1
-          className="text-lg sm:text-xl lg:text-3xl font-semibold"
-          style={{
-            fontFamily: "'Playfair Display', Georgia, serif",
-            color: 'var(--color-charcoal)',
-          }}
-        >
-          Watercolor Mahjong
-        </h1>
-        {/* Desktop controls — hidden on mobile */}
-        <div className="hidden sm:block">
-          <GameControls onNewGame={handleNewGame} onShuffle={handleShuffle} />
-        </div>
-      </header>
+      {!showTitle && (
+        <header className="flex-shrink-0 flex items-center justify-between px-4 py-2 lg:py-3">
+          <h1
+            className="text-lg sm:text-xl lg:text-3xl font-semibold"
+            style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              color: 'var(--color-charcoal)',
+            }}
+          >
+            Watercolor Mahjong
+          </h1>
+          {/* Desktop controls — hidden on mobile */}
+          <div className="hidden sm:block">
+            <GameControls onNewGame={handleNewGame} onShuffle={handleShuffle} />
+          </div>
+        </header>
+      )}
 
       {/* Board — fills remaining space, board auto-scales to fit */}
       <main className="flex-1 min-h-0 pb-14 sm:pb-0">
-        <Board
-          tiles={tiles}
-          selectedId={selectedId}
-          freeTileIds={freeTileIds}
-          onTileClick={handleTileClick}
-        />
+        {!showTitle && (
+          <Board
+            tiles={tiles}
+            selectedId={selectedId}
+            freeTileIds={freeTileIds}
+            onTileClick={handleTileClick}
+          />
+        )}
       </main>
 
       {/* Mobile controls — fixed bottom bar, hidden on desktop */}
-      <div
-        className="sm:hidden fixed bottom-0 left-0 right-0 z-40"
-        style={{ backgroundColor: 'var(--color-background)', borderTop: '1px solid var(--color-tan)' }}
-      >
-        <GameControls onNewGame={handleNewGame} onShuffle={handleShuffle} />
-      </div>
+      {!showTitle && (
+        <div
+          className="sm:hidden fixed bottom-0 left-0 right-0 z-40"
+          style={{ backgroundColor: 'var(--color-background)', borderTop: '1px solid var(--color-tan)' }}
+        >
+          <GameControls onNewGame={handleNewGame} onShuffle={handleShuffle} />
+        </div>
+      )}
 
       {/* Win screen overlay */}
       {gameWon && <WinScreen onNewGame={handleNewGame} />}

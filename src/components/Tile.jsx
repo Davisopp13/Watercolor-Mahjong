@@ -5,6 +5,7 @@ import {
   SUIT_COLORS,
   FLOWER_IMAGES,
   SEASON_IMAGES,
+  SUIT_BACKGROUND_IMAGES,
   SUITS,
 } from '../data/tiles.js'
 
@@ -23,14 +24,18 @@ export default function Tile({
 
   const isFlower = suit === SUITS.FLOWERS
   const isSeason = suit === SUITS.SEASONS
-  const hasImage = isFlower || isSeason
-  const imageSrc = isFlower
+  const hasSpecialImage = isFlower || isSeason
+
+  const specialImageSrc = isFlower
     ? FLOWER_IMAGES[value]
     : isSeason
       ? SEASON_IMAGES[value]
       : null
 
-  // Scale border width proportionally — thicker when selected for visibility
+  const suitBgImage = SUIT_BACKGROUND_IMAGES[suit]
+
+  // Tile appearance constants
+  const borderRadius = Math.max(3, Math.round(5 * (tileWidth / 60)))
   const borderWidth = selected ? Math.max(2, Math.round(3 * (tileWidth / 60))) : 1
 
   return (
@@ -38,82 +43,104 @@ export default function Tile({
       onClick={free ? onClick : undefined}
       disabled={!free}
       aria-label={`${suit} ${value}${selected ? ' (selected)' : ''}${free ? '' : ' (blocked)'}`}
-      className={`tile${free ? ' tile-free' : ''}${selected ? ' tile-selected' : ''}`}
+      className={`tile relative group ${selected ? 'selected' : ''} ${!free ? 'blocked' : ''}`}
       style={{
         width: tileWidth,
         height: tileHeight,
-        position: 'relative',
-        borderRadius: Math.max(3, Math.round(4 * (tileWidth / 60))),
-        border: selected
-          ? `${borderWidth}px solid var(--color-rose)`
-          : '1px solid var(--color-tan)',
-        backgroundColor: hasImage ? 'var(--color-cream)' : colors.bg,
-        boxShadow: selected
-          ? `0 0 ${Math.max(4, Math.round(6 * (tileWidth / 60)))}px rgba(232, 123, 152, 0.5), 0 4px 8px rgba(0,0,0,0.15)`
-          : '2px 2px 4px rgba(0,0,0,0.10)',
-        transform: selected ? 'translateY(-2px)' : 'none',
-        transition: 'transform 150ms ease-out, box-shadow 150ms ease-out, border 150ms ease-out',
         cursor: free ? 'pointer' : 'default',
-        opacity: free ? 1 : 0.75,
-        filter: free ? 'none' : 'saturate(0.7)',
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 0,
-        outline: 'none',
-        fontFamily: "'Inter', system-ui, sans-serif",
-        userSelect: 'none',
-        WebkitTapHighlightColor: 'transparent',
       }}
     >
-      {/* Watercolor background image for flower/season tiles */}
-      {hasImage && imageSrc && (
+      {/* Background watercolor wash (Prominent for ALL tiles) */}
+      {(hasSpecialImage || suitBgImage) && (
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage: `url(${imageSrc})`,
+            backgroundImage: `url(${hasSpecialImage ? specialImageSrc : suitBgImage})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            opacity: 0.3,
-            borderRadius: Math.max(2, Math.round(3 * (tileWidth / 60))),
+            opacity: hasSpecialImage ? 0.95 : 0.3,
+            transition: 'opacity 300ms ease',
+            filter: hasSpecialImage ? 'none' : 'saturate(1.2) contrast(1.1)',
           }}
         />
       )}
 
-      {/* Main symbol / number */}
-      <span
+      {/* Glossy overlay effect */}
+      <div
         style={{
-          position: 'relative',
-          zIndex: 1,
-          fontSize: Math.round((isFlower || isSeason ? 14 : 22) * (tileWidth / 60)),
-          fontWeight: 700,
-          color: colors.symbol,
-          lineHeight: 1,
-          textShadow: hasImage ? '0 0 4px rgba(255,255,255,0.9)' : 'none',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '45%',
+          background: 'linear-gradient(to bottom, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 100%)',
+          pointerEvents: 'none',
         }}
-      >
-        {label}
-      </span>
+      />
 
-      {/* Suit indicator (small text at bottom) */}
-      <span
+      {/* Main symbol / number */}
+      <div
+        className="flex flex-col items-center justify-center relative z-10"
         style={{
-          position: 'relative',
-          zIndex: 1,
-          fontSize: Math.max(8, Math.round(10 * (tileWidth / 60))),
-          fontWeight: 500,
-          color: colors.symbol,
-          opacity: 0.7,
-          lineHeight: 1,
-          marginTop: Math.max(1, Math.round(2 * (tileWidth / 60))),
-          textShadow: hasImage ? '0 0 3px rgba(255,255,255,0.9)' : 'none',
+          width: '100%',
+          height: '100%',
         }}
       >
-        {suitLabel}
-      </span>
+        <span
+          style={{
+            fontSize: Math.round((hasSpecialImage ? 16 : 26) * (tileWidth / 60)),
+            fontWeight: 800,
+            color: hasSpecialImage ? 'white' : colors.symbol,
+            lineHeight: 1,
+            textShadow: hasSpecialImage
+              ? '0 2px 4px rgba(0,0,0,0.7), 0 0 10px rgba(0,0,0,0.3)'
+              : '0 0 8px white, 0 0 4px white',
+            fontFamily: hasSpecialImage ? "'Playfair Display', serif" : 'inherit',
+          }}
+        >
+          {label}
+        </span>
+
+        {/* Suit indicator (small text at bottom) */}
+        {!hasSpecialImage && (
+          <span
+            style={{
+              fontSize: Math.max(9, Math.round(11 * (tileWidth / 60))),
+              fontWeight: 700,
+              color: colors.symbol,
+              lineHeight: 1,
+              marginTop: Math.max(1, Math.round(2 * (tileWidth / 60))),
+              background: 'rgba(253, 248, 240, 0.6)',
+              padding: '0 4px',
+              borderRadius: 4,
+            }}
+          >
+            {suitLabel}
+          </span>
+        )}
+
+        {hasSpecialImage && (
+          <span
+            style={{
+              position: 'absolute',
+              bottom: 4,
+              right: 4,
+              fontSize: Math.max(8, Math.round(9 * (tileWidth / 60))),
+              fontWeight: 800,
+              color: 'white',
+              background: 'rgba(0,0,0,0.4)',
+              padding: '1px 5px',
+              borderRadius: 3,
+              textShadow: 'none',
+              letterSpacing: '0.05em'
+            }}
+          >
+            {suitLabel}
+          </span>
+        )}
+      </div>
     </button>
   )
 }
+

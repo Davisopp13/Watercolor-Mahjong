@@ -10,7 +10,7 @@ export default function TitleScreen({ onPlay }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center px-6"
+      className="fixed inset-0 z-[1000] flex flex-col items-center justify-center px-6"
       style={{
         backgroundColor: 'var(--color-background)',
         opacity: visible ? 1 : 0,

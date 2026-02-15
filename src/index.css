@@ -1,25 +1,25 @@
 @import "tailwindcss";
 
+/* --- BRAND COLORS (from guidelines) --- */
 :root {
-  /* Primary */
-  --color-lavender: #B8A5D0;
-  --color-blue: #7BA3D4;
   --color-cream: #FDF8F0;
+  --color-tan: #D4B896;
+  --color-lavender: #B8A5D0;
+  --color-charcoal: #4A4A4A;
+  
+  /* Existing supporting colors */
+  --color-blue: #7BA3D4;
   --color-rose: #E87B98;
   --color-green: #7BC47B;
-
-  /* Supporting */
   --color-gold: #F5C842;
   --color-aqua: #6ECFCF;
-  --color-tan: #D4B896;
-  --color-charcoal: #4A4A4A;
 
   /* Semantic */
   --color-background: var(--color-cream);
   --color-text: var(--color-charcoal);
   --color-primary: var(--color-lavender);
   --color-success: var(--color-green);
-  --color-selected: var(--color-rose);
+  --color-selected: var(--color-lavender);
 
   /* Watercolor suit tints */
   --watercolor-blue-light: #A8C8E8;
@@ -32,7 +32,7 @@ body {
   margin: 0;
   background-color: var(--color-background);
   color: var(--color-text);
-  font-family: 'Inter', 'Nunito', system-ui, sans-serif;
+  font-family: 'Nunito', 'Quicksand', 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
@@ -45,18 +45,74 @@ body {
   height: 100dvh;
 }
 
+/* --- TILE BASE STYLE --- */
+.tile {
+  /* Use the brand cream color */
+  background-color: var(--color-cream);
+  /* You can add a subtle watercolor texture image here */
+  /* background-image: url('path/to/watercolor-paper-texture.png'); */
+  
+  /* Soft tan border */
+  border: 1px solid var(--color-tan);
+  border-radius: 4px;
+  
+  /* Soft shadow for 3D stacking effect */
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  
+  /* Smooth transitions for interactive states */
+  transition: transform 200ms ease-out, box-shadow 200ms ease-out, border 200ms ease-out;
+  
+  /* Ensure text uses the correct font and color */
+  font-family: 'Nunito', 'Quicksand', sans-serif;
+  color: var(--color-charcoal);
+
+  /* Layout defaults (can be overridden by inline styles) */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  outline: none;
+  user-select: none;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* --- SELECTED STATE --- */
+/* This replaces the glowing yellow border */
+.tile.selected {
+  /* 3px solid lavender border */
+  border: 3px solid var(--color-lavender) !important;
+  
+  /* Subtle lift effect */
+  transform: translateY(-2px);
+  
+  /* Enhanced shadow for the lifted tile */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* --- BLOCKED STATE --- */
+/* Make blocked tiles feel further back */
+.tile.blocked {
+  /* Slightly desaturate and make transparent */
+  filter: saturate(0.7);
+  opacity: 0.8;
+  /* Remove pointer events so they can't be clicked */
+  pointer-events: none;
+}
+
 /* Desktop hover states — only on pointer devices (not touch) */
 @media (hover: hover) and (pointer: fine) {
-  .tile-free:hover:not(:disabled):not(.tile-selected) {
-    box-shadow: 0 3px 8px rgba(184, 165, 208, 0.35), 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-    transform: translateY(-1px) !important;
+  .tile:not(.blocked):not(.selected):hover {
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15), 2px 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
   }
 }
 
 /* Active/tap feedback for all devices */
-.tile:active:not(:disabled) {
-  transform: scale(0.96) !important;
-  transition-duration: 50ms !important;
+.tile:not(.blocked):active {
+  transform: scale(0.96);
+  transition-duration: 50ms;
 }
 
 /* Keyboard focus indicator */
@@ -64,3 +120,4 @@ body {
   outline: 2px solid var(--color-blue);
   outline-offset: 2px;
 }
+

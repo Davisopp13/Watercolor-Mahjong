@@ -10,7 +10,7 @@ export default function StuckScreen({ onShuffle, onNewGame }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center"
+      className="fixed inset-0 z-[1000] flex flex-col items-center justify-center"
       style={{
         backgroundColor: 'rgba(253, 248, 240, 0.92)',
         opacity: visible ? 1 : 0,

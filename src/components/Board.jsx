@@ -74,9 +74,21 @@ export default function Board({ tiles, selectedId, freeTileIds, onTileClick }) {
   const freeSet = useMemo(() => new Set(freeTileIds), [freeTileIds])
 
   return (
-    <div ref={containerRef} className="w-full h-full flex items-center justify-center p-2 sm:p-4 lg:p-6">
+    <div ref={containerRef} className="w-full h-full flex items-center justify-center p-2 sm:p-4 lg:p-6 relative overflow-hidden">
+      {/* Subtle watercolor background element */}
       <div
-        className="relative flex-shrink-0"
+        className="absolute inset-0 pointer-events-none opacity-10 flex items-center justify-center"
+        style={{ zIndex: 0 }}
+      >
+        <img
+          src="/assets/watercolors/tiles_2.png"
+          alt=""
+          className="w-full max-w-2xl h-auto object-contain blur-[2px]"
+        />
+      </div>
+
+      <div
+        className="relative flex-shrink-0 z-10"
         style={{ width: boardW, height: boardH }}
       >
         {sortedTiles.map(tile => {
