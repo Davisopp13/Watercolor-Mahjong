@@ -55,7 +55,7 @@ Her 60th birthday is in 3 days. A handmade game featuring her watercolors is a g
 
 **MVP Features:**
 
-- [ ] **Tile rendering** — Tiles with watercolor backgrounds, clear symbols
+- [x] **Tile rendering** — Tiles with watercolor backgrounds, clear symbols
 - [ ] **Classic layout** — Pyramid/turtle formation with 144 tiles
 - [ ] **Responsive design** — Desktop optimized AND mobile optimized
 - [ ] **Tile selection** — Click/tap to select, visual highlight
@@ -359,7 +359,7 @@ const getTileSize = () => {
 **Hours:** 1-2
 
 - [x] Project setup (Vite + React + Tailwind + vite-plugin-pwa)
-- [ ] Tile component with watercolor background
+- [x] Tile component with watercolor background
 - [ ] Layout data for turtle formation
 - [ ] Board renders all 144 tiles in position
 - [ ] Basic 3D stacking visual (shadows, overlap)

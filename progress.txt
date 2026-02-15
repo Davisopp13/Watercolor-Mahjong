@@ -13,3 +13,25 @@
   - Using `type: "module"` in package.json for ESM
   - Build verified working with `npx vite build`
 ---
+
+## Iteration 2 - Tile Rendering
+- Created src/data/tiles.js with all 144 tile definitions (Dots/Bams/Craks x9x4, Winds x4x4, Dragons x3x4, Flowers x4, Seasons x4)
+- Includes tile labels, suit labels (Chinese characters), color mappings per suit, flower/season image mappings
+- Includes tilesMatch() function with special flower/season matching rules
+- Includes generateTileSet() that produces exactly 144 tiles
+- Created src/components/Tile.jsx - renders individual tile with:
+  - Watercolor background tint per suit (Dots=blue, Bams=green, Craks=pink, etc.)
+  - Full watercolor painting background (30% opacity) for flower and season tiles
+  - High-contrast symbol + suit label overlay
+  - Selected state (lifted, lavender border, enhanced shadow)
+  - Blocked/free state (dimmed, desaturated when blocked)
+  - Accessible button element with aria-label
+- Updated App.jsx to render a preview grid of all unique tile types
+- Files changed: src/data/tiles.js (new), src/components/Tile.jsx (new), src/App.jsx (updated), PRD.md
+- Learnings for future iterations:
+  - Watercolor images available: tiles_1.png through tiles_8.png, tiles_4.jpg/5.jpg/7.jpg are JPG, rest PNG
+  - bg-texture.png available for board background texture
+  - Tile component uses inline styles for dynamic coloring (suit-specific) + Tailwind for layout
+  - generateTileSet() returns tiles with {id, suit, value, copy} - positions added later by layout
+  - Build verified with `npx vite build` - passes clean
+---
