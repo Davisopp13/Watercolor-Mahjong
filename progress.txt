@@ -223,3 +223,23 @@
   - Vite build works fine in this environment (535ms) — the sandbox hang was Node 24 specific
   - Brand guidelines specify tagline "Featuring original artwork by Jen"
 ---
+
+## Iteration 11 - New Game Button
+- Created src/components/GameControls.jsx with New Game and Shuffle buttons
+  - New Game button: lavender filled, refresh icon, calls onNewGame
+  - Shuffle button: outlined style with tan border, shuffle icon, calls onShuffle
+  - Both use brand-consistent styling (lavender hover, rounded corners, 200ms transitions)
+  - SVG icons inline (refresh circle for New Game, crossed arrows for Shuffle)
+- Updated App.jsx layout for responsive controls placement:
+  - Desktop (sm+): Controls in header bar, right-aligned (justify-between)
+  - Mobile (<sm): Fixed bottom bar with tan top border, z-40
+  - Added pb-14 to board on mobile to prevent controls from overlapping content
+- handleNewGame and handleShuffle already existed from iterations 8-9
+- Files changed: src/components/GameControls.jsx (new), src/App.jsx (updated), PRD.md
+- Learnings for future iterations:
+  - GameControls renders both New Game and Shuffle buttons — next task (Shuffle button) is already implemented
+  - Mobile bottom bar uses fixed positioning with z-40 (below overlays at z-50)
+  - Board needs bottom padding on mobile (pb-14) to account for fixed bottom bar
+  - Brand guidelines: button hover is #9B8BB8 (slightly darker lavender)
+  - Build verified with `npx vite build` (377ms)
+---
