@@ -1,0 +1,15 @@
+## Iteration 1 - Project Setup (Vite + React + Tailwind + PWA)
+- Initialized npm project with React 19, Vite 7, Tailwind CSS v4, vite-plugin-pwa
+- Created project structure: src/components, src/hooks, src/data, public/assets/watercolors, public/icons
+- Set up index.html with viewport meta, Google Fonts (Inter + Playfair Display), theme-color
+- Created src/index.css with Tailwind v4 import and all CSS variables from brand guidelines
+- Created src/main.jsx and src/App.jsx with basic rendering
+- Copied watercolor images to public/assets/watercolors/
+- Created .gitignore
+- Files changed: package.json, vite.config.js, index.html, src/main.jsx, src/App.jsx, src/index.css, .gitignore
+- Learnings for future iterations:
+  - The project path contains an apostrophe ("Mama's Birthday") which breaks workbox service worker generation. vite-plugin-pwa is installed but disabled in vite.config.js. Re-enable when deploying from a clean CI path.
+  - Tailwind v4 uses `@import "tailwindcss"` instead of the old `@tailwind` directives
+  - Using `type: "module"` in package.json for ESM
+  - Build verified working with `npx vite build`
+---
