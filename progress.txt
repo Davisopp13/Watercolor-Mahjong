@@ -258,3 +258,29 @@
   - GameControls was built with both buttons in iteration 11 (New Game button task) — both shipped together
   - Build verified with `npx vite build` (340ms)
 ---
+
+## Iteration 13 - PWA (Installable, works offline)
+- Enabled vite-plugin-pwa in vite.config.js using `injectManifest` strategy to avoid apostrophe-in-path bug
+- Created custom service worker src/sw.js with workbox precaching (skipWaiting, clientsClaim, cleanupOutdatedCaches)
+- Generated PWA icons from hydrangea watercolor (tiles_2.png):
+  - icon-192.png (192x192) in public/icons/
+  - icon-512.png (512x512) in public/icons/
+  - Used macOS `sips` tool to crop-center and resize
+- Configured manifest.json via vite-plugin-pwa:
+  - name: "Watercolor Mahjong", short_name: "Mahjong"
+  - display: standalone, theme_color: #9B8BB8, background_color: #FDF8F0
+  - Icons: 192x192, 512x512, and 512x512 maskable
+- Updated index.html:
+  - Favicon changed from vite.svg to icon-192.png
+  - Added apple-touch-icon link
+  - Added apple-mobile-web-app-capable, apple-mobile-web-app-status-bar-style, apple-mobile-web-app-title meta tags
+- Build output: manifest.webmanifest, registerSW.js, sw.js with 18 precache entries (6184 KiB)
+- Files changed: vite.config.js (updated), src/sw.js (new), index.html (updated), public/icons/icon-192.png (new), public/icons/icon-512.png (new), PRD.md
+- Learnings for future iterations:
+  - Apostrophe in project path ("Mama's Birthday") breaks workbox generateSW mode — the path gets embedded in generated JS imports as an unescaped string literal
+  - Fix: use `strategies: 'injectManifest'` with a custom src/sw.js that imports workbox modules by package name (not file path)
+  - `sips -c W H` crops to center square, `sips -z W H` resizes — both available on macOS
+  - vite-plugin-pwa auto-injects `<link rel="manifest">` and `<script src="/registerSW.js">` into built HTML
+  - Apple PWA meta tags (apple-mobile-web-app-capable, apple-touch-icon) needed for iOS home screen install
+  - Build verified with `npx vite build` (343ms + 41ms for SW)
+---
