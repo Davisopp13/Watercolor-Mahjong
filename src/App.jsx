@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react'
 import Board from './components/Board.jsx'
-import { generateTileSet } from './data/tiles.js'
+import { generateTileSet, tilesMatch } from './data/tiles.js'
 import { TURTLE_LAYOUT, isTileFree } from './data/layout.js'
 
 // Fisher-Yates shuffle
@@ -37,9 +37,33 @@ export default function App() {
   }, [tiles])
 
   const handleTileClick = useCallback((id) => {
-    // For now just toggle selection (match logic comes in a later task)
-    setSelectedId(prev => (prev === id ? null : id))
-  }, [])
+    setSelectedId(prev => {
+      // Clicking already-selected tile → deselect
+      if (prev === id) return null
+
+      // No tile selected yet → select this one
+      if (prev === null) return id
+
+      // Second tile clicked → check for match
+      const tileA = tiles.find(t => t.id === prev)
+      const tileB = tiles.find(t => t.id === id)
+
+      if (tileA && tileB && !tileA.removed && !tileB.removed && tilesMatch(tileA, tileB)) {
+        // Match! Remove both tiles
+        setTiles(current =>
+          current.map(t =>
+            t.id === tileA.id || t.id === tileB.id
+              ? { ...t, removed: true }
+              : t
+          )
+        )
+        return null // Clear selection
+      }
+
+      // No match → select the new tile instead
+      return id
+    })
+  }, [tiles])
 
   return (
     <div

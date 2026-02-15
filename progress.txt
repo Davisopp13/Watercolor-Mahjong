@@ -129,3 +129,25 @@
   - Vite build continues to hang in sandboxed shell (Node 24 + Vite 7 TTY issue) — use `node --input-type=module` validation instead
   - 26 free tiles is the correct count for the turtle layout on a fresh board
 ---
+
+## Iteration 7 - Match Logic (Two identical tiles selected → remove both)
+- Updated App.jsx handleTileClick to implement full match logic:
+  - Import tilesMatch from tiles.js
+  - Click first free tile → select it
+  - Click same tile → deselect
+  - Click second free tile that matches → remove both tiles (set removed: true), clear selection
+  - Click second free tile that doesn't match → switch selection to new tile
+  - Uses setTiles functional updater inside setSelectedId for safe concurrent state updates
+- Match logic uses existing tilesMatch() function from iteration 2:
+  - Identical suit + value → match
+  - Any flower matches any flower
+  - Any season matches any season
+  - Same tile ID → no self-match
+- Files changed: src/App.jsx (updated), PRD.md (marked task [x])
+- Learnings for future iterations:
+  - handleTileClick uses [tiles] in useCallback dependency array since it reads tiles to find tileA/tileB
+  - setTiles is called inside the setSelectedId updater function — React batches these correctly
+  - Board.jsx already filters `tile.removed` with `if (tile.removed) return null` — no Board changes needed
+  - freeTileIds useMemo already filters out removed tiles — free tile recalculation automatic after removal
+  - Vite build still hangs in sandbox — continue using `node --input-type=module` for validation
+---
