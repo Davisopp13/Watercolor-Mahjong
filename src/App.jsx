@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react'
 import Board from './components/Board.jsx'
+import WinScreen from './components/WinScreen.jsx'
 import { generateTileSet, tilesMatch } from './data/tiles.js'
 import { TURTLE_LAYOUT, isTileFree } from './data/layout.js'
 
@@ -35,6 +36,14 @@ export default function App() {
     const active = tiles.filter(t => !t.removed)
     return active.filter(t => isTileFree(t, tiles)).map(t => t.id)
   }, [tiles])
+
+  // Win detection: all tiles removed
+  const gameWon = useMemo(() => tiles.every(t => t.removed), [tiles])
+
+  const handleNewGame = useCallback(() => {
+    setTiles(createGame())
+    setSelectedId(null)
+  }, [])
 
   const handleTileClick = useCallback((id) => {
     setSelectedId(prev => {
@@ -92,6 +101,9 @@ export default function App() {
           onTileClick={handleTileClick}
         />
       </main>
+
+      {/* Win screen overlay */}
+      {gameWon && <WinScreen onNewGame={handleNewGame} />}
     </div>
   )
 }

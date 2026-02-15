@@ -151,3 +151,25 @@
   - freeTileIds useMemo already filters out removed tiles — free tile recalculation automatic after removal
   - Vite build still hangs in sandbox — continue using `node --input-type=module` for validation
 ---
+
+## Iteration 8 - Win Detection (All tiles cleared → celebration screen)
+- Added win detection logic to App.jsx:
+  - `gameWon` computed via useMemo: `tiles.every(t => t.removed)`
+  - `handleNewGame` callback resets tiles to a fresh createGame() and clears selection
+  - WinScreen rendered conditionally when gameWon is true
+- Created src/components/WinScreen.jsx:
+  - Full-screen overlay with semi-transparent cream background (92% opacity)
+  - Fade-in animation (800ms ease-in via opacity transition)
+  - Circular watercolor hydrangea image (tiles_2.png) with lavender border and shadow
+  - "You Win!" heading in Playfair Display, lavender color with subtle text shadow
+  - "All tiles cleared — beautifully done!" subtext
+  - "Play Again" button with lavender background, hover lift effect, calls onNewGame
+  - Responsive sizing: image 48→64→80 rem, text scales with sm/lg breakpoints
+- Files changed: src/App.jsx (updated), src/components/WinScreen.jsx (new), PRD.md (marked task [x])
+- Learnings for future iterations:
+  - Win detection is a simple derived state — no need for separate gameStatus state variable
+  - WinScreen uses fixed positioning (z-50) to overlay the board
+  - tiles_2.png is the hydrangea image used for the win screen per PRD spec
+  - handleNewGame uses useCallback with empty deps since createGame() is a standalone function
+  - Vite build still hangs in sandbox — validated via `node --input-type=module` integration test
+---
