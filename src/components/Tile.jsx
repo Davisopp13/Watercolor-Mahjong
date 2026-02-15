@@ -8,15 +8,13 @@ import {
   SUITS,
 } from '../data/tiles.js'
 
-// Tile sizes per breakpoint (matches PRD spec)
-const TILE_W = 60
-const TILE_H = 80
-
 export default function Tile({
   tile,
   selected = false,
   free = true,
   onClick,
+  tileWidth = 60,
+  tileHeight = 80,
 }) {
   const { suit, value } = tile
   const colors = SUIT_COLORS[suit]
@@ -39,8 +37,8 @@ export default function Tile({
       aria-label={`${suit} ${value}${free ? '' : ' (blocked)'}`}
       className="tile"
       style={{
-        width: TILE_W,
-        height: TILE_H,
+        width: tileWidth,
+        height: tileHeight,
         position: 'relative',
         borderRadius: 4,
         border: selected
@@ -87,7 +85,7 @@ export default function Tile({
         style={{
           position: 'relative',
           zIndex: 1,
-          fontSize: isFlower || isSeason ? 14 : 22,
+          fontSize: Math.round((isFlower || isSeason ? 14 : 22) * (tileWidth / 60)),
           fontWeight: 700,
           color: colors.symbol,
           lineHeight: 1,
@@ -102,7 +100,7 @@ export default function Tile({
         style={{
           position: 'relative',
           zIndex: 1,
-          fontSize: 10,
+          fontSize: Math.round(10 * (tileWidth / 60)),
           fontWeight: 500,
           color: colors.symbol,
           opacity: 0.7,

@@ -56,7 +56,7 @@ Her 60th birthday is in 3 days. A handmade game featuring her watercolors is a g
 **MVP Features:**
 
 - [x] **Tile rendering** — Tiles with watercolor backgrounds, clear symbols
-- [ ] **Classic layout** — Pyramid/turtle formation with 144 tiles
+- [x] **Classic layout** — Pyramid/turtle formation with 144 tiles
 - [ ] **Responsive design** — Desktop optimized AND mobile optimized
 - [ ] **Tile selection** — Click/tap to select, visual highlight
 - [ ] **Free tile detection** — Only unblocked tiles are clickable

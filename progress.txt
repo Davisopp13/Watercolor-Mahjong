@@ -35,3 +35,35 @@
   - generateTileSet() returns tiles with {id, suit, value, copy} - positions added later by layout
   - Build verified with `npx vite build` - passes clean
 ---
+
+## Iteration 3 - Classic Layout (Turtle/Pyramid with 144 tiles)
+- Created src/data/layout.js with the classic "Turtle" Mahjong Solitaire layout
+  - 5 layers: Layer 0 (87 tiles), Layer 1 (40), Layer 2 (14), Layer 3 (2), Layer 4 (1 peak) = 144 total
+  - Layer 0 has classic turtle body shape with 3 wing tiles (2 left, 1 right)
+  - Upper layers offset by +0.5 in x/y so tiles center over 4 tiles below
+  - All 144 positions verified unique
+- Implemented isTileFree() function for free tile detection:
+  - Checks no overlapping tile on higher layer (within 1-unit footprint)
+  - Checks at least one side (left or right) is open
+  - Validated: 26 free tiles on fresh board, peak is free, center bottom blocked
+- Implemented getLayoutBounds() for board centering/scaling calculations
+- Created src/components/Board.jsx:
+  - Renders all tiles with absolute positioning based on grid coordinates
+  - 3D stacking visual with layer offsets (LAYER_OFFSET_X=-2, LAYER_OFFSET_Y=-4)
+  - Proper z-index ordering (painter's algorithm: sorted by z, y, x)
+  - Responsive tile sizing: desktop 60×80, tablet 50×66, mobile 36×48
+  - Listens to window resize to adjust tile sizes
+- Updated Tile.jsx to accept tileWidth/tileHeight props with proportional font scaling
+- Updated App.jsx to use Board component with Fisher-Yates shuffled tiles
+  - createGame() shuffles tile definitions and assigns to layout positions
+  - Computes free tiles via useMemo for efficient re-rendering
+  - Selection toggle (match logic deferred to later task)
+- Files changed: src/data/layout.js (new), src/components/Board.jsx (new), src/components/Tile.jsx (updated), src/App.jsx (updated), PRD.md
+- Learnings for future iterations:
+  - Layout uses half-unit coordinates (e.g., 0.5, 3.5) for layer offsets and wing positions
+  - isTileFree uses OVERLAP_THRESHOLD of 0.99 to handle floating point comparisons
+  - Left/right neighbor detection uses exact match (0.01 tolerance) on x offset of 1, with y overlap within 1 unit
+  - Board component computes pixel positions: (gridX - minX) * tileW + z * layerOffsetX
+  - Free tile detection runs on every tiles state change — may need optimization later if slow
+  - Build verified with `npx vite build` - passes clean
+---
