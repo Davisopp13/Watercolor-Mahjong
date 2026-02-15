@@ -173,3 +173,31 @@
   - handleNewGame uses useCallback with empty deps since createGame() is a standalone function
   - Vite build still hangs in sandbox — validated via `node --input-type=module` integration test
 ---
+
+## Iteration 9 - Stuck Detection (No valid moves → offer shuffle or new game)
+- Added stuck detection logic to App.jsx:
+  - `gameStuck` computed via useMemo: checks all pairs of free tiles for matches
+  - Returns false if gameWon (win takes priority over stuck)
+  - Returns false if no remaining tiles (empty board = won, not stuck)
+  - O(n^2) over free tiles only (typically 20-30 tiles, fast enough)
+- Created src/components/StuckScreen.jsx:
+  - Full-screen overlay matching WinScreen style (semi-transparent cream, fade-in)
+  - "No Moves Left" heading with encouraging subtext
+  - Two buttons: "Shuffle Tiles" (primary, lavender filled) and "New Game" (secondary, outlined)
+  - Responsive layout: buttons stack vertically on mobile, row on desktop (sm:flex-row)
+  - Hover effects matching WinScreen button style
+- Added handleShuffle to App.jsx:
+  - Separates remaining (not removed) from removed tiles
+  - Shuffles tile faces (suit, value, copy) among remaining positions using Fisher-Yates
+  - Positions (x, y, z, id) stay fixed — only face assignments change
+  - Recombines with removed tiles, sorts by id for stable ordering
+  - Clears selection
+- Files changed: src/App.jsx (updated), src/components/StuckScreen.jsx (new), PRD.md (marked task [x])
+- Learnings for future iterations:
+  - Stuck detection must exclude won state to avoid false positives on empty board
+  - `freeTiles.length > 0` check prevents empty board from being "stuck"
+  - Shuffle preserves positions (x, y, z) and only reassigns faces — avoids breaking layout/free-tile logic
+  - freeTileIds is an array (not Set) — used `.includes()` in stuck detection; could optimize with Set if needed
+  - Fresh games are almost never stuck (0/20 in testing) due to 26 free tiles from diverse suits
+  - Vite build still hangs in sandbox — validated via `node --input-type=module`
+---

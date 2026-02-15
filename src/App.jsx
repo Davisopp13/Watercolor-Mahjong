@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react'
 import Board from './components/Board.jsx'
 import WinScreen from './components/WinScreen.jsx'
+import StuckScreen from './components/StuckScreen.jsx'
 import { generateTileSet, tilesMatch } from './data/tiles.js'
 import { TURTLE_LAYOUT, isTileFree } from './data/layout.js'
 
@@ -40,8 +41,37 @@ export default function App() {
   // Win detection: all tiles removed
   const gameWon = useMemo(() => tiles.every(t => t.removed), [tiles])
 
+  // Stuck detection: no valid matching pair among free tiles
+  const gameStuck = useMemo(() => {
+    if (gameWon) return false
+    const freeTiles = tiles.filter(t => !t.removed && freeTileIds.includes(t.id))
+    for (let i = 0; i < freeTiles.length; i++) {
+      for (let j = i + 1; j < freeTiles.length; j++) {
+        if (tilesMatch(freeTiles[i], freeTiles[j])) return false
+      }
+    }
+    return freeTiles.length > 0
+  }, [tiles, freeTileIds, gameWon])
+
   const handleNewGame = useCallback(() => {
     setTiles(createGame())
+    setSelectedId(null)
+  }, [])
+
+  const handleShuffle = useCallback(() => {
+    setTiles(current => {
+      const remaining = current.filter(t => !t.removed)
+      const removedTiles = current.filter(t => t.removed)
+      // Shuffle the tile faces among remaining positions
+      const faces = shuffle(remaining.map(t => ({ suit: t.suit, value: t.value, copy: t.copy })))
+      const shuffled = remaining.map((t, i) => ({
+        ...t,
+        suit: faces[i].suit,
+        value: faces[i].value,
+        copy: faces[i].copy,
+      }))
+      return [...shuffled, ...removedTiles].sort((a, b) => a.id - b.id)
+    })
     setSelectedId(null)
   }, [])
 
@@ -104,6 +134,9 @@ export default function App() {
 
       {/* Win screen overlay */}
       {gameWon && <WinScreen onNewGame={handleNewGame} />}
+
+      {/* Stuck screen overlay */}
+      {gameStuck && <StuckScreen onShuffle={handleShuffle} onNewGame={handleNewGame} />}
     </div>
   )
 }
