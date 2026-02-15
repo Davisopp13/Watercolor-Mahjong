@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react'
 import Board from './components/Board.jsx'
+import TitleScreen from './components/TitleScreen.jsx'
 import WinScreen from './components/WinScreen.jsx'
 import StuckScreen from './components/StuckScreen.jsx'
 import { generateTileSet, tilesMatch } from './data/tiles.js'
@@ -31,6 +32,7 @@ function createGame() {
 export default function App() {
   const [tiles, setTiles] = useState(() => createGame())
   const [selectedId, setSelectedId] = useState(null)
+  const [showTitle, setShowTitle] = useState(true)
 
   // Compute which tiles are free
   const freeTileIds = useMemo(() => {
@@ -137,6 +139,9 @@ export default function App() {
 
       {/* Stuck screen overlay */}
       {gameStuck && <StuckScreen onShuffle={handleShuffle} onNewGame={handleNewGame} />}
+
+      {/* Title screen overlay */}
+      {showTitle && <TitleScreen onPlay={() => setShowTitle(false)} />}
     </div>
   )
 }

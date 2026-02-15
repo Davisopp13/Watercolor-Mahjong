@@ -201,3 +201,25 @@
   - Fresh games are almost never stuck (0/20 in testing) due to 26 free tiles from diverse suits
   - Vite build still hangs in sandbox — validated via `node --input-type=module`
 ---
+
+## Iteration 10 - Title Screen
+- Created src/components/TitleScreen.jsx:
+  - Full-screen overlay (z-50) with cream background (same pattern as WinScreen)
+  - Fade-in animation (600ms ease-in via opacity transition)
+  - Circular watercolor Mixed Bouquet image (tiles_4.jpg) with lavender border and shadow
+  - "Watercolor Mahjong" heading in Playfair Display
+  - "Featuring original artwork by Jen" tagline
+  - "Play" button with lavender background, hover lift effect
+  - Responsive sizing: image 56→72→96 rem, text scales with sm/lg breakpoints
+- Updated App.jsx:
+  - Added showTitle state (initially true)
+  - Imported and renders TitleScreen when showTitle is true
+  - onPlay handler sets showTitle to false
+  - Title screen renders last (highest z-order) so it covers game board
+- Files changed: src/components/TitleScreen.jsx (new), src/App.jsx (updated), PRD.md
+- Learnings for future iterations:
+  - tiles_4.jpg is the Mixed Bouquet — per Asset Guide, it's the primary title screen image
+  - TitleScreen rendered after WinScreen/StuckScreen in JSX so it takes visual priority on initial load
+  - Vite build works fine in this environment (535ms) — the sandbox hang was Node 24 specific
+  - Brand guidelines specify tagline "Featuring original artwork by Jen"
+---

@@ -63,7 +63,7 @@ Her 60th birthday is in 3 days. A handmade game featuring her watercolors is a g
 - [x] **Match logic** — Two identical tiles selected → remove both
 - [x] **Win detection** — All tiles cleared → celebration screen
 - [x] **Stuck detection** — No valid moves → offer shuffle or new game
-- [ ] **Title screen** — Her art + "Watercolor Mahjong"
+- [x] **Title screen** — Her art + "Watercolor Mahjong"
 - [ ] **New game button** — Restart with fresh shuffle
 - [ ] **Shuffle button** — Rearrange remaining tiles
 - [ ] **PWA** — Installable, works offline
