@@ -1,9 +1,13 @@
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect, useRef, useId } from 'react'
 import Board from './components/Board.jsx'
 import GameControls from './components/GameControls.jsx'
 import TitleScreen from './components/TitleScreen.jsx'
 import WinScreen from './components/WinScreen.jsx'
 import StuckScreen from './components/StuckScreen.jsx'
+import AuthUI from './components/AuthUI.jsx'
+import SyncIndicator from './components/SyncIndicator.jsx'
+import useAuth from './hooks/useAuth.js'
+import useCloudSync from './hooks/useCloudSync.js'
 import { generateTileSet, tilesMatch } from './data/tiles.js'
 import { TURTLE_LAYOUT, isTileFree } from './data/layout.js'
 
@@ -34,6 +38,61 @@ export default function App() {
   const [tiles, setTiles] = useState(() => createGame())
   const [selectedId, setSelectedId] = useState(null)
   const [showTitle, setShowTitle] = useState(true)
+  const [hintIds, setHintIds] = useState(null) // [id1, id2] or null
+
+  const { user, loading: authLoading, error: authError, magicLinkSent, signInWithMagicLink, signOut } = useAuth()
+  const { saveGame, loadGame, syncStatus } = useCloudSync(user)
+
+  // Track removed count to auto-save on match
+  const prevRemovedCount = useRef(tiles.filter(t => t.removed).length)
+
+  // Load saved game on sign-in
+  useEffect(() => {
+    if (!user) return
+    let cancelled = false
+    loadGame().then(savedTiles => {
+      if (cancelled || !savedTiles) return
+      // Re-hydrate: map saved tile data back onto layout positions
+      const hydrated = savedTiles.map(saved => ({
+        ...saved,
+        x: TURTLE_LAYOUT[saved.id].x,
+        y: TURTLE_LAYOUT[saved.id].y,
+        z: TURTLE_LAYOUT[saved.id].z,
+      }))
+      setTiles(hydrated)
+      // If game is in progress, skip title screen
+      if (hydrated.some(t => t.removed) && !hydrated.every(t => t.removed)) {
+        setShowTitle(false)
+      }
+      setSelectedId(null)
+    })
+    return () => { cancelled = true }
+  }, [user, loadGame])
+
+  // Auto-save when tiles are removed (match made)
+  useEffect(() => {
+    const removedCount = tiles.filter(t => t.removed).length
+    if (removedCount > prevRemovedCount.current) {
+      saveGame(tiles)
+    }
+    prevRemovedCount.current = removedCount
+  }, [tiles, saveGame])
+
+  // Save on page exit / background
+  useEffect(() => {
+    if (!user) return
+    const tilesRef = () => tiles
+    const save = () => saveGame(tilesRef())
+    const handleVisibility = () => {
+      if (document.visibilityState === 'hidden') save()
+    }
+    window.addEventListener('beforeunload', save)
+    document.addEventListener('visibilitychange', handleVisibility)
+    return () => {
+      window.removeEventListener('beforeunload', save)
+      document.removeEventListener('visibilitychange', handleVisibility)
+    }
+  }, [user, tiles, saveGame])
 
   // Compute which tiles are free
   const freeTileIds = useMemo(() => {
@@ -57,11 +116,15 @@ export default function App() {
   }, [tiles, freeTileIds, gameWon])
 
   const handleNewGame = useCallback(() => {
-    setTiles(createGame())
+    const newTiles = createGame()
+    setTiles(newTiles)
     setSelectedId(null)
-  }, [])
+    setHintIds(null)
+    saveGame(newTiles)
+  }, [saveGame])
 
   const handleShuffle = useCallback(() => {
+    let shuffledTiles
     setTiles(current => {
       const remaining = current.filter(t => !t.removed)
       const removedTiles = current.filter(t => t.removed)
@@ -73,12 +136,42 @@ export default function App() {
         value: faces[i].value,
         copy: faces[i].copy,
       }))
-      return [...shuffled, ...removedTiles].sort((a, b) => a.id - b.id)
+      shuffledTiles = [...shuffled, ...removedTiles].sort((a, b) => a.id - b.id)
+      return shuffledTiles
     })
     setSelectedId(null)
-  }, [])
+    setHintIds(null)
+    // Save after state update is queued (shuffledTiles captured from updater)
+    if (shuffledTiles) saveGame(shuffledTiles)
+  }, [saveGame])
+
+  // Auto-dismiss hint after 3 seconds
+  useEffect(() => {
+    if (!hintIds) return
+    const timer = setTimeout(() => setHintIds(null), 3000)
+    return () => clearTimeout(timer)
+  }, [hintIds])
+
+  const handleHint = useCallback(() => {
+    // Clear any current selection
+    setSelectedId(null)
+    // Find a valid matching pair among free tiles
+    const freeTiles = tiles.filter(t => !t.removed && freeTileIds.includes(t.id))
+    for (let i = 0; i < freeTiles.length; i++) {
+      for (let j = i + 1; j < freeTiles.length; j++) {
+        if (tilesMatch(freeTiles[i], freeTiles[j])) {
+          setHintIds([freeTiles[i].id, freeTiles[j].id])
+          return
+        }
+      }
+    }
+    // No pairs found — stuck detection modal will handle this
+    setHintIds(null)
+  }, [tiles, freeTileIds])
 
   const handleTileClick = useCallback((id) => {
+    // Dismiss hint on any tile click
+    setHintIds(null)
     setSelectedId(prev => {
       // Clicking already-selected tile → deselect
       if (prev === id) return null
@@ -156,19 +249,30 @@ export default function App() {
       `}</style>
       {/* Header — compact on mobile, more spacious on desktop */}
       {!showTitle && (
-        <header className="flex-shrink-0 flex items-center justify-between px-6 py-4 lg:py-6 overflow-visible">
-          <h1
-            className="text-2xl sm:text-3xl lg:text-4xl watercolor-title"
-            style={{
-              paddingBottom: '0.2em',
-              margin: 0
-            }}
-          >
-            Watercolor Mahjong
-          </h1>
-          {/* Desktop controls — hidden on mobile */}
-          <div className="hidden sm:block overflow-visible">
-            <GameControls onNewGame={handleNewGame} onShuffle={handleShuffle} />
+        <header className="flex-shrink-0 px-6 py-4 lg:py-6 overflow-visible">
+          <div className="flex items-center justify-between">
+            <h1
+              className="text-2xl sm:text-3xl lg:text-4xl watercolor-title"
+              style={{
+                paddingBottom: '0.2em',
+                margin: 0
+              }}
+            >
+              Watercolor Mahjong
+            </h1>
+            {/* Desktop controls — hidden on mobile */}
+            <div className="hidden sm:flex items-center gap-4 overflow-visible">
+              <SyncIndicator syncStatus={syncStatus} user={user} />
+              <AuthUI
+                user={user}
+                loading={authLoading}
+                error={authError}
+                magicLinkSent={magicLinkSent}
+                onSignIn={signInWithMagicLink}
+                onSignOut={signOut}
+              />
+              <GameControls onNewGame={handleNewGame} onShuffle={handleShuffle} onHint={handleHint} />
+            </div>
           </div>
         </header>
       )}
@@ -180,6 +284,7 @@ export default function App() {
             tiles={tiles}
             selectedId={selectedId}
             freeTileIds={freeTileIds}
+            hintIds={hintIds}
             onTileClick={handleTileClick}
           />
         )}
@@ -191,7 +296,18 @@ export default function App() {
           className="sm:hidden fixed bottom-0 left-0 right-0 z-40"
           style={{ backgroundColor: 'var(--color-background)', borderTop: '1px solid var(--color-tan)' }}
         >
-          <GameControls onNewGame={handleNewGame} onShuffle={handleShuffle} />
+          <div className="flex items-center justify-center gap-2 px-4 pt-2">
+            <SyncIndicator syncStatus={syncStatus} user={user} />
+            <AuthUI
+              user={user}
+              loading={authLoading}
+              error={authError}
+              magicLinkSent={magicLinkSent}
+              onSignIn={signInWithMagicLink}
+              onSignOut={signOut}
+            />
+          </div>
+          <GameControls onNewGame={handleNewGame} onShuffle={handleShuffle} onHint={handleHint} />
         </div>
       )}
 

@@ -16,7 +16,7 @@ const MAX_TILE_H = 80
 // Min tile width to ensure tappable touch targets (44px minimum)
 const MIN_TILE_W = 32
 
-export default function Board({ tiles, selectedId, freeTileIds, onTileClick }) {
+export default function Board({ tiles, selectedId, freeTileIds, hintIds, onTileClick }) {
   const bounds = useMemo(() => getLayoutBounds(), [])
   const containerRef = useRef(null)
   const [tileW, setTileW] = useState(40)
@@ -72,6 +72,7 @@ export default function Board({ tiles, selectedId, freeTileIds, onTileClick }) {
   )
 
   const freeSet = useMemo(() => new Set(freeTileIds), [freeTileIds])
+  const hintSet = useMemo(() => new Set(hintIds || []), [hintIds])
 
   return (
     <div ref={containerRef} className="w-full h-full flex items-center justify-center p-2 sm:p-4 lg:p-6 relative overflow-hidden">
@@ -101,6 +102,7 @@ export default function Board({ tiles, selectedId, freeTileIds, onTileClick }) {
                 tile={tile}
                 selected={tile.id === selectedId}
                 free={freeSet.has(tile.id)}
+                hinted={hintSet.has(tile.id)}
                 onClick={() => onTileClick(tile.id)}
                 tileWidth={tileW}
                 tileHeight={tileH}

@@ -1,6 +1,18 @@
 import React from 'react'
 
-export default function GameControls({ onNewGame, onShuffle }) {
+export default function GameControls({ onNewGame, onShuffle, onHint }) {
+  const outlinedButtonStyle = {
+    backgroundColor: 'transparent',
+    color: 'var(--color-charcoal)',
+    borderColor: 'var(--color-tan)',
+    borderRadius: '40% 60% 70% 30% / 50% 60% 30% 60%',
+  }
+
+  const handleHover = (e, enter) => {
+    e.currentTarget.style.borderColor = enter ? 'var(--color-lavender)' : 'var(--color-tan)'
+    e.currentTarget.style.color = enter ? 'var(--color-lavender)' : 'var(--color-charcoal)'
+  }
+
   return (
     <div className="flex items-center justify-center gap-4 px-2 py-2 overflow-visible">
       <div className="flex-shrink-0">
@@ -20,20 +32,9 @@ export default function GameControls({ onNewGame, onShuffle }) {
       <button
         onClick={onShuffle}
         className="flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-400 cursor-pointer border-2 group hover:bg-lavender/5 whitespace-nowrap"
-        style={{
-          backgroundColor: 'transparent',
-          color: 'var(--color-charcoal)',
-          borderColor: 'var(--color-tan)',
-          borderRadius: '40% 60% 70% 30% / 50% 60% 30% 60%',
-        }}
-        onMouseEnter={e => {
-          e.currentTarget.style.borderColor = 'var(--color-lavender)'
-          e.currentTarget.style.color = 'var(--color-lavender)'
-        }}
-        onMouseLeave={e => {
-          e.currentTarget.style.borderColor = 'var(--color-tan)'
-          e.currentTarget.style.color = 'var(--color-charcoal)'
-        }}
+        style={outlinedButtonStyle}
+        onMouseEnter={e => handleHover(e, true)}
+        onMouseLeave={e => handleHover(e, false)}
         aria-label="Shuffle remaining tiles"
       >
         <svg className="transition-transform group-hover:scale-125 duration-300 opacity-60" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -44,6 +45,24 @@ export default function GameControls({ onNewGame, onShuffle }) {
           <path d="M4 4l5 5" />
         </svg>
         Shuffle
+      </button>
+      <button
+        onClick={onHint}
+        className="flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-400 cursor-pointer border-2 group hover:bg-lavender/5 whitespace-nowrap"
+        style={{
+          ...outlinedButtonStyle,
+          borderRadius: '60% 40% 30% 70% / 40% 50% 60% 50%',
+        }}
+        onMouseEnter={e => handleHover(e, true)}
+        onMouseLeave={e => handleHover(e, false)}
+        aria-label="Show a hint"
+      >
+        <svg className="transition-transform group-hover:scale-125 duration-300 opacity-60" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 18h6" />
+          <path d="M10 22h4" />
+          <path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z" />
+        </svg>
+        Hint
       </button>
     </div>
   )

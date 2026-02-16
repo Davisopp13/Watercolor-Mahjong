@@ -319,3 +319,24 @@
   - PRD had two sets of checklists (MVP Features + Day 1-3 Timeline) that tracked overlapping work
   - Always update all checklist sections when completing a task to avoid confusion
 ---
+
+## Iteration 16 - Hint System (Enhancement PRD Task 4)
+- Added hint system with pulsing glow animation on matching tile pairs
+- Implementation:
+  - App.jsx: Added `hintIds` state, `handleHint` callback that finds first matching pair among free tiles
+  - App.jsx: Auto-dismiss hint after 3 seconds via useEffect timer
+  - App.jsx: Dismiss hint on any tile click, new game, or shuffle
+  - App.jsx: Clear selection before showing hint (per PRD requirement)
+  - GameControls.jsx: Added "Hint" button with lightbulb SVG icon, matching outlined button style with organic border-radius
+  - GameControls.jsx: Refactored hover handlers to shared `handleHover` function to reduce duplication
+  - Board.jsx: Accept `hintIds` prop, create `hintSet` via useMemo, pass `hinted` prop to Tile
+  - Tile.jsx: Accept `hinted` prop, add `tile-hinted` CSS class when active
+  - index.css: Added `hint-pulse` keyframe animation — soft lavender + gold glow that pulses 3 times over 2.4s
+- Files changed: src/App.jsx, src/components/GameControls.jsx, src/components/Board.jsx, src/components/Tile.jsx, src/index.css, PRD.md
+- Learnings for future iterations:
+  - Hint glow uses both lavender (brand) and gold colors for visibility without being jarring
+  - `animation: hint-pulse 800ms ease-in-out 3` gives exactly 3 pulses then stops naturally
+  - Hint auto-dismiss uses useEffect with cleanup to prevent stale timers
+  - The handleHint O(n^2) scan over free tiles is fine since there are at most ~26 free tiles
+  - Build verified with `npx vite build` (660ms + 49ms for SW)
+---

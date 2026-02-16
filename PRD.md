@@ -187,7 +187,7 @@ Optional bonus: Before the text appears, briefly show 3-4 of Jennifer's watercol
 
 ---
 
-### Task 4 — Hint System
+### Task 4 — Hint System [x]
 
 **Context:** Hint is the #1 player assist in every mahjong solitaire game. Without it, casual players get frustrated scanning 100+ tiles looking for matches. Jennifer is not a hardcore gamer — she needs this.
 

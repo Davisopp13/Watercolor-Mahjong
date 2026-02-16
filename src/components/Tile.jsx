@@ -13,6 +13,7 @@ export default function Tile({
   tile,
   selected = false,
   free = true,
+  hinted = false,
   onClick,
   tileWidth = 60,
   tileHeight = 80,
@@ -43,7 +44,7 @@ export default function Tile({
       onClick={free ? onClick : undefined}
       disabled={!free}
       aria-label={`${suit} ${value}${selected ? ' (selected)' : ''}${free ? '' : ' (blocked)'}`}
-      className={`tile relative group ${selected ? 'selected' : ''} ${!free ? 'blocked' : ''} transition-all duration-300`}
+      className={`tile relative group ${selected ? 'selected' : ''} ${!free ? 'blocked' : ''} ${hinted ? 'tile-hinted' : ''} transition-all duration-300`}
       style={{
         width: tileWidth,
         height: tileHeight,
