@@ -314,7 +314,7 @@ Also add feedback for clicking a blocked tile:
 
 ---
 
-### Task 8 — Birthday Dedication Screen
+### Task 8 — Birthday Dedication Screen [x]
 
 **Context:** The landing page is beautiful but generic ("A Meditative Journey"). Between the landing page and the game board, there should be a personal birthday moment that sets up the emotional context before she starts playing.
 

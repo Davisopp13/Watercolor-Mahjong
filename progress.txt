@@ -412,3 +412,27 @@
   - `animation: ... forwards` keeps the final state (opacity: 0, scale: 0.8) until the tile is actually removed from DOM
   - Build verified with `npx vite build` (566ms + 46ms for SW)
 ---
+
+## Iteration 20 - Birthday Dedication Screen (Enhancement PRD Task 8)
+- Created DedicationScreen.jsx — intermediate screen between title and game board
+- Implementation:
+  - DedicationScreen.jsx: Full-screen overlay (z-1000) with sequential text fade-in
+    - Line 1 (0.4s): "Happy 60th Birthday, Mom" — gradient text with watercolor filter
+    - Line 2 (0.9s): "This game features your beautiful watercolor paintings as the tiles."
+    - Line 3 (1.4s): "Each match you make is a little celebration of your art."
+    - Line 4 (1.9s): "With love, Davis ❤️"
+    - Line 5 (2.4s): "Start Playing" button (organic-button class)
+  - Smooth fade-out transition (500ms) when "Start Playing" clicked before showing game
+  - App.jsx: Added `showDedication` state variable
+  - App.jsx: TitleScreen onPlay now sets showTitle=false, showDedication=true
+  - App.jsx: DedicationScreen onStartPlaying sets showDedication=false
+  - App.jsx: Header, board, and mobile controls gated on `!showTitle && !showDedication`
+  - App.jsx: DedicationScreen rendered before TitleScreen in JSX (title has higher z-priority)
+- Flow: TitleScreen → DedicationScreen → Game Board
+- Files changed: src/components/DedicationScreen.jsx (new), src/App.jsx (updated), PRD.md (marked Task 8 [x])
+- Learnings for future iterations:
+  - DedicationScreen reuses the same styling patterns as WinScreen (gradient text, sequential fade-in, organic-button)
+  - fadeOut state + setTimeout creates a smooth exit transition before unmounting
+  - Three conditionals in App.jsx need `!showDedication` added: header, board, and mobile controls
+  - Build verified with `npx vite build` (580ms + 51ms for SW)
+---

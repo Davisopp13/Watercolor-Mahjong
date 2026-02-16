@@ -2,6 +2,7 @@ import React, { useState, useMemo, useCallback, useEffect, useRef, useId } from 
 import Board from './components/Board.jsx'
 import GameControls from './components/GameControls.jsx'
 import TitleScreen from './components/TitleScreen.jsx'
+import DedicationScreen from './components/DedicationScreen.jsx'
 import WinScreen from './components/WinScreen.jsx'
 import StuckScreen from './components/StuckScreen.jsx'
 import AuthUI from './components/AuthUI.jsx'
@@ -38,6 +39,7 @@ export default function App() {
   const [tiles, setTiles] = useState(() => createGame())
   const [selectedId, setSelectedId] = useState(null)
   const [showTitle, setShowTitle] = useState(true)
+  const [showDedication, setShowDedication] = useState(false)
   const [hintIds, setHintIds] = useState(null) // [id1, id2] or null
   const [moveHistory, setMoveHistory] = useState([]) // stack of {tileA, tileB} move records
   const [removingIds, setRemovingIds] = useState(null) // [id1, id2] during dissolve animation
@@ -301,7 +303,7 @@ export default function App() {
         }
       `}</style>
       {/* Header — compact on mobile, more spacious on desktop */}
-      {!showTitle && (
+      {!showTitle && !showDedication && (
         <header className="flex-shrink-0 px-6 py-4 lg:py-6 overflow-visible">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -359,7 +361,7 @@ export default function App() {
 
       {/* Board — fills remaining space, board auto-scales to fit */}
       <main className="flex-1 min-h-0 pb-14 sm:pb-0">
-        {!showTitle && (
+        {!showTitle && !showDedication && (
           <Board
             tiles={tiles}
             selectedId={selectedId}
@@ -375,7 +377,7 @@ export default function App() {
       </main>
 
       {/* Mobile controls — fixed bottom bar, hidden on desktop */}
-      {!showTitle && (
+      {!showTitle && !showDedication && (
         <div
           className="sm:hidden fixed bottom-0 left-0 right-0 z-40"
           style={{ backgroundColor: 'var(--color-background)', borderTop: '1px solid var(--color-tan)' }}
@@ -423,8 +425,18 @@ export default function App() {
       {/* Stuck screen overlay */}
       {gameStuck && <StuckScreen onShuffle={handleShuffle} onNewGame={handleNewGame} />}
 
+      {/* Dedication screen overlay — shown between title and game */}
+      {showDedication && (
+        <DedicationScreen onStartPlaying={() => setShowDedication(false)} />
+      )}
+
       {/* Title screen overlay */}
-      {showTitle && <TitleScreen onPlay={() => setShowTitle(false)} />}
+      {showTitle && (
+        <TitleScreen onPlay={() => {
+          setShowTitle(false)
+          setShowDedication(true)
+        }} />
+      )}
     </div>
   )
 }
