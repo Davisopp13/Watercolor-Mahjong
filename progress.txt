@@ -436,3 +436,35 @@
   - Three conditionals in App.jsx need `!showDedication` added: header, board, and mobile controls
   - Build verified with `npx vite build` (580ms + 51ms for SW)
 ---
+
+## Iteration 21 - Mobile Responsiveness Pass (Enhancement PRD Task 9)
+- Comprehensive mobile responsiveness pass for 375px, 390px, and 768px viewports
+- Implementation:
+  - Board.jsx: Lowered MIN_TILE_W from 32px to 20px to allow tiles to fit on 375px screens (23px at iPhone SE)
+  - GameControls.jsx: Made buttons icon-only on mobile (text labels hidden below sm: breakpoint)
+  - GameControls.jsx: Added min-w-[44px] min-h-[44px] to all buttons for Apple HIG 44×44px tap target minimum
+  - GameControls.jsx: Reduced gap between buttons on mobile (gap-2 vs gap-4)
+  - App.jsx header: More compact on mobile — reduced padding (px-3 py-2 vs px-6 py-4), smaller title (text-lg vs text-2xl)
+  - App.jsx header: Progress indicator hidden on mobile (shown in bottom bar only), preventing duplication
+  - App.jsx mobile bottom bar: More compact progress text (text-[10px]), tighter spacing
+  - Tile.jsx: Removed group-hover:scale-110 on watercolor background (was triggering on touch)
+  - Tile.jsx: Removed group-hover:scale-105 on symbol text (was triggering on touch)
+  - index.css: Added desktop-only hover effects via `@media (hover: hover)` for tile-bg-watercolor and tile-symbol
+  - index.css: Made organic-button padding responsive (1rem 2.5rem mobile, 1.6rem 4.5rem desktop)
+  - TitleScreen.jsx: Reduced title from text-5xl to text-3xl on mobile to prevent overflow
+  - TitleScreen.jsx: Added min-h-[44px] to Begin Journey button
+  - DedicationScreen.jsx: Added min-h-[44px] to Start Playing button
+  - StuckScreen.jsx: Reduced heading from text-5xl to text-3xl on mobile, smaller body text
+  - StuckScreen.jsx: Added min-h-[44px] to buttons, responsive padding
+  - WinScreen.jsx: Added min-h-[44px] to Play Again button, responsive padding
+- Board dimensions at 375px viewport: 350×258px with 23×31px tiles — fits without scrolling
+- Board dimensions at 768px viewport: tiles at ~48px — comfortable for tablet use
+- Files changed: src/components/Board.jsx, src/components/GameControls.jsx, src/components/Tile.jsx, src/components/TitleScreen.jsx, src/components/DedicationScreen.jsx, src/components/StuckScreen.jsx, src/components/WinScreen.jsx, src/App.jsx, src/index.css, PRD.md
+- Learnings for future iterations:
+  - Tailwind's group-hover classes don't distinguish touch vs pointer — use CSS @media (hover: hover) instead
+  - organic-button has large fixed padding (4.5rem horizontal) that overflows on mobile — needs responsive override
+  - MIN_TILE_W of 20px is fine because tiles overlap in the turtle layout, making effective tap targets ~30-40px
+  - Board auto-scaling in Board.jsx already handles responsive sizing — just needed to lower the min constraint
+  - Progress indicator was duplicated on mobile (header + bottom bar) — hiding header copy on mobile is cleaner
+  - Build verified with `npx vite build` (568ms + 45ms for SW)
+---

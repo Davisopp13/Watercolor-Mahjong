@@ -25,12 +25,12 @@ export default function StuckScreen({ onShuffle, onNewGame }) {
           <div className="h-px w-10 bg-tan/40"></div>
         </div>
         <h2
-          className="text-5xl sm:text-6xl lg:text-8xl font-bold mb-4 tracking-tight watercolor-gradient-text"
+          className="text-3xl sm:text-6xl lg:text-8xl font-bold mb-4 tracking-tight watercolor-gradient-text"
         >
           A Quiet Moment
         </h2>
         <p
-          className="text-xl sm:text-2xl lg:text-3xl italic font-serif"
+          className="text-base sm:text-2xl lg:text-3xl italic font-serif px-4"
           style={{
             color: 'var(--color-charcoal)',
             opacity: 0.7,
@@ -40,17 +40,17 @@ export default function StuckScreen({ onShuffle, onNewGame }) {
         </p>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 z-10">
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 z-10 px-6">
         <button
           onClick={onShuffle}
-          className="organic-button text-lg sm:text-xl px-12 py-5"
+          className="organic-button text-base sm:text-xl px-8 sm:px-12 py-4 sm:py-5 min-h-[44px]"
         >
           Shuffle Scene
         </button>
 
         <button
           onClick={onNewGame}
-          className="px-12 py-5 rounded-full text-lg sm:text-xl font-semibold transition-all duration-400 transform hover:scale-105 active:scale-95 border-2 group"
+          className="px-8 sm:px-12 py-4 sm:py-5 min-h-[44px] rounded-full text-base sm:text-xl font-semibold transition-all duration-400 transform hover:scale-105 active:scale-95 border-2 group"
           style={{
             backgroundColor: 'transparent',
             color: 'var(--color-charcoal)',

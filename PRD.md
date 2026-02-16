@@ -342,7 +342,7 @@ Clicking "Start Playing" transitions to the game board (with a smooth fade trans
 
 ---
 
-### Task 9 — Mobile Responsiveness Pass
+### Task 9 — Mobile Responsiveness Pass [x]
 
 **Context:** Jennifer will likely open this on her phone first (birthday text with a link). The game needs to be playable on mobile.
 

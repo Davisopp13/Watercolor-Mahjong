@@ -113,7 +113,7 @@ export default function DedicationScreen({ onStartPlaying }) {
         >
           <button
             onClick={handleStartPlaying}
-            className="organic-button text-xl sm:text-2xl"
+            className="organic-button text-lg sm:text-2xl min-h-[44px]"
           >
             Start Playing
           </button>

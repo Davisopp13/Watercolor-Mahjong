@@ -304,11 +304,11 @@ export default function App() {
       `}</style>
       {/* Header — compact on mobile, more spacious on desktop */}
       {!showTitle && !showDedication && (
-        <header className="flex-shrink-0 px-6 py-4 lg:py-6 overflow-visible">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+        <header className="flex-shrink-0 px-3 sm:px-6 py-2 sm:py-4 lg:py-6 overflow-visible">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 sm:gap-4 min-w-0">
               <h1
-                className="text-2xl sm:text-3xl lg:text-4xl watercolor-title"
+                className="text-lg sm:text-3xl lg:text-4xl watercolor-title truncate"
                 style={{
                   paddingBottom: '0.2em',
                   margin: 0
@@ -316,8 +316,8 @@ export default function App() {
               >
                 Watercolor Mahjong
               </h1>
-              {/* Progress indicator — pairs remaining */}
-              <div className="flex flex-col items-start gap-1 pt-1">
+              {/* Progress indicator — pairs remaining (desktop only, mobile shows in bottom bar) */}
+              <div className="hidden sm:flex flex-col items-start gap-1 pt-1">
                 <span
                   className="text-xs sm:text-sm font-medium whitespace-nowrap"
                   style={{ color: 'var(--color-lavender)' }}
@@ -382,38 +382,40 @@ export default function App() {
           className="sm:hidden fixed bottom-0 left-0 right-0 z-40"
           style={{ backgroundColor: 'var(--color-background)', borderTop: '1px solid var(--color-tan)' }}
         >
-          {/* Mobile progress indicator */}
-          <div className="flex items-center gap-3 px-4 pt-2">
-            <span
-              className="text-xs font-medium whitespace-nowrap"
-              style={{ color: 'var(--color-lavender)' }}
-            >
-              {pairsRemaining} {pairsRemaining === 1 ? 'pair' : 'pairs'} remaining
-            </span>
-            <div
-              className="flex-1 rounded-full overflow-hidden"
-              style={{
-                height: '3px',
-                backgroundColor: 'rgba(212, 184, 150, 0.3)',
-              }}
-            >
+          {/* Mobile progress bar — thin, full-width */}
+          <div className="px-3 pt-1.5 pb-0.5">
+            <div className="flex items-center gap-2">
+              <span
+                className="text-[10px] font-medium whitespace-nowrap"
+                style={{ color: 'var(--color-lavender)' }}
+              >
+                {pairsRemaining} {pairsRemaining === 1 ? 'pair' : 'pairs'} left
+              </span>
               <div
-                className="h-full rounded-full transition-all duration-500 ease-out"
+                className="flex-1 rounded-full overflow-hidden"
                 style={{
-                  width: `${((72 - pairsRemaining) / 72) * 100}%`,
-                  background: 'linear-gradient(90deg, var(--color-lavender), var(--color-rose))',
+                  height: '3px',
+                  backgroundColor: 'rgba(212, 184, 150, 0.3)',
                 }}
+              >
+                <div
+                  className="h-full rounded-full transition-all duration-500 ease-out"
+                  style={{
+                    width: `${((72 - pairsRemaining) / 72) * 100}%`,
+                    background: 'linear-gradient(90deg, var(--color-lavender), var(--color-rose))',
+                  }}
+                />
+              </div>
+              <SyncIndicator syncStatus={syncStatus} user={user} />
+              <AuthUI
+                user={user}
+                loading={authLoading}
+                error={authError}
+                magicLinkSent={magicLinkSent}
+                onSignIn={signInWithMagicLink}
+                onSignOut={signOut}
               />
             </div>
-            <SyncIndicator syncStatus={syncStatus} user={user} />
-            <AuthUI
-              user={user}
-              loading={authLoading}
-              error={authError}
-              magicLinkSent={magicLinkSent}
-              onSignIn={signInWithMagicLink}
-              onSignOut={signOut}
-            />
           </div>
           <GameControls onNewGame={handleNewGame} onShuffle={handleShuffle} onHint={handleHint} onUndo={handleUndo} canUndo={moveHistory.length > 0} />
         </div>

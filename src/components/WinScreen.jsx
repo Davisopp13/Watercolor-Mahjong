@@ -217,7 +217,7 @@ export default function WinScreen({ onNewGame }) {
         >
           <button
             onClick={onNewGame}
-            className="organic-button text-lg sm:text-xl px-12 py-4"
+            className="organic-button text-base sm:text-xl px-8 sm:px-12 py-4 min-h-[44px]"
           >
             Play Again
           </button>

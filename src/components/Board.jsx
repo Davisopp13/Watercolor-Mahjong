@@ -13,8 +13,9 @@ const TILE_ASPECT = 60 / 80
 const MAX_TILE_W = 60
 const MAX_TILE_H = 80
 
-// Min tile width to ensure tappable touch targets (44px minimum)
-const MIN_TILE_W = 32
+// Min tile width — tiles overlap in the layout, so effective tap area
+// is larger than individual tile width. 20px allows fitting on 375px screens.
+const MIN_TILE_W = 20
 
 export default function Board({ tiles, selectedId, freeTileIds, hintIds, removingIds, mismatchIds, shakingId, onTileClick, onBlockedClick }) {
   const bounds = useMemo(() => getLayoutBounds(), [])

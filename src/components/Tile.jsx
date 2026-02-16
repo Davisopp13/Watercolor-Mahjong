@@ -72,7 +72,7 @@ export default function Tile({
       {/* Background watercolor wash (Prominent for ALL tiles) */}
       {(hasSpecialImage || suitBgImage) && (
         <div
-          className="transition-transform duration-500 group-hover:scale-110"
+          className="tile-bg-watercolor transition-transform duration-500"
           style={{
             position: 'absolute',
             inset: 0,
@@ -103,7 +103,7 @@ export default function Tile({
         }}
       >
         <span
-          className="transition-transform duration-300 group-hover:scale-105"
+          className="tile-symbol transition-transform duration-300"
           style={{
             fontSize: Math.round((hasSpecialImage ? 18 : 28) * (tileWidth / 60)),
             fontWeight: 800,

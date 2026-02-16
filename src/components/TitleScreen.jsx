@@ -36,7 +36,7 @@ export default function TitleScreen({ onPlay }) {
       {/* Title */}
       <div className="text-center mb-8 z-10 px-8">
         <h1
-          className="text-5xl sm:text-6xl lg:text-8xl tracking-tighter watercolor-title"
+          className="text-3xl sm:text-6xl lg:text-8xl tracking-tighter watercolor-title"
           style={{ paddingBottom: '0.3em' }}
         >
           Watercolor Mahjong
@@ -66,7 +66,7 @@ export default function TitleScreen({ onPlay }) {
       <div className="z-10">
         <button
           onClick={onPlay}
-          className="organic-button text-xl sm:text-2xl"
+          className="organic-button text-lg sm:text-2xl min-h-[44px]"
         >
           Begin Journey
         </button>
