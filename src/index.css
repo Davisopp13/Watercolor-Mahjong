@@ -185,14 +185,6 @@ body {
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15), 2px 2px 4px rgba(0, 0, 0, 0.1);
     transform: translateY(-1px);
   }
-  /* Scale up watercolor background on hover (desktop only) */
-  .tile:not(.blocked):hover .tile-bg-watercolor {
-    transform: scale(1.1);
-  }
-  /* Scale up symbol text on hover (desktop only) */
-  .tile:not(.blocked):hover .tile-symbol {
-    transform: scale(1.05);
-  }
 }
 
 /* Active/tap feedback for all devices */

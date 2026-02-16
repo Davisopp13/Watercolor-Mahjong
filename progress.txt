@@ -468,3 +468,30 @@
   - Progress indicator was duplicated on mobile (header + bottom bar) — hiding header copy on mobile is cleaner
   - Build verified with `npx vite build` (568ms + 45ms for SW)
 ---
+
+## Iteration 22 - Tile Redesign: Paintings First, Symbols Gone (Final Polish PRD Task 1)
+- Completely rewrote tile data model and visual rendering for painting-first design
+- Implementation:
+  - tiles.js: Replaced traditional mahjong suits (Dots/Bams/Craks/Winds/Dragons/Flowers/Seasons) with 9 paintings × 4 variants × 4 copies = 144 tiles
+  - tiles.js: New PAINTINGS array maps painting index (0-8) to image sources and names (tiles_1 through tiles_9)
+  - tiles.js: Simplified tilesMatch() — same painting (suit) + same variant (value) = match. No more special flower/season wildcard matching
+  - tiles.js: generateTileSet() now generates 9×4×4=144 tiles with suit (painting index 0-8), value (variant 1-4), copy (0-3)
+  - tiles.js: Removed all old exports: SUITS, TILE_SYMBOLS, TILE_LABELS, SUIT_LABELS, SUIT_COLORS, FLOWER_IMAGES, SEASON_IMAGES, SUIT_BACKGROUND_IMAGES
+  - Tile.jsx: Complete rewrite — painting fills entire tile face (100% opacity, background-size: cover, edge-to-edge)
+  - Tile.jsx: Removed all Chinese characters, large numbers, suit labels
+  - Tile.jsx: Added small variant number badge (1-4) in bottom-right corner with semi-transparent white pill (rgba(255,255,255,0.75), border-radius 8px)
+  - Tile.jsx: Kept 3D effects (glossy overlay, side edge), selected/blocked states, animation classes
+  - index.css: Removed .tile-bg-watercolor and .tile-symbol hover rules (classes no longer exist)
+- Validated:
+  - 9 paintings, 144 tiles, 36 unique types, 4 copies each
+  - Matching logic: same painting+variant=match, diff variant=no match, diff painting=no match, self=no match
+  - 26 free tiles on fresh board, matching pairs found among free tiles
+  - All tiles reference valid painting indices
+- Files changed: src/data/tiles.js (rewritten), src/components/Tile.jsx (rewritten), src/index.css (cleaned up), PRD.md (marked Task 1 [x])
+- Learnings for future iterations:
+  - The old tile system had 7 suit types with complex matching rules (wildcard flowers/seasons). New system is much simpler: 9 paintings, 4 variants, exact match only
+  - suit field now holds a numeric painting index (0-8) instead of string ('dots', 'bams', etc.)
+  - App.jsx imports (generateTileSet, tilesMatch) are unchanged — API-compatible
+  - Vite build still hangs in sandbox environment (apostrophe in path + vite-plugin-pwa createRequire issue). Use `node --input-type=module` validation instead
+  - The old `group` class on the tile button and `.tile-bg-watercolor` / `.tile-symbol` CSS classes are no longer needed
+---

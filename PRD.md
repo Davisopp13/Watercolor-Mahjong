@@ -1,476 +1,300 @@
-# Watercolor Mahjong — Enhancement PRD
+# Watercolor Mahjong — Final Polish PRD
 
 ## One-Liner
 
-Transform Watercolor Mahjong from a flat tile-matching prototype into a polished, layered mahjong solitaire game with birthday celebration — ready to gift to Jennifer for her 60th birthday on February 17, 2026.
+Final refinements to make Watercolor Mahjong feel like a personal, polished birthday gift — putting Jen's paintings front and center, making gameplay crystal clear, and adding ambient audio.
 
 ---
 
 ## The Problem
 
 **Who has this problem?**
-Jennifer (Davis's mama) — a 60-year-old who loves mahjong solitaire and watercolor painting. She's receiving this game as a personalized birthday gift.
+Jennifer (Davis's mom) — turning 60 tomorrow (February 17, 2026). She's receiving this custom mahjong solitaire game featuring her own watercolor paintings as a birthday gift.
 
 **What's painful about the current situation?**
-The game has a beautiful landing page and working match logic, but the actual gameplay falls short of what any mahjong solitaire player would expect. The board is nearly flat (only 2 z-levels instead of the standard 4-5 layer pyramid), there are no player assists (hint, undo), no feedback when she gets stuck, no progress indicator, tiles vanish without animation, and most critically — there's no birthday celebration moment when she wins. The gift has no payoff.
+Ralph built out the core game overnight and it's close to ready. Three issues remain: (1) The tiles still show traditional Chinese mahjong symbols overlaying the watercolor art — the paintings are buried as backgrounds when they should BE the game. (2) It's hard to tell which tiles are playable vs blocked — they all look roughly the same. (3) The game is silent, which makes it feel less alive and polished than the mahjong apps she's used to.
 
 **Why does this matter enough to build something?**
-This is a one-of-a-kind birthday present. Jennifer's own watercolor artwork is featured on every tile. The emotional impact of clearing the board and seeing a personal birthday message from her son is the entire point. Without polish, the game feels like a half-finished prototype instead of a thoughtful gift.
+This is tomorrow. These three fixes turn "neat prototype" into "thoughtful, polished gift she'll show everyone at the party."
 
 ---
 
-## Current State (What Already Works)
+## Current State (What Ralph Already Built)
 
-- Classic Turtle layout with 144 tiles (72 pairs)
-- Tile selection with purple highlight border
-- Match detection and removal (tiles disappear on valid pair)
-- Open/blocked tile logic (left/right/top blocking)
-- Jen's watercolor paintings as tile background images
-- Traditional mahjong symbols overlaid (numbers + Chinese characters in suit colors)
-- New Game and Shuffle buttons
-- PWA support (installable, service worker registered)
-- Hover animation (watercolor art scales up on hover)
-- Beautiful landing page ("Begin Journey" with hydrangea tile + watercolor background)
-- Vite + React SPA, Tailwind CSS, deployed on Vercel
+Ralph completed the initial PRD tasks overnight. The game now has:
 
-### Technical Snapshot
+- ✅ Proper 4-5 layer Turtle layout with visual depth
+- ✅ Stuck detection and no-moves handling
+- ✅ Win celebration with birthday message
+- ✅ Hint system
+- ✅ Undo system
+- ✅ Progress indicator
+- ✅ Match removal animations
+- ✅ Birthday dedication screen
+- ✅ Mobile responsiveness
+- ✅ Landing page, PWA support, Vercel deployment
 
-- **Framework:** Vite + React (single bundle at `/assets/index-*.js`)
-- **Styling:** Tailwind CSS utility classes
-- **Tile structure:** `<button class="tile">` containing 4 child divs:
-  1. Overlay div (pointer-events-none)
-  2. Watercolor background div (background-image from `/assets/`, hover scale animation)
-  3. Gradient overlay div (subtle shine/glass effect)
-  4. Content div (number + Chinese character)
-- **Tile size:** 46×61px
-- **Board:** Absolute-positioned tiles within a container
-- **Z-levels:** Currently only 0 and 1 (effectively flat)
-- **Blocked state:** `blocked` CSS class on button element
-- **Animations:** `pulse-slow` and `pulse-slow-reverse` keyframes exist
-- **Images:** Only 2 `<img>` tags (logo area); tile art uses CSS `background-image`
-- **Audio:** None
-- **PWA:** Service worker registered, `theme-color: #9B8BB8`
+**What remains:** Tile redesign, playable tile clarity, and audio.
 
 ---
 
 ## The Solution
 
-**Core user loop:**
+**Core user loop (unchanged):**
 1. Jennifer opens the link on her birthday → sees a personal dedication
-2. She plays mahjong solitaire with her own artwork on the tiles, with hints and undo when she needs help
-3. She clears the board → a birthday celebration surprises her with a personal message from Davis
-
-**That's it.** Everything else is v2.
+2. She plays mahjong solitaire matching her own watercolor paintings, with clear visual guidance on which tiles are playable
+3. She clears the board → birthday celebration surprises her
 
 ---
 
 ## Success Metrics
 
 **How will we know if this works?**
-- Primary: Jennifer smiles when she sees the win celebration screen
-- Secondary: She can complete at least one game without getting permanently stuck
-- Secondary: She replays it at least once
+- Primary: Jennifer can look at the board and immediately identify matching tiles by the paintings without needing to decode symbols
+- Secondary: She never clicks a blocked tile wondering why nothing happened
+- Secondary: The audio makes her smile (or at least doesn't blast her in front of family)
 
-**What does success look like on February 17?**
-Jennifer opens the link, plays through a full game with assists available, and is surprised by the birthday message when she wins. She shows it to family at the birthday gathering.
+**What does success look like tomorrow?**
+She opens it, instantly understands "oh I'm matching my paintings!", plays through a game with assists, and hits the birthday celebration screen. Zero confusion about what's clickable.
 
 ---
 
 ## Scope: What's IN
 
-### Task 1 — Proper 4-5 Layer Turtle Layout with Visual Depth [x]
+### [x] Task 1 — Tile Redesign: Paintings First, Symbols Gone
 
-**Context:** The board currently uses only 2 z-levels. Real mahjong solitaire uses 4-5 stacked layers forming a pyramid. This is the core game mechanic — clearing upper tiles to expose lower ones. Without proper depth, the game plays like a flat memory match rather than true mahjong solitaire.
+**Context:** The current tiles show traditional mahjong symbols (large Chinese characters and numbers) overlaid on top of the watercolor paintings. The paintings — which are the entire emotional hook of this gift — are reduced to faded backgrounds. Jennifer shouldn't need to know what 八萬 means to play a game featuring her own art. The paintings should be the primary visual element players scan and match on.
 
-**Requirements:**
+**Tile math:**
+- 9 unique watercolor paintings (suits)
+- Each painting has 4 numbered variants (1, 2, 3, 4)
+- 9 paintings × 4 variants = 36 unique tile types
+- Each tile type appears exactly 4 times on the board
+- 36 × 4 = 144 tiles total (standard mahjong solitaire board)
 
-Implement the standard Turtle layout with proper layer stacking:
-- Layer 0 (ground): The wide base layer forming the classic turtle/cross shape. Approximately 86 tiles spread across 12 columns and varying rows.
-- Layer 1: Approximately 40 tiles, centered on top of the base layer, covering a smaller rectangular area.
-- Layer 2: Approximately 14 tiles, centered on top of layer 1.
-- Layer 3: 4 tiles in a 2×2 square, centered on top of layer 2.
-- Layer 4: 1 tile on the very top center.
-- PLUS the two "wing" tiles — one on the far left edge and one on the far right edge of the base layer, offset vertically to sit at the midpoint. These are part of the classic Turtle silhouette.
+**Tile face layout:**
+- The watercolor painting fills the entire tile face — edge to edge, no margin, no border inset. The painting IS the tile. It should be displayed at maximum size within the tile bounds, maintaining aspect ratio and using `object-fit: cover` or `background-size: cover` to fill without distortion.
+- Remove ALL Chinese characters (萬, 筒, 索, 龍, 風, etc.) from the tile face entirely. No traditional mahjong symbols anywhere.
+- Remove the large colored numbers that currently overlay the art.
+- Add a small variant number (1, 2, 3, or 4) in the **bottom-right corner** of the tile. This number differentiates variants within the same painting.
+  - Style: ~10-12px font size, semi-bold weight.
+  - Place it inside a small semi-transparent white pill/badge (`background: rgba(255, 255, 255, 0.75)`, `border-radius: 8px`, `padding: 1px 5px`).
+  - This makes the number readable over any painting color without competing for attention.
+  - The number is a secondary confirmation — players primarily match by recognizing the painting, then glance at the corner number to confirm.
 
-Tile blocking rules (these are the standard mahjong solitaire rules — ensure they are correctly enforced):
-- A tile is **open/playable** if: (a) no tile from any higher layer overlaps it from above, AND (b) it does NOT have tiles on BOTH its left AND right sides on the same layer.
-- A tile is **blocked** if ANY higher-layer tile sits on top of it, OR if it has neighbors on both left and right.
-- Tiles only need ONE side free (left or right) to be playable, as long as nothing is on top.
+**Matching rules:**
+- Two tiles match if and only if they share the **same painting AND the same variant number**.
+- Example: "Hydrangea 3" matches with the other "Hydrangea 3" — NOT with "Hydrangea 2" or "Sunflower 3."
+- Each tile type has exactly 4 copies on the board, forming 2 matchable pairs (same as standard mahjong: you can match either copy with either other copy of the same type).
 
-Visual depth rendering:
-- Each successive layer should be offset by approximately 3-4px down and 3-4px to the right to create a 3D stacking illusion.
-- Apply progressive drop shadows: tiles on higher layers get sharper, more prominent shadows. Base layer tiles have very subtle or no shadow.
-- Blocked tiles should appear slightly dimmed or desaturated (reduce opacity to ~0.7 or apply a subtle gray overlay) compared to open/playable tiles. This gives the player an instant visual cue about what's clickable.
-- Tile z-index must correspond to layer number so higher tiles render on top of lower tiles.
+**Painting assignment:**
+- Map each of the 9 watercolor image assets to a suit number (0-8).
+- Within each suit, assign variant numbers 1-4 to the four tiles, then duplicate each variant once more to get 4 copies per variant... 
 
-Board centering and scaling:
-- The board should be centered horizontally and vertically in the viewport.
-- Maintain the current tile size (~46×61px) or adjust as needed to fit the full 5-layer pyramid within the viewport without scrolling on desktop (1280px+ wide).
-- On smaller viewports, the board container should scale down proportionally.
+Actually, let me correct the math to match standard mahjong tile distribution:
 
-Solvability:
-- When generating a new game, the tile placement algorithm must guarantee the board is solvable. The standard approach: place tiles in REVERSE (simulate solving the board by placing pairs from top to bottom), then shuffle the tile face values, ensuring every layout has at least one valid solution path.
+**Corrected tile math (standard mahjong solitaire distribution):**
+
+In traditional mahjong solitaire, there are 144 tiles:
+- 3 suits (Dots, Bamboo, Characters) × 9 ranks × 4 copies = 108 tiles
+- 4 Winds × 4 copies = 16 tiles
+- 3 Dragons × 4 copies = 12 tiles
+- 4 Flowers (1 copy each) = 4 tiles (match any flower to any flower)
+- 4 Seasons (1 copy each) = 4 tiles (match any season to any season)
+- Total: 108 + 16 + 12 + 4 + 4 = 144
+
+**Simplified model using 9 paintings:**
+- 9 paintings, each with 4 variants = 36 unique tile types
+- Each unique tile type appears exactly **4 times** on the board
+- 36 × 4 = 144 tiles
+- Two tiles match when they have the **same painting + same variant number**
+- This gives 72 pairs total (144 ÷ 2), which is standard
+
+**Image assets:**
+- The 9 watercolor painting images should already exist in the `/assets/` or public directory (or will be added by Davis before this task runs).
+- Name them consistently: `painting-1.webp` through `painting-9.webp` (or whatever the existing naming convention is in the project).
+- If the current project already maps tile types to background images, update that mapping to use the 9 paintings instead of the traditional mahjong symbol set.
 
 **Acceptance criteria:**
-- Board visually looks like a layered mahjong pyramid with clear depth.
-- Clicking a blocked tile does nothing (or shows a subtle feedback like a brief shake).
-- Removing a top-layer tile correctly unblocks the tile(s) beneath it, updating their visual state from dimmed to active.
-- All 144 tiles are present across 5 layers.
-- Every new game is solvable.
+- Every tile on the board prominently shows one of Jennifer's watercolor paintings as the full tile face.
+- No Chinese characters or traditional mahjong symbols appear anywhere on any tile.
+- A small variant number (1-4) appears in the bottom-right corner inside a subtle white pill badge.
+- Tiles are easily distinguishable: different paintings look different, and the variant number is legible.
+- Matching logic works correctly: only tiles with same painting + same number can be matched.
+- All 144 tiles are accounted for: 9 paintings × 4 variants × 4 copies.
 
 ---
 
-### Task 2 — Stuck Detection and No-Moves Handling [x]
+### [ ] Task 2 — Playable Tile Visibility
 
-**Context:** If no matching open pairs remain on the board, the player is stuck with zero feedback. She'll sit there scanning tiles indefinitely, not knowing the game is unwinnable. This is the #1 frustration point in mahjong solitaire.
+**Context:** It's hard to tell which tiles are currently open/playable and which are blocked. The visual difference between the two states needs to be dramatic enough to read instantly at a glance, especially for someone who might not know mahjong rules intuitively. This is the difference between "fun puzzle" and "frustrating guessing game."
 
-**Requirements:**
+**Requirements for OPEN (playable) tiles:**
+- Full opacity (`opacity: 1`).
+- A subtle warm drop shadow to make them feel "lifted" off the board: `box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15)`.
+- Slight upward offset: `transform: translateY(-1px)`.
+- On hover (desktop only — gate with `@media (hover: hover)`):
+  - Slight additional lift: `transform: translateY(-3px) scale(1.02)`.
+  - Enhanced shadow: `box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2)`.
+  - A subtle bright border or soft glow to confirm "yes, you can click this": `outline: 2px solid rgba(155, 139, 184, 0.5)` (using the existing purple theme color).
+  - Smooth transition: `transition: all 0.2s ease`.
+- Cursor: `pointer`.
 
-After every pair removal, scan all currently open (unblocked) tiles to check whether at least one valid matching pair exists among them.
+**Requirements for BLOCKED (not playable) tiles:**
+- Reduced opacity: `opacity: 0.5`.
+- Apply a slight desaturation: `filter: grayscale(30%)`.
+- Flatten the shadow to almost nothing: `box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05)`.
+- No transform offset (they sit flat against the board).
+- On hover: **no visual change**. No lift, no glow, no scale. Completely inert.
+- Cursor: `default` (not pointer — signals non-interactive).
+- If clicked: subtle shake animation (the one Ralph may have already added from the original PRD). Quick horizontal oscillation, ~200ms: `@keyframes shake { 0%, 100% { translateX(0) } 25% { translateX(-3px) } 75% { translateX(3px) } }`.
 
-If no valid pairs exist, display a gentle modal/overlay:
-- Title: "No more matches available"
-- Body: "Don't worry — you can shuffle the remaining tiles or start fresh."
-- Two buttons:
-  - "🔀 Shuffle Tiles" — rearranges the face values of all remaining tiles in their current positions. The shuffle must produce a solvable arrangement (at minimum, ensure at least one valid pair exists among open tiles after the shuffle). Do NOT change tile positions/layers, only swap which face value is assigned to which remaining tile slot.
-  - "🔄 New Game" — starts a completely new game.
-- The modal should have the same soft, watercolor-themed aesthetic as the rest of the game: cream/off-white background, soft purple/pink accents, rounded corners, subtle shadow.
+**The contrast must be obvious.** If you squint at the board, the playable tiles should visually "pop" out of the pile while blocked tiles fade into the background. Think of it like open tiles are on a lit stage and blocked tiles are in the dim audience.
 
-Also check for valid pairs at game start (after initial generation), as a safety net.
+**Transition between states:**
+- When a tile becomes unblocked (because tiles above it or beside it were removed), it should transition smoothly from blocked to open styling over ~300ms. This creates a satisfying "tiles waking up" effect as the player clears the board.
 
 **Acceptance criteria:**
-- The game never silently dead-ends. Whenever no valid open pairs remain, the player is notified within 1 second.
-- Shuffle rearranges tiles and the game continues.
-- New Game resets completely.
-- Modal styling is consistent with the game's watercolor aesthetic.
+- At a glance, any player can immediately identify which tiles are playable without clicking.
+- Blocked tiles are visually distinct: dimmer, flatter, desaturated.
+- Open tiles feel lively: full color, lifted, responsive to hover.
+- Transition from blocked → open is animated smoothly.
+- Hover effects only apply to open tiles on devices with hover capability.
+- Blocked tiles show no hover response and use default cursor.
 
 ---
 
-### Task 3 — Win Celebration with Birthday Message [x]
+### [ ] Task 3 — Music and Sound Effects
 
-**Context:** This is the emotional payoff of the entire gift. When Jennifer clears the board, she should feel like she's opening a birthday card from Davis. This moment is the reason the game exists.
+**Context:** Every polished mahjong app has ambient audio. The game currently plays in complete silence, which makes it feel less like a relaxing experience and more like staring at a static webpage. Gentle audio transforms the feel from "web page" to "gift experience." This is nice-to-have, but it elevates the whole thing.
 
-**Requirements:**
+**Audio assets to source:**
+Find and download royalty-free audio files. Suggested sources: pixabay.com/music, freesound.org, or use Web Audio API to generate simple tones. All audio must be royalty-free / Creative Commons.
 
-Detect when all tiles have been cleared (0 tiles remaining on the board).
+Required sounds:
+1. **Ambient background loop** — Gentle, relaxing music. Soft piano, acoustic guitar, or nature sounds (light rain, garden birds). Should feel meditative and warm, matching the "Meditative Journey" tagline. Duration: 1-3 minutes, seamless loop. Format: mp3, compressed to keep file size small (<500KB if possible).
+2. **Tile select** — A soft, short click or tap. Think wooden tile being picked up. Duration: ~100-200ms.
+3. **Successful match** — A gentle chime, soft bell, or pleasant two-note ascending tone. Warm and rewarding. Duration: ~300-500ms.
+4. **Mismatch** — A subtle low tone or soft "nope" sound. Not harsh or punishing. Duration: ~200-300ms.
+5. **Win celebration** — A longer celebratory sound. Gentle music box melody, wind chime cascade, or ascending chord progression. Warm and emotional, not generic party horn. Duration: ~3-5 seconds. This plays when the birthday celebration overlay appears.
 
-Trigger a full-screen celebration overlay with the following elements:
+**Implementation:**
 
-Background:
-- Semi-transparent overlay that dims the empty board behind it.
-- Soft, warm gradient background (cream to light lavender/pink).
+Audio engine:
+- Use the Web Audio API or simple HTML5 `<Audio>` elements. No heavy audio libraries.
+- Preload all sound effect files on game load so there's no delay on first trigger.
+- Background music should use a looping `<Audio>` element with `loop: true`.
+- Sound effects should be fire-and-forget (can overlap if matches happen rapidly).
 
-Confetti/particle animation:
-- Watercolor-themed particles: soft circles and paint-splatter shapes in pinks, purples, greens, golds, and blues (matching the palette of Jen's watercolor paintings).
-- Particles should drift downward gently, not explode aggressively. Think "petals falling" not "party popper."
-- Use CSS animations or a lightweight canvas animation. No heavy libraries.
-- Animation should run continuously while the overlay is visible.
+Mute/unmute toggle:
+- Add a small speaker icon button in the top-right corner of the game header (or near the existing control buttons).
+- Icon states: 🔊 (unmuted) / 🔇 (muted). Use simple SVG icons or unicode characters.
+- Clicking toggles ALL audio on/off (background music + sound effects together).
+- **Default state: MUTED.** This is critical — she will likely open the link around family or in a quiet setting. Audio should be opt-in, not surprise-blast.
+- Persist the mute preference in `localStorage` so it survives page refreshes. Key: `watercolor-mahjong-muted`, value: `true` / `false`.
 
-Text content (centered, layered):
-- Line 1 (large, decorative): **"Happy 60th Birthday, Mama!"** — Use a warm serif or handwritten-style font. Suggested: the same serif font used in the "Watercolor Mahjong" title on the landing page. Color: the purple-pink gradient used in the landing page title.
-- Line 2 (medium, italic): *"Your beautiful artwork made this game possible"*
-- Line 3 (smaller, warm): "Love, Davis ❤️"
-- Text should fade in sequentially: Line 1 appears first (0-0.5s), Line 2 fades in (0.5-1s), Line 3 fades in (1-1.5s).
+Trigger points:
+- Background music: starts playing when the game board first renders (respecting mute state). If muted, music is loaded but paused — it begins when the user unmutes.
+- Tile select sound: plays when a playable tile is clicked/tapped (first selection).
+- Match sound: plays when two tiles are successfully matched (at the moment of the match animation starting).
+- Mismatch sound: plays when a second selected tile doesn't match the first.
+- Win sound: plays when the celebration overlay appears, instead of (or layered on top of) the background music. Fade out background music over ~1 second, then play win sound.
+- No sound on: clicking blocked tiles (the shake animation is sufficient feedback), using Hint, using Undo, using Shuffle, opening menus/modals.
 
-Action button:
-- "Play Again" button styled like the "Begin Journey" button (watercolor brush-stroke background in soft purple).
-- Clicking it starts a new game and dismisses the overlay.
-
-Optional bonus: Before the text appears, briefly show 3-4 of Jennifer's watercolor paintings (pulled from the tile background images) floating/drifting across the screen, then fading to make way for the text. This creates a moment of "look at your art!" before the birthday message.
-
-**Acceptance criteria:**
-- Clearing all tiles triggers the celebration immediately.
-- The celebration feels warm and personal, not generic/gamey.
-- Text is legible and beautifully styled.
-- Confetti animation runs smoothly without performance issues.
-- "Play Again" works and starts a fresh game.
-
----
-
-### Task 4 — Hint System [x]
-
-**Context:** Hint is the #1 player assist in every mahjong solitaire game. Without it, casual players get frustrated scanning 100+ tiles looking for matches. Jennifer is not a hardcore gamer — she needs this.
-
-**Requirements:**
-
-Add a "💡 Hint" button to the top control bar, alongside the existing "New Game" and "Shuffle" buttons. Style it consistently (consider a similar pill/button shape).
-
-When clicked:
-1. Find one valid matching pair among the currently open (unblocked) tiles.
-2. Highlight both tiles with a pulsing glow animation — suggested: a soft gold or purple watercolor glow that pulses 2-3 times over ~2 seconds. Use a CSS `box-shadow` animation or an `outline` with a glow color.
-3. The highlight should automatically fade after ~3 seconds, OR dismiss immediately when the player clicks any tile.
-4. If no valid pairs exist (edge case — should be caught by Task 2's stuck detection), trigger the stuck detection modal instead.
-
-Hint should be unlimited (no limit on uses). This is a relaxed birthday gift, not a competitive game. No penalty or counter for using hints.
-
-If a tile is already selected (purple border) when the player clicks Hint, deselect it first, then show the hint.
+Volume levels:
+- Background music: 0.3 (30% volume) — subtle, not dominant.
+- Sound effects: 0.5 (50% volume) — noticeable but not loud.
+- Win celebration: 0.6 (60% volume) — slightly more prominent for the special moment.
 
 **Acceptance criteria:**
-- Hint button appears in the control bar with consistent styling.
-- Clicking Hint visually highlights two matching open tiles.
-- Highlight is clearly visible but not jarring (watercolor glow aesthetic).
-- Hint auto-dismisses after ~3 seconds or on player interaction.
-- Works correctly at all stages of the game (full board, nearly empty board).
-
----
-
-### Task 5 — Undo (Last Move) [x]
-
-**Context:** One wrong match can cascade into an unwinnable board. Undo gives a safety net so Jennifer doesn't have to restart the entire game over a single mistake.
-
-**Requirements:**
-
-Add an "↩ Undo" button to the top control bar.
-
-Maintain a move history stack storing at least the last 5 moves. Each move record should include:
-- The two tiles that were removed (their tile type/face value).
-- Their exact board positions (column, row, layer).
-- Which tiles, if any, became unblocked as a result of the removal (so they can be re-blocked on undo).
-
-When Undo is clicked:
-1. Pop the most recent move from the history stack.
-2. Restore the two removed tiles to their original positions on the board, with their original face values.
-3. Re-block any tiles that were unblocked by the original removal (restore their blocked state).
-4. Visually animate the tiles reappearing — a quick fade-in or "pop" back into place (~300ms).
-5. Update the remaining tile count (Task 6) accordingly.
-
-The Undo button should be disabled (grayed out or hidden) when the history stack is empty (no moves to undo, i.e., at game start or after a New Game).
-
-Undo should be unlimited (no limit on uses). Undo history should be cleared when starting a New Game or performing a Shuffle.
-
-**Acceptance criteria:**
-- Undo button appears in the control bar.
-- Clicking Undo restores the last removed pair to the board in the correct position and layer.
-- Tiles that were unblocked by the removal become blocked again.
-- Undo button is disabled when no moves exist to undo.
-- Multiple sequential undos work correctly (undo last 3-5 moves in order).
-
----
-
-### Task 6 — Progress Indicator [x]
-
-**Context:** With 144 tiles on the board, the player needs feedback about how close she is to winning. Without it, the game feels like an endless scan-and-match with no sense of progress.
-
-**Requirements:**
-
-Display a pairs-remaining counter in the header area, positioned between the title and the control buttons (or below the title, whichever looks cleaner).
-
-Format: **"X pairs remaining"** where X counts down from 72 to 0.
-
-Styling:
-- Soft, muted text — not bold or attention-grabbing. Think light gray or muted purple.
-- Font size smaller than the title but readable (~14-16px).
-- Updates in real-time as pairs are matched.
-- Counts back up when Undo is used.
-
-Optional enhancement: a subtle thin progress bar beneath the counter, filling left-to-right as pairs are cleared. Use a watercolor-style gradient fill (soft purple to soft pink). Keep it very thin (~3-4px tall) so it doesn't dominate.
-
-**Acceptance criteria:**
-- Pairs remaining count is visible and accurate at all times.
-- Count updates immediately on match and on undo.
-- Count reads "0 pairs remaining" right before the win celebration triggers.
-- Visual style is subtle and doesn't compete with the board.
-
----
-
-### Task 7 — Match Removal Animation [x]
-
-**Context:** Currently, matched tiles simply vanish from the board. There's no visual satisfaction or feedback that something good happened. Every match should feel like a small reward.
-
-**Requirements:**
-
-When two tiles are matched and about to be removed, play a removal animation before they disappear:
-
-Recommended animation (watercolor dissolve):
-1. Both tiles simultaneously receive a brief golden/warm glow (box-shadow pulse, ~200ms).
-2. Tiles then fade out while slightly scaling down, as if dissolving into the paper background (~400ms).
-3. Use `opacity: 0` + `transform: scale(0.8)` with an ease-out timing function.
-4. After the animation completes (~600ms total), remove the tiles from the DOM and update game state (unblock covered tiles, update pairs counter).
-
-The animation should NOT block interaction — once the animation starts, the game state is already updated internally. The animation is purely visual.
-
-If the player rapidly matches pairs (e.g., clicking hint then immediately matching), animations can overlap without issues.
-
-Also add a subtle selection animation for when the FIRST tile is clicked:
-- Slight lift effect: `transform: translateY(-2px) scale(1.03)` with a slightly enhanced shadow.
-- This replaces or supplements the current purple border to make the selected tile feel "picked up."
-- Keep the purple border as well for clarity.
-
-Also add feedback for mismatched second click (clicking a second tile that doesn't match the first):
-- Both tiles briefly flash with a subtle red/pink tint (~300ms), then the selection clears.
-- This tells the player "those don't match" without being punishing.
-
-Also add feedback for clicking a blocked tile:
-- A quick horizontal shake animation (~200ms, 2-3px displacement).
-- This tells the player "you can't select this one yet."
-
-**Acceptance criteria:**
-- Matched tiles dissolve/fade out smoothly before disappearing.
-- Selected tile has a visible lift effect.
-- Mismatched pair gives clear but gentle feedback.
-- Blocked tile click gives a shake.
-- Animations are smooth at 60fps, no jank.
-- All animations are CSS-based (no JS animation libraries needed).
-
----
-
-### Task 8 — Birthday Dedication Screen [x]
-
-**Context:** The landing page is beautiful but generic ("A Meditative Journey"). Between the landing page and the game board, there should be a personal birthday moment that sets up the emotional context before she starts playing.
-
-**Requirements:**
-
-After clicking "Begin Journey" on the landing page, show an intermediate dedication screen (instead of going directly to the game board).
-
-Dedication screen content:
-- Soft, warm background consistent with the landing page (cream/off-white with faded watercolor elements).
-- Text centered vertically and horizontally:
-  - Line 1 (large, decorative): **"Happy 60th Birthday, Mama"** — Same font/styling as landing page title.
-  - Line 2 (medium): "This game features your beautiful watercolor paintings as the tiles."
-  - Line 3 (medium): "Each match you make is a little celebration of your art."
-  - Line 4 (small, warm): "Love, Davis ❤️"
-- Button at the bottom: **"Start Playing"** — same watercolor brush-stroke button style as "Begin Journey."
-- Text should fade in gently, either all at once or sequentially (lines appearing one after another over ~2 seconds).
-
-Clicking "Start Playing" transitions to the game board (with a smooth fade transition, ~500ms).
-
-**Acceptance criteria:**
-- Dedication screen appears between landing page and game.
-- Text is personal, warm, and legible.
-- "Start Playing" transitions smoothly to the game.
-- Screen is centered and looks good on both desktop and mobile viewports.
-
----
-
-### Task 9 — Mobile Responsiveness Pass [x]
-
-**Context:** Jennifer will likely open this on her phone first (birthday text with a link). The game needs to be playable on mobile.
-
-**Requirements:**
-
-Test and fix layout at these viewport widths:
-- 375px (iPhone SE / iPhone standard)
-- 390px (iPhone 14/15)
-- 768px (iPad portrait)
-
-Board scaling:
-- On viewports under 768px, the board should scale down to fit the screen width with small horizontal margins (~8px each side).
-- Use CSS `transform: scale()` on the board container to shrink the entire board proportionally, rather than resizing individual tiles (which would break the layout geometry).
-- The scale factor should be calculated as: `min(1, (viewportWidth - 16) / boardNativeWidth)`.
-
-Controls:
-- Control buttons (New Game, Shuffle, Hint, Undo) should wrap to a second row or become icon-only on small screens.
-- Minimum tap target: 44×44px for all interactive elements (Apple HIG standard).
-
-Progress indicator:
-- Should remain visible and not overlap with controls on mobile.
-
-Tile interaction:
-- Ensure tap works reliably (no hover-dependent interactions blocking touch).
-- Remove or reduce hover effects on touch devices (`@media (hover: hover)` for hover styles).
-
-Viewport meta tag is already set correctly: `width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no`.
-
-**Acceptance criteria:**
-- Game is fully playable on a 375px wide viewport.
-- All tiles are visible without horizontal scrolling.
-- All buttons are tappable with a finger.
-- No elements overlap or get cut off.
-- Board scales smoothly on resize.
+- Mute toggle is visible and functional with correct icon states.
+- Game defaults to muted on first visit.
+- Unmuting starts background music and enables sound effects.
+- Each trigger point plays the correct sound at the right moment.
+- Audio doesn't lag or pop on first play.
+- Background music loops seamlessly.
+- Mute preference persists across page refreshes.
+- All audio files are royalty-free.
 
 ---
 
 ## Scope: What's OUT
 
 **Explicitly NOT building:**
-- Multiple board layouts (stick with Turtle for now)
-- Sound effects / audio
-- Timer or time-based scoring
-- Star rating system
-- Leaderboards or score persistence
-- User accounts or save/load
-- Difficulty levels
-- Settings page
-- Tile set customization
-- Replacing mahjong symbols with watercolor-only matching (requires 36+ unique images)
-- Share button / social features
-- Tutorial / how-to-play overlay
+- Volume slider (just mute/unmute toggle)
+- Separate music vs SFX controls
+- Multiple music tracks / music selection
+- Spatial audio or panning effects
+- Additional board layouts
+- Timer or scoring changes
+- Any new game mechanics
+- Tutorial / how-to-play
+- Share button
 
-**Why not?** None of these are needed for Jennifer to play and enjoy the game on her birthday. They can all be added later if Davis wants to keep building.
+**Why not?** Ship day is tomorrow. These three tasks are all that stand between the current build and a polished gift.
 
 ---
 
 ## Technical Approach
 
-**Stack (no changes):**
-- Vite + React (existing)
-- Tailwind CSS (existing)
-- Vercel (existing deployment)
-- No database needed
-- No new dependencies required (all animations should be CSS-based)
+**Stack (unchanged):**
+- Vite + React
+- Tailwind CSS
+- Vercel deployment
 
-**Key technical decisions:**
-- All animations CSS-only (keyframes + transitions). No animation libraries.
-- Confetti on win screen: lightweight CSS or canvas-based. If CSS is insufficient, a simple canvas confetti is acceptable but keep it under 100 lines.
-- Board solvability: implement reverse-placement algorithm during tile generation.
-- State management: React state is sufficient (useState/useReducer). No Redux or external state library.
+**Key decisions:**
+- Tile redesign is a data mapping change + CSS update. The tile component structure (button with child divs) stays the same — we're just changing what renders inside.
+- Playable tile visibility is pure CSS. No logic changes needed — the `blocked` class already exists, we're just making the visual difference more dramatic.
+- Audio uses native Web Audio API / HTML5 Audio. No libraries. Keep total audio asset size under 2MB.
+- All audio files go in the `/public/audio/` directory so they're served statically.
 
 **What could go wrong:**
-1. Stacking depth (Task 1) requires reworking the tile placement algorithm and blocking logic. This is the highest-risk task. If the current layout generation code is deeply coupled to the flat 2-layer approach, it may need significant refactoring.
-2. Solvability guarantee may be tricky. Fallback: if solvability can't be guaranteed algorithmically in time, ensure the shuffle function can always produce at least one valid move (weaker but acceptable).
+1. The 9th painting asset might not be in the repo yet. Davis will add it before running Task 1. If it's missing, Ralph should use 8 paintings and adjust tile count to 128 (32 unique types × 4 copies), which still works with a slightly smaller board layout.
+2. iOS Safari has autoplay restrictions on audio. Background music won't start until the user interacts with the page. Since the game requires clicking "Begin Journey" → "Start Playing" before gameplay, the user will have interacted before music needs to play. Ensure the audio context is created/resumed on one of those button clicks.
 
 ---
 
 ## Open Questions
 
-- [x] Should tile art be the matching element instead of symbols? **Decision: No — keep current approach (symbols + art background). Not enough unique images for 36 pairs, and traditional symbols work.**
-- [x] Should hints be limited? **Decision: No — unlimited hints. This is a relaxed gift.**
-- [x] Should there be a timer? **Decision: No — untimed, zero pressure.**
+- [x] Paintings only or keep symbols? **Decision: Paintings only. Ditch all Chinese characters and traditional symbols.**
+- [x] How many paintings needed? **Decision: 9 paintings × 4 variants × 4 copies = 144 tiles.**
+- [x] Audio default state? **Decision: Muted by default. Opt-in.**
 
 ---
 
 ## Timeline
 
-**Hard deadline: Monday, February 17, 2026 (Jennifer's 60th birthday)**
+**Hard deadline: Monday, February 17, 2026 (tomorrow)**
 
-All tasks are designed to be executed sequentially by ralph.sh (Claude Code CLI agent). Each task should be completable in approximately 30-90 minutes of agent time.
+- **Task 1:** Tile redesign — paintings first, remove symbols. **PRIORITY 1** (this changes how the game feels most dramatically).
+- **Task 2:** Playable tile visibility — open vs blocked contrast. **PRIORITY 2** (critical gameplay clarity).
+- **Task 3:** Music and sound effects. **PRIORITY 3** (nice-to-have polish, do if time allows after 1 and 2 are solid).
 
-- **Task 1:** Proper 4-5 layer Turtle layout with visual depth — CRITICAL, do this first
-- **Task 2:** Stuck detection — do immediately after Task 1 since new layout needs validation
-- **Task 3:** Win celebration with birthday message — the emotional payoff
-- **Task 4:** Hint system
-- **Task 5:** Undo system
-- **Task 6:** Progress indicator
-- **Task 7:** Match removal + interaction animations
-- **Task 8:** Birthday dedication screen
-- **Task 9:** Mobile responsiveness pass — do last as a final polish sweep
-
-**If running out of time, the minimum shippable set is Tasks 1 + 2 + 3 + 4.** The game needs depth to feel real (1), can't silently dead-end (2), needs the birthday moment (3), and Jennifer needs hints to not get frustrated (4).
+**Minimum shippable:** Tasks 1 + 2. If Task 3 doesn't make it in time, the game is still a great gift. Audio is the cherry on top, not the cake.
 
 ---
 
 ## Launch Plan
 
-**Initial user:** Jennifer (Davis's mama) — she receives the link on her birthday, February 17.
+**Initial user:** Jennifer — tomorrow, February 17, 2026, her 60th birthday.
 
-**How to share:** Direct link via birthday text message or card. URL: https://watercolor-mahjong.vercel.app/
+**How to share:** Direct link via birthday text or card: https://watercolor-mahjong.vercel.app/
 
-**First feedback loop:** Watch her play at the birthday gathering. Note where she gets confused, stuck, or delighted.
+**First feedback loop:** Watch her play at the birthday gathering. Does she immediately recognize the paintings? Does she understand which tiles to click? Does she smile?
 
 ---
 
 ## V2 Backlog
 
 - Additional board layouts (Butterfly, Pyramid, Simple)
-- Sound effects (tile click, match chime, celebration music) with mute toggle
-- Watercolor-only tile matching (remove symbols, match by painting)
-- Difficulty levels (Easy = fewer tiles, Medium = standard, Hard = complex layout)
-- How-to-play tutorial overlay for first-time players
-- Star rating per game (based on hints used / shuffles used)
-- Daily or weekly puzzle mode
-- Share button (share score to text/social)
-- Ambient background music (lo-fi or gentle piano)
-- More of Jennifer's artwork (she paints more → more tile varieties)
-- Custom themes (seasonal: spring flowers, autumn leaves, holiday)
+- Difficulty levels (fewer tiles for easy, more layers for hard)
+- Multiple music tracks / ambient sound selection
+- Volume slider (separate music and SFX controls)
+- How-to-play tutorial overlay
+- More of Jennifer's artwork as she paints new pieces
+- Seasonal themes (spring, autumn, holiday variants)
+- Score tracking / personal bests
+- Daily puzzle mode
+- Share button for results
 
 **Remember:** These stay here until Jennifer proves we need them.
