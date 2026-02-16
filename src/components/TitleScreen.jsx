@@ -17,68 +17,85 @@ export default function TitleScreen({ onPlay }) {
         transition: 'opacity 600ms ease-in',
       }}
     >
-      {/* Watercolor hero image */}
+      {/* Layered background watercolor dabs */}
+      <div className="absolute inset-0 pointer-events-none opacity-20">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-lavender blur-[100px] rounded-full opacity-30 animate-pulse-slow"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-tan blur-[120px] rounded-full opacity-20 animate-pulse-slow-reverse"></div>
+        <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-blue blur-[80px] rounded-full opacity-10 animate-float-slow"></div>
+      </div>
+
+      {/* Watercolor hero logo */}
       <div
-        className="relative w-56 h-56 sm:w-72 sm:h-72 lg:w-96 lg:h-96 rounded-full overflow-hidden mb-6 sm:mb-8"
-        style={{
-          boxShadow: '0 8px 32px rgba(184, 165, 208, 0.4), 0 4px 16px rgba(0, 0, 0, 0.08)',
-          border: '4px solid rgba(184, 165, 208, 0.5)',
-        }}
+        className="relative z-10 w-40 h-56 sm:w-56 sm:h-[280px] mb-4 sm:mb-6 animate-float"
       >
         <img
-          src="/assets/watercolors/tiles_4.jpg"
-          alt="Watercolor mixed bouquet by Jen"
-          className="w-full h-full object-cover"
+          src="/icons/logo_tile_icon.png"
+          alt="Watercolor logo tile"
+          className="w-full h-full object-contain"
+          style={{
+            filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.15))',
+          }}
         />
       </div>
 
       {/* Title */}
-      <h1
-        className="text-3xl sm:text-4xl lg:text-6xl font-semibold mb-2 sm:mb-3 text-center"
-        style={{
-          fontFamily: "'Playfair Display', Georgia, serif",
-          color: 'var(--color-charcoal)',
-          textShadow: '0 2px 8px rgba(184, 165, 208, 0.3)',
-        }}
-      >
-        Watercolor Mahjong
-      </h1>
-
-      {/* Tagline */}
-      <p
-        className="text-sm sm:text-base lg:text-lg mb-8 sm:mb-10 text-center"
-        style={{
-          fontFamily: "'Playfair Display', Georgia, serif",
-          color: 'var(--color-charcoal)',
-          opacity: 0.6,
-        }}
-      >
-        Featuring original artwork by Jen
-      </p>
+      <div className="text-center mb-8 z-10 px-8">
+        <h1
+          className="text-5xl sm:text-6xl lg:text-8xl tracking-tighter watercolor-title"
+          style={{ paddingBottom: '0.3em' }}
+        >
+          Watercolor Mahjong
+        </h1>
+        <div className="flex items-center justify-center gap-4 mb-2">
+          <div className="h-px w-8 sm:w-16 bg-tan/40"></div>
+          <p
+            className="text-xs sm:text-sm lg:text-base text-decorative text-tan"
+          >
+            A Meditative Journey
+          </p>
+          <div className="h-px w-8 sm:w-16 bg-tan/40"></div>
+        </div>
+        <p
+          className="text-base sm:text-lg lg:text-xl italic font-serif"
+          style={{
+            color: 'var(--color-charcoal)',
+            opacity: 0.7,
+            marginTop: '0.25rem'
+          }}
+        >
+          Featuring original artwork by Jen
+        </p>
+      </div>
 
       {/* Play button */}
-      <button
-        onClick={onPlay}
-        className="px-10 py-3 sm:px-12 sm:py-4 rounded-full text-lg sm:text-xl font-semibold cursor-pointer"
-        style={{
-          fontFamily: "'Inter', sans-serif",
-          backgroundColor: 'var(--color-lavender)',
-          color: 'white',
-          border: 'none',
-          boxShadow: '0 4px 12px rgba(184, 165, 208, 0.4)',
-          transition: 'transform 150ms ease, box-shadow 150ms ease',
-        }}
-        onMouseEnter={e => {
-          e.currentTarget.style.transform = 'translateY(-2px)'
-          e.currentTarget.style.boxShadow = '0 6px 16px rgba(184, 165, 208, 0.5)'
-        }}
-        onMouseLeave={e => {
-          e.currentTarget.style.transform = 'translateY(0)'
-          e.currentTarget.style.boxShadow = '0 4px 12px rgba(184, 165, 208, 0.4)'
-        }}
-      >
-        Play
-      </button>
+      <div className="z-10">
+        <button
+          onClick={onPlay}
+          className="organic-button text-xl sm:text-2xl"
+        >
+          Begin Journey
+        </button>
+      </div>
+
+      {/* Animation Styles */}
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-15px); }
+        }
+        @keyframes float-slow {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); }
+          50% { transform: translate(20px, -20px) rotate(5deg); }
+        }
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 0.2; transform: scale(1); }
+          50% { opacity: 0.3; transform: scale(1.1); }
+        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-float-slow { animation: float-slow 10s ease-in-out infinite; }
+        .animate-pulse-slow { animation: pulse-slow 12s ease-in-out infinite; }
+        .animate-pulse-slow-reverse { animation: pulse-slow 15s ease-in-out infinite reverse; }
+      `}</style>
     </div>
   )
 }

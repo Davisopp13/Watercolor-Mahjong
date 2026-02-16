@@ -6,7 +6,7 @@
   --color-tan: #D4B896;
   --color-lavender: #B8A5D0;
   --color-charcoal: #4A4A4A;
-  
+
   /* Existing supporting colors */
   --color-blue: #7BA3D4;
   --color-rose: #E87B98;
@@ -31,12 +31,28 @@
 body {
   margin: 0;
   background-color: var(--color-background);
+  /* Watercolor paper texture background */
+  background-image: url('/assets/watercolors/bg-texture.png');
+  background-size: cover;
+  background-attachment: fixed;
   color: var(--color-text);
-  font-family: 'Nunito', 'Quicksand', 'Inter', system-ui, sans-serif;
+  font-family: 'Playfair Display', 'Nunito', 'Quicksand', 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
   touch-action: manipulation;
+  /* Global fade-in */
+  animation: fadeIn 800ms ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 #root {
@@ -51,17 +67,17 @@ body {
   background-color: var(--color-cream);
   /* You can add a subtle watercolor texture image here */
   /* background-image: url('path/to/watercolor-paper-texture.png'); */
-  
+
   /* Soft tan border */
   border: 1px solid var(--color-tan);
   border-radius: 4px;
-  
+
   /* Soft shadow for 3D stacking effect */
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-  
+
   /* Smooth transitions for interactive states */
   transition: transform 200ms ease-out, box-shadow 200ms ease-out, border 200ms ease-out;
-  
+
   /* Ensure text uses the correct font and color */
   font-family: 'Nunito', 'Quicksand', sans-serif;
   color: var(--color-charcoal);
@@ -83,10 +99,10 @@ body {
 .tile.selected {
   /* 3px solid lavender border */
   border: 3px solid var(--color-lavender) !important;
-  
+
   /* Subtle lift effect */
   transform: translateY(-2px);
-  
+
   /* Enhanced shadow for the lifted tile */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
@@ -121,3 +137,113 @@ body {
   outline-offset: 2px;
 }
 
+/* --- PREMIUM UTILITIES (Phase 2) --- */
+.organic-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.6rem 4.5rem;
+  font-weight: 700;
+  color: white;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 500ms cubic-bezier(0.23, 1, 0.32, 1);
+  overflow: visible;
+  z-index: 1;
+}
+
+.organic-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* Watercolor dab: multi-tonal radial gradient */
+  background: radial-gradient(circle at 30% 30%, var(--color-lavender), #a394c4 60%, var(--color-lavender) 100%);
+  /* Highly irregular shape */
+  border-radius: 45% 55% 35% 65% / 55% 45% 65% 35%;
+  /* Bled edge effect using soft shadows */
+  box-shadow:
+    0 10px 25px rgba(184, 165, 208, 0.4),
+    inset 0 0 15px rgba(255, 255, 255, 0.2);
+  /* SVG filter for organic edges - heavy scale for the background dab only */
+  filter: url('#watercolor-filter');
+  z-index: -1;
+  transition: all 500ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.organic-button:hover {
+  transform: scale(1.08) rotate(-1deg);
+}
+
+.organic-button:hover::before {
+  border-radius: 65% 35% 55% 45% / 45% 65% 35% 55%;
+  box-shadow:
+    0 20px 40px rgba(184, 165, 208, 0.6),
+    0 0 30px rgba(184, 165, 208, 0.4);
+  /* Enhanced outer glow "bleed" */
+}
+
+.organic-button:active {
+  transform: scale(0.95);
+}
+
+.organic-button::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  background: inherit;
+  filter: blur(10px);
+  opacity: 0.35;
+  z-index: -1;
+  border-radius: inherit;
+}
+
+.text-decorative {
+  font-family: 'Playfair Display', serif;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 600;
+}
+
+.watercolor-gradient-text {
+  background: linear-gradient(135deg,
+      var(--color-lavender) 0%,
+      var(--color-rose) 30%,
+      #a394c4 60%,
+      var(--color-lavender) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  /* Deep padding and line-height for absolute safety */
+  padding-bottom: 0.4em;
+  padding-right: 0.15em;
+  line-height: 1.35;
+  display: inline-block;
+  /* SVG filter for organic title texture - using lighter text variant for readability */
+  filter: url('#watercolor-text-filter');
+}
+
+.watercolor-title {
+  /* Standalone class since composes is for CSS Modules */
+  background: linear-gradient(135deg,
+      var(--color-lavender) 0%,
+      var(--color-rose) 30%,
+      #a394c4 60%,
+      var(--color-lavender) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  /* Minimal padding for descender safety */
+  padding-bottom: 0.35em;
+  padding-right: 0.12em;
+  line-height: 1.25;
+  display: inline-block;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  text-shadow:
+    0 0 15px rgba(184, 165, 208, 0.2),
+    0 4px 15px rgba(0, 0, 0, 0.05);
+  /* SVG filter for organic title texture - using lighter text variant for readability */
+  filter: url('#watercolor-text-filter');
+}

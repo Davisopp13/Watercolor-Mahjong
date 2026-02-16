@@ -11,74 +11,69 @@ export default function WinScreen({ onNewGame }) {
 
   return (
     <div
-      className="fixed inset-0 z-[1000] flex flex-col items-center justify-center"
+      className="fixed inset-0 z-[1000] flex flex-col items-center justify-center backdrop-blur-md"
       style={{
-        backgroundColor: 'rgba(253, 248, 240, 0.92)',
+        backgroundColor: 'rgba(253, 248, 240, 0.85)',
         opacity: visible ? 1 : 0,
         transition: 'opacity 800ms ease-in',
       }}
     >
       {/* Watercolor image */}
       <div
-        className="relative w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 rounded-full overflow-hidden mb-6 sm:mb-8"
+        className="relative w-56 h-56 sm:w-72 sm:h-72 lg:w-96 lg:h-96 rounded-full overflow-hidden mb-10 sm:mb-14 animate-float"
         style={{
-          boxShadow: '0 8px 32px rgba(184, 165, 208, 0.4), 0 4px 16px rgba(0, 0, 0, 0.08)',
-          border: '4px solid rgba(184, 165, 208, 0.5)',
+          boxShadow: '0 25px 60px rgba(184, 165, 208, 0.4), 0 10px 30px rgba(0, 0, 0, 0.1)',
+          border: '10px solid white',
         }}
       >
         <img
           src="/assets/watercolors/tiles_2.png"
           alt="Watercolor hydrangea"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover scale-110"
         />
       </div>
 
       {/* You Win text */}
-      <h1
-        className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4"
-        style={{
-          fontFamily: "'Playfair Display', Georgia, serif",
-          color: 'var(--color-lavender)',
-          textShadow: '0 2px 8px rgba(184, 165, 208, 0.3)',
-        }}
-      >
-        You Win!
-      </h1>
-
-      <p
-        className="text-base sm:text-lg lg:text-xl mb-8 sm:mb-10 text-center px-4"
-        style={{
-          fontFamily: "'Playfair Display', Georgia, serif",
-          color: 'var(--color-charcoal)',
-          opacity: 0.8,
-        }}
-      >
-        All tiles cleared — beautifully done!
-      </p>
+      <div className="text-center mb-10 z-10">
+        <div className="flex items-center justify-center gap-4 mb-4">
+          <div className="h-px w-10 bg-lavender/40"></div>
+          <p className="text-sm sm:text-base text-decorative text-lavender font-bold">Discovery</p>
+          <div className="h-px w-10 bg-lavender/40"></div>
+        </div>
+        <h1
+          className="text-6xl sm:text-7xl lg:text-9xl font-bold mb-4 tracking-tighter watercolor-gradient-text"
+        >
+          Magnificent
+        </h1>
+        <p
+          className="text-xl sm:text-2xl lg:text-3xl italic font-serif"
+          style={{
+            color: 'var(--color-charcoal)',
+            opacity: 0.7,
+          }}
+        >
+          All tiles cleared — a masterpiece completed.
+        </p>
+      </div>
 
       {/* Play Again button */}
       <button
         onClick={onNewGame}
-        className="px-8 py-3 sm:px-10 sm:py-4 rounded-full text-base sm:text-lg font-semibold cursor-pointer"
-        style={{
-          fontFamily: "'Inter', sans-serif",
-          backgroundColor: 'var(--color-lavender)',
-          color: 'white',
-          border: 'none',
-          boxShadow: '0 4px 12px rgba(184, 165, 208, 0.4)',
-          transition: 'transform 150ms ease, box-shadow 150ms ease',
-        }}
-        onMouseEnter={e => {
-          e.currentTarget.style.transform = 'translateY(-2px)'
-          e.currentTarget.style.boxShadow = '0 6px 16px rgba(184, 165, 208, 0.5)'
-        }}
-        onMouseLeave={e => {
-          e.currentTarget.style.transform = 'translateY(0)'
-          e.currentTarget.style.boxShadow = '0 4px 12px rgba(184, 165, 208, 0.4)'
-        }}
+        className="organic-button text-xl sm:text-2xl px-16 py-5 z-10"
       >
-        Play Again
+        Begin Anew
       </button>
+
+      {/* Animation Styles */}
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-20px); }
+        }
+        .animate-float {
+          animation: float 7s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   )
 }

@@ -10,76 +10,60 @@ export default function StuckScreen({ onShuffle, onNewGame }) {
 
   return (
     <div
-      className="fixed inset-0 z-[1000] flex flex-col items-center justify-center"
+      className="fixed inset-0 z-[1000] flex flex-col items-center justify-center backdrop-blur-md"
       style={{
-        backgroundColor: 'rgba(253, 248, 240, 0.92)',
+        backgroundColor: 'rgba(253, 248, 240, 0.85)',
         opacity: visible ? 1 : 0,
         transition: 'opacity 600ms ease-in',
       }}
     >
-      <h2
-        className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4"
-        style={{
-          fontFamily: "'Playfair Display', Georgia, serif",
-          color: 'var(--color-charcoal)',
-        }}
-      >
-        No Moves Left
-      </h2>
-
-      <p
-        className="text-base sm:text-lg lg:text-xl mb-8 sm:mb-10 text-center px-4"
-        style={{
-          fontFamily: "'Playfair Display', Georgia, serif",
-          color: 'var(--color-charcoal)',
-          opacity: 0.7,
-        }}
-      >
-        Don't worry — shuffle the tiles or start fresh!
-      </p>
-
-      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-        <button
-          onClick={onShuffle}
-          className="px-8 py-3 sm:px-10 sm:py-4 rounded-full text-base sm:text-lg font-semibold cursor-pointer"
+      {/* You Stuck text */}
+      <div className="text-center mb-10 z-10">
+        <div className="flex items-center justify-center gap-4 mb-4">
+          <div className="h-px w-10 bg-tan/40"></div>
+          <p className="text-sm sm:text-base text-decorative text-tan font-bold">Reflection</p>
+          <div className="h-px w-10 bg-tan/40"></div>
+        </div>
+        <h2
+          className="text-5xl sm:text-6xl lg:text-8xl font-bold mb-4 tracking-tight watercolor-gradient-text"
+        >
+          A Quiet Moment
+        </h2>
+        <p
+          className="text-xl sm:text-2xl lg:text-3xl italic font-serif"
           style={{
-            fontFamily: "'Inter', sans-serif",
-            backgroundColor: 'var(--color-lavender)',
-            color: 'white',
-            border: 'none',
-            boxShadow: '0 4px 12px rgba(184, 165, 208, 0.4)',
-            transition: 'transform 150ms ease, box-shadow 150ms ease',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.transform = 'translateY(-2px)'
-            e.currentTarget.style.boxShadow = '0 6px 16px rgba(184, 165, 208, 0.5)'
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.transform = 'translateY(0)'
-            e.currentTarget.style.boxShadow = '0 4px 12px rgba(184, 165, 208, 0.4)'
+            color: 'var(--color-charcoal)',
+            opacity: 0.7,
           }}
         >
-          Shuffle Tiles
+          No further moves found. Shall we rearrange the scene?
+        </p>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 z-10">
+        <button
+          onClick={onShuffle}
+          className="organic-button text-lg sm:text-xl px-12 py-5"
+        >
+          Shuffle Scene
         </button>
 
         <button
           onClick={onNewGame}
-          className="px-8 py-3 sm:px-10 sm:py-4 rounded-full text-base sm:text-lg font-semibold cursor-pointer"
+          className="px-12 py-5 rounded-full text-lg sm:text-xl font-semibold transition-all duration-400 transform hover:scale-105 active:scale-95 border-2 group"
           style={{
-            fontFamily: "'Inter', sans-serif",
             backgroundColor: 'transparent',
             color: 'var(--color-charcoal)',
-            border: '2px solid var(--color-lavender)',
-            boxShadow: 'none',
-            transition: 'transform 150ms ease, background-color 150ms ease',
+            borderColor: 'var(--color-tan)',
+            borderRadius: '70% 30% 60% 40% / 40% 60% 40% 60%',
           }}
           onMouseEnter={e => {
-            e.currentTarget.style.transform = 'translateY(-2px)'
-            e.currentTarget.style.backgroundColor = 'rgba(184, 165, 208, 0.1)'
+            e.currentTarget.style.backgroundColor = 'rgba(212, 184, 150, 0.1)'
+            e.currentTarget.style.borderColor = 'var(--color-lavender)'
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.transform = 'translateY(0)'
             e.currentTarget.style.backgroundColor = 'transparent'
+            e.currentTarget.style.borderColor = 'var(--color-tan)'
           }}
         >
           New Game

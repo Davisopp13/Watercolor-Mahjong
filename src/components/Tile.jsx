@@ -43,59 +43,73 @@ export default function Tile({
       onClick={free ? onClick : undefined}
       disabled={!free}
       aria-label={`${suit} ${value}${selected ? ' (selected)' : ''}${free ? '' : ' (blocked)'}`}
-      className={`tile relative group ${selected ? 'selected' : ''} ${!free ? 'blocked' : ''}`}
+      className={`tile relative group ${selected ? 'selected' : ''} ${!free ? 'blocked' : ''} transition-all duration-300`}
       style={{
         width: tileWidth,
         height: tileHeight,
         cursor: free ? 'pointer' : 'default',
+        /* Enhanced 3D effect */
+        boxShadow: selected
+          ? '0 0 0 3px var(--color-lavender), 0 10px 20px rgba(0,0,0,0.2)'
+          : free
+            ? '2px 2px 0px var(--color-tan), 4px 4px 8px rgba(0,0,0,0.1)'
+            : '1px 1px 0px var(--color-tan), 2px 2px 4px rgba(0,0,0,0.05)',
+        transform: selected ? 'translateY(-4px) scale(1.02)' : 'none',
       }}
     >
+      {/* 3D Side Edge */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          borderRight: '4px solid rgba(0,0,0,0.05)',
+          borderBottom: '4px solid rgba(0,0,0,0.1)',
+          borderRadius: borderRadius,
+        }}
+      />
+
       {/* Background watercolor wash (Prominent for ALL tiles) */}
       {(hasSpecialImage || suitBgImage) && (
         <div
+          className="transition-transform duration-500 group-hover:scale-110"
           style={{
             position: 'absolute',
             inset: 0,
             backgroundImage: `url(${hasSpecialImage ? specialImageSrc : suitBgImage})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            opacity: hasSpecialImage ? 0.95 : 0.3,
+            opacity: hasSpecialImage ? 0.95 : 0.35,
             transition: 'opacity 300ms ease',
-            filter: hasSpecialImage ? 'none' : 'saturate(1.2) contrast(1.1)',
+            filter: hasSpecialImage ? 'none' : 'saturate(1.3) contrast(1.1)',
           }}
         />
       )}
 
-      {/* Glossy overlay effect */}
+      {/* Glossy/Texture overlay */}
       <div
+        className="absolute inset-0 pointer-events-none opacity-20"
         style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '45%',
-          background: 'linear-gradient(to bottom, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 100%)',
-          pointerEvents: 'none',
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.05) 100%)',
         }}
       />
 
       {/* Main symbol / number */}
       <div
-        className="flex flex-col items-center justify-center relative z-10"
+        className="flex flex-col items-center justify-center relative z-10 p-1"
         style={{
           width: '100%',
           height: '100%',
         }}
       >
         <span
+          className="transition-transform duration-300 group-hover:scale-105"
           style={{
-            fontSize: Math.round((hasSpecialImage ? 16 : 26) * (tileWidth / 60)),
+            fontSize: Math.round((hasSpecialImage ? 18 : 28) * (tileWidth / 60)),
             fontWeight: 800,
             color: hasSpecialImage ? 'white' : colors.symbol,
             lineHeight: 1,
             textShadow: hasSpecialImage
-              ? '0 2px 4px rgba(0,0,0,0.7), 0 0 10px rgba(0,0,0,0.3)'
-              : '0 0 8px white, 0 0 4px white',
+              ? '0 2px 4px rgba(0,0,0,0.5), 0 0 10px rgba(0,0,0,0.2)'
+              : '0 0 12px white, 0 0 6px white',
             fontFamily: hasSpecialImage ? "'Playfair Display', serif" : 'inherit',
           }}
         >
@@ -111,9 +125,10 @@ export default function Tile({
               color: colors.symbol,
               lineHeight: 1,
               marginTop: Math.max(1, Math.round(2 * (tileWidth / 60))),
-              background: 'rgba(253, 248, 240, 0.6)',
-              padding: '0 4px',
+              background: 'rgba(255, 255, 255, 0.7)',
+              padding: '1px 5px',
               borderRadius: 4,
+              boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
             }}
           >
             {suitLabel}
@@ -129,11 +144,12 @@ export default function Tile({
               fontSize: Math.max(8, Math.round(9 * (tileWidth / 60))),
               fontWeight: 800,
               color: 'white',
-              background: 'rgba(0,0,0,0.4)',
-              padding: '1px 5px',
-              borderRadius: 3,
+              background: 'rgba(0,0,0,0.5)',
+              padding: '1px 6px',
+              borderRadius: 4,
               textShadow: 'none',
-              letterSpacing: '0.05em'
+              letterSpacing: '0.05em',
+              backdropFilter: 'blur(2px)',
             }}
           >
             {suitLabel}

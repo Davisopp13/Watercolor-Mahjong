@@ -109,23 +109,34 @@ export default function App() {
 
   return (
     <div
-      className="flex flex-col w-full h-full overflow-hidden"
+      className="flex flex-col w-full h-full"
       style={{ backgroundColor: 'var(--color-background)' }}
     >
+      {/* Global SVG Filters for Watercolor Effects */}
+      <svg className="absolute w-0 h-0 pointer-events-none" aria-hidden="true">
+        <filter id="watercolor-filter">
+          <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" />
+        </filter>
+        <filter id="watercolor-text-filter">
+          <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" />
+        </filter>
+      </svg>
       {/* Header — compact on mobile, more spacious on desktop */}
       {!showTitle && (
-        <header className="flex-shrink-0 flex items-center justify-between px-4 py-2 lg:py-3">
+        <header className="flex-shrink-0 flex items-center justify-between px-6 py-4 lg:py-6 overflow-visible">
           <h1
-            className="text-lg sm:text-xl lg:text-3xl font-semibold"
+            className="text-2xl sm:text-3xl lg:text-4xl watercolor-title"
             style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
-              color: 'var(--color-charcoal)',
+              paddingBottom: '0.2em',
+              margin: 0
             }}
           >
             Watercolor Mahjong
           </h1>
           {/* Desktop controls — hidden on mobile */}
-          <div className="hidden sm:block">
+          <div className="hidden sm:block overflow-visible">
             <GameControls onNewGame={handleNewGame} onShuffle={handleShuffle} />
           </div>
         </header>
