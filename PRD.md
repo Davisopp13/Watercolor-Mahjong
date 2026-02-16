@@ -125,7 +125,7 @@ In traditional mahjong solitaire, there are 144 tiles:
 
 ---
 
-### [ ] Task 2 — Playable Tile Visibility
+### [x] Task 2 — Playable Tile Visibility
 
 **Context:** It's hard to tell which tiles are currently open/playable and which are blocked. The visual difference between the two states needs to be dramatic enough to read instantly at a glance, especially for someone who might not know mahjong rules intuitively. This is the difference between "fun puzzle" and "frustrating guessing game."
 

@@ -495,3 +495,23 @@
   - Vite build still hangs in sandbox environment (apostrophe in path + vite-plugin-pwa createRequire issue). Use `node --input-type=module` validation instead
   - The old `group` class on the tile button and `.tile-bg-watercolor` / `.tile-symbol` CSS classes are no longer needed
 ---
+
+## Iteration 23 - Playable Tile Visibility (Final Polish PRD Task 2)
+- Dramatically enhanced visual contrast between open (playable) and blocked tiles
+- Implementation:
+  - index.css .tile (base/open): opacity 1, box-shadow 0 2px 8px rgba(0,0,0,0.15), translateY(-1px), cursor pointer
+  - index.css .tile.blocked: opacity 0.5, grayscale(30%), flat shadow 0 1px 2px rgba(0,0,0,0.05), no transform, cursor default
+  - index.css .tile.selected: 3px lavender border, translateY(-2px) scale(1.03), enhanced shadow
+  - index.css hover (desktop only via @media (hover: hover)): translateY(-3px) scale(1.02), shadow 0 4px 12px, outline 2px solid rgba(155,139,184,0.5), transition 0.2s
+  - index.css: Changed base transition to `all 300ms ease-out` for smooth blocked→open "waking up" effect
+  - Tile.jsx: Removed inline boxShadow, transform, cursor — all now handled by CSS classes for clean state management
+  - index.css: Updated mismatch-flash keyframe baseline shadow to match new open tile shadow
+- Visual effect: Open tiles "pop" off the board with full color and lift. Blocked tiles fade into the background at 50% opacity with desaturation. Transition from blocked→open animates smoothly over 300ms.
+- Files changed: src/index.css (updated), src/components/Tile.jsx (updated), PRD.md (marked Task 2 [x])
+- Learnings for future iterations:
+  - Moving visual states from inline styles to CSS classes is cleaner — CSS specificity handles the cascade naturally
+  - The 300ms transition on `.tile` base class creates the "waking up" effect when tiles transition from blocked to open
+  - Hover effects gated with `@media (hover: hover) and (pointer: fine)` correctly excludes touch devices
+  - The `outline` property (not box-shadow) is best for hover glow since it doesn't affect layout
+  - Game logic validation still passes — tile data model is untouched, only visual layer changed
+---

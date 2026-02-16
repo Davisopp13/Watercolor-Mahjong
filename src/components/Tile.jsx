@@ -19,19 +19,12 @@ export default function Tile({
     <button
       onClick={onClick}
       aria-label={`${painting.name} ${tile.value}${selected ? ' (selected)' : ''}${free ? '' : ' (blocked)'}`}
-      className={`tile relative ${selected ? 'selected' : ''} ${!free ? 'blocked' : ''} ${hinted ? 'tile-hinted' : ''} ${mismatch ? 'tile-mismatch' : ''} ${shaking ? 'tile-shake' : ''} transition-all duration-300`}
+      className={`tile relative ${selected ? 'selected' : ''} ${!free ? 'blocked' : ''} ${hinted ? 'tile-hinted' : ''} ${mismatch ? 'tile-mismatch' : ''} ${shaking ? 'tile-shake' : ''}`}
       style={{
         width: tileWidth,
         height: tileHeight,
-        cursor: free ? 'pointer' : 'default',
         borderRadius,
         overflow: 'hidden',
-        boxShadow: selected
-          ? '0 0 0 3px var(--color-lavender), 0 10px 20px rgba(0,0,0,0.2)'
-          : free
-            ? '2px 2px 0px var(--color-tan), 4px 4px 8px rgba(0,0,0,0.1)'
-            : '1px 1px 0px var(--color-tan), 2px 2px 4px rgba(0,0,0,0.05)',
-        transform: selected ? 'translateY(-2px) scale(1.03)' : 'none',
       }}
     >
       {/* Watercolor painting — fills the entire tile face */}

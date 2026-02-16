@@ -63,26 +63,16 @@ body {
 
 /* --- TILE BASE STYLE --- */
 .tile {
-  /* Use the brand cream color */
   background-color: var(--color-cream);
-  /* You can add a subtle watercolor texture image here */
-  /* background-image: url('path/to/watercolor-paper-texture.png'); */
-
-  /* Soft tan border */
   border: 1px solid var(--color-tan);
   border-radius: 4px;
 
-  /* Soft shadow for 3D stacking effect */
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  /* Smooth 300ms transition for blocked→open "waking up" effect */
+  transition: all 300ms ease-out;
 
-  /* Smooth transitions for interactive states */
-  transition: transform 200ms ease-out, box-shadow 200ms ease-out, border 200ms ease-out;
-
-  /* Ensure text uses the correct font and color */
   font-family: 'Nunito', 'Quicksand', sans-serif;
   color: var(--color-charcoal);
 
-  /* Layout defaults (can be overridden by inline styles) */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -92,27 +82,28 @@ body {
   user-select: none;
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
+
+  /* OPEN (playable) tile defaults — full color, lifted, lively */
+  opacity: 1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+  cursor: pointer;
 }
 
 /* --- SELECTED STATE --- */
-/* This replaces the glowing yellow border */
 .tile.selected {
-  /* 3px solid lavender border */
   border: 3px solid var(--color-lavender) !important;
-
-  /* Subtle lift effect */
-  transform: translateY(-2px);
-
-  /* Enhanced shadow for the lifted tile */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 0 0 3px var(--color-lavender), 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* --- BLOCKED STATE --- */
-/* Make blocked tiles feel further back */
+/* Dimmed, flat, desaturated — clearly non-interactive */
 .tile.blocked {
-  /* Slightly desaturate and make transparent */
-  filter: saturate(0.7);
-  opacity: 0.8;
+  opacity: 0.5;
+  filter: grayscale(30%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transform: none;
   cursor: default;
 }
 
@@ -154,7 +145,7 @@ body {
 /* --- MISMATCH FLASH ANIMATION --- */
 @keyframes mismatch-flash {
   0%, 100% {
-    box-shadow: 2px 2px 0px var(--color-tan), 4px 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
   40% {
     box-shadow: 0 0 12px 4px rgba(232, 123, 152, 0.6), 0 0 20px 6px rgba(232, 123, 152, 0.3);
@@ -180,10 +171,14 @@ body {
 }
 
 /* Desktop hover states — only on pointer devices (not touch) */
+/* Open tiles get additional lift + purple glow on hover */
 @media (hover: hover) and (pointer: fine) {
   .tile:not(.blocked):not(.selected):hover {
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15), 2px 2px 4px rgba(0, 0, 0, 0.1);
-    transform: translateY(-1px);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    outline: 2px solid rgba(155, 139, 184, 0.5);
+    outline-offset: 0px;
+    transition: all 0.2s ease;
   }
 }
 
