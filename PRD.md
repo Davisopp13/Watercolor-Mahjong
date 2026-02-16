@@ -247,7 +247,7 @@ Undo should be unlimited (no limit on uses). Undo history should be cleared when
 
 ---
 
-### Task 6 — Progress Indicator
+### Task 6 — Progress Indicator [x]
 
 **Context:** With 144 tiles on the board, the player needs feedback about how close she is to winning. Without it, the game feels like an endless scan-and-match with no sense of progress.
 

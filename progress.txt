@@ -361,3 +361,22 @@
   - `disabled:opacity-40 disabled:cursor-default disabled:hover:bg-transparent` Tailwind classes handle disabled button styling cleanly
   - Build verified with `npx vite build` (584ms + 44ms for SW)
 ---
+
+## Iteration 18 - Progress Indicator (Enhancement PRD Task 6)
+- Added "X pairs remaining" counter with thin progress bar to both desktop header and mobile bottom bar
+- Implementation:
+  - App.jsx: Added `pairsRemaining` useMemo computed as `72 - removedCount / 2`
+  - Desktop header: Progress indicator sits next to the title with pairs text + thin gradient bar
+  - Mobile bottom bar: Progress indicator in a row with the sync/auth controls above the game buttons
+  - Text styled in muted lavender (--color-lavender), font-medium, text-xs on mobile / text-sm on desktop
+  - Thin progress bar (3px tall) with tan background track and lavender-to-rose gradient fill
+  - Bar animates smoothly with `transition-all duration-500 ease-out` as pairs are cleared
+  - Handles singular "pair" vs plural "pairs" correctly
+  - Updates on match (decrements) and undo (increments) automatically via reactive state
+- Files changed: src/App.jsx (updated), PRD.md (marked Task 6 [x])
+- Learnings for future iterations:
+  - pairsRemaining is derived state (72 - removedCount/2) — no separate state variable needed
+  - Progress bar percentage: ((72 - pairsRemaining) / 72) * 100 fills left-to-right as pairs are cleared
+  - Using rgba for the track background (tan at 30% opacity) blends nicely with the cream background
+  - Build verified with `npx vite build` (643ms + 46ms for SW)
+---
