@@ -284,3 +284,38 @@
   - Apple PWA meta tags (apple-mobile-web-app-capable, apple-touch-icon) needed for iOS home screen install
   - Build verified with `npx vite build` (343ms + 41ms for SW)
 ---
+
+## Iteration 14 - Win Celebration with Birthday Message (Enhancement PRD Task 3)
+- Rewrote WinScreen.jsx from generic "Magnificent" screen to personal birthday celebration
+- New WinScreen features:
+  - Warm gradient overlay (cream → lavender → pink, 95% opacity)
+  - 40 CSS-animated confetti particles: watercolor colors, gentle downward drift, random sizes/speeds
+  - 4 floating paintings (tiles_2, tiles_4, tiles_3, tiles_6) that drift apart on load, fade after 2.5s
+  - Sequential text fade-in with translateY animation:
+    - 3.0s: "Happy 60th Birthday, Mom!" — gradient text with watercolor filter
+    - 3.5s: "Your beautiful artwork made this game possible" — italic serif
+    - 4.0s: "With love, Davis ❤️"
+    - 4.5s: "Play Again" button (organic-button class)
+  - All animations CSS-based (keyframes + transitions), no libraries
+- Updated PRD.md: replaced MVP PRD content with Enhancement PRD, marked Tasks 1-3 as [x]
+- Files changed: src/components/WinScreen.jsx (rewritten), PRD.md (updated)
+- Learnings for future iterations:
+  - CSS custom properties (--sway, --float-x, --float-y) work well for parameterized animations
+  - useMemo for particle generation prevents re-creating 40 particles on every render
+  - Confetti uses animationIterationCount: infinite — particles loop continuously while overlay is visible
+  - clamp() CSS function is great for responsive text sizing without media queries
+  - The organic-button class from index.css provides the watercolor brush-stroke style
+  - Build verified with `npx vite build` (590ms + 45ms for SW)
+---
+
+## Iteration 15 - Final PRD Cleanup
+- Marked all remaining Day 1-3 timeline checkboxes as complete in PRD1.md
+- All MVP Features (12/12) were already marked [x]
+- Day 1-3 timeline tasks were duplicates of MVP tasks completed in iterations 3-14
+- Build verified: `npx vite build` passes clean (595ms + 47ms for SW, 18 precache entries)
+- All PRD tasks are now [x] — project is COMPLETE
+- Files changed: PRD1.md (updated timeline checkboxes), progress.txt
+- Learnings for future iterations:
+  - PRD had two sets of checklists (MVP Features + Day 1-3 Timeline) that tracked overlapping work
+  - Always update all checklist sections when completing a task to avoid confusion
+---
