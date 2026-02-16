@@ -515,3 +515,40 @@
   - The `outline` property (not box-shadow) is best for hover glow since it doesn't affect layout
   - Game logic validation still passes — tile data model is untouched, only visual layer changed
 ---
+
+## Iteration 24 - Music and Sound Effects (Final Polish PRD Task 3)
+- Added full audio system using Web Audio API — all sounds synthesized, no external audio files needed
+- Implementation:
+  - Created src/hooks/useAudio.js — custom hook managing AudioContext, mute state, and all sound triggers
+  - Tile select: short noise burst through bandpass filter (wooden click feel, ~80ms)
+  - Match: ascending two-note chime (C5→E5 with harmonics, warm bell sound)
+  - Mismatch: soft descending tone (220→180Hz, gentle "nope", ~250ms)
+  - Win celebration: ascending pentatonic melody (C5→C6) + sustained C major chord (C+E+G, ~4.5s total)
+  - Ambient background: layered detuned oscillators forming C major pad with slow LFO breathing (C3+G3+C4+E4)
+  - Mute/unmute toggle with localStorage persistence (key: 'watercolor-mahjong-muted')
+  - Default state: MUTED (critical — she'll open around family)
+  - AudioContext created lazily on first user interaction (iOS Safari autoplay policy compliance)
+  - AudioContext.resume() called when suspended to handle browser autoplay restrictions
+  - Ambient fades in over 2s when unmuted, fades out over 1s when muted
+  - Win sound fades out ambient first, then plays celebration melody
+  - GameControls.jsx: Added mute/unmute button with speaker SVG icons (🔊/🔇 style)
+  - App.jsx: Imported useAudio, wired all trigger points:
+    - playSelect() on first tile click (selection)
+    - playMatchSound() on successful match
+    - playMismatchSound() on failed match
+    - playWinSound() via useEffect when gameWon becomes true
+  - Both desktop and mobile GameControls receive muted + onToggleMute props
+- Sound design choices:
+  - All sounds use 'sine' oscillators for soft, warm timbre matching watercolor aesthetic
+  - Volume levels: ambient 0.08, select 0.25, match 0.2, mismatch 0.15, win 0.12-0.18
+  - No sound on: blocked tile clicks, hint, undo, shuffle, new game (per PRD spec)
+- Files changed: src/hooks/useAudio.js (new), src/components/GameControls.jsx (updated), src/App.jsx (updated), PRD.md (marked Task 3 [x])
+- Learnings for future iterations:
+  - Web Audio API synthesis avoids external audio file dependencies entirely — no file size concerns, no loading delays
+  - AudioContext must be created on user gesture (click/tap) for iOS Safari compliance
+  - Detuned oscillators (±3-8 cents) create natural thickness/warmth without needing recorded samples
+  - Noise burst through bandpass filter is effective for percussive "click" sounds
+  - LFO modulating gain creates organic "breathing" ambient effect
+  - useCallback dependencies must include the sound play functions to avoid stale closures
+  - Build verified with `npx vite build` (656ms)
+---

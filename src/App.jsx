@@ -9,6 +9,7 @@ import AuthUI from './components/AuthUI.jsx'
 import SyncIndicator from './components/SyncIndicator.jsx'
 import useAuth from './hooks/useAuth.js'
 import useCloudSync from './hooks/useCloudSync.js'
+import useAudio from './hooks/useAudio.js'
 import { generateTileSet, tilesMatch } from './data/tiles.js'
 import { TURTLE_LAYOUT, isTileFree } from './data/layout.js'
 
@@ -45,6 +46,8 @@ export default function App() {
   const [removingIds, setRemovingIds] = useState(null) // [id1, id2] during dissolve animation
   const [mismatchIds, setMismatchIds] = useState(null) // [id1, id2] during mismatch flash
   const [shakingId, setShakingId] = useState(null) // tile id during blocked shake
+
+  const { muted, toggleMute, playSelect, playMatchSound, playMismatchSound, playWinSound } = useAudio()
 
   const { user, loading: authLoading, error: authError, magicLinkSent, signInWithMagicLink, signOut } = useAuth()
   const { saveGame, loadGame, syncStatus } = useCloudSync(user)
@@ -214,14 +217,19 @@ export default function App() {
       if (prev === id) return null
 
       // No tile selected yet → select this one
-      if (prev === null) return id
+      if (prev === null) {
+        playSelect()
+        return id
+      }
 
       // Second tile clicked → check for match
       const tileA = tiles.find(t => t.id === prev)
       const tileB = tiles.find(t => t.id === id)
 
       if (tileA && tileB && !tileA.removed && !tileB.removed && tilesMatch(tileA, tileB)) {
-        // Match! Record move in history
+        // Match! Play match sound
+        playMatchSound()
+        // Record move in history
         setMoveHistory(h => [...h, {
           tileA: { id: tileA.id, suit: tileA.suit, value: tileA.value, copy: tileA.copy, x: tileA.x, y: tileA.y, z: tileA.z },
           tileB: { id: tileB.id, suit: tileB.suit, value: tileB.value, copy: tileB.copy, x: tileB.x, y: tileB.y, z: tileB.z },
@@ -242,12 +250,18 @@ export default function App() {
         return null // Clear selection
       }
 
-      // No match → flash mismatch on both tiles
+      // No match → flash mismatch on both tiles, play mismatch sound
+      playMismatchSound()
       setMismatchIds([prev, id])
       setTimeout(() => setMismatchIds(null), 400)
       return null // Clear selection
     })
-  }, [tiles])
+  }, [tiles, playSelect, playMatchSound, playMismatchSound])
+
+  // Play win sound when game is won
+  useEffect(() => {
+    if (gameWon) playWinSound()
+  }, [gameWon, playWinSound])
 
   // Blocked tile shake handler
   const handleBlockedClick = useCallback((id) => {
@@ -353,7 +367,7 @@ export default function App() {
                 onSignIn={signInWithMagicLink}
                 onSignOut={signOut}
               />
-              <GameControls onNewGame={handleNewGame} onShuffle={handleShuffle} onHint={handleHint} onUndo={handleUndo} canUndo={moveHistory.length > 0} />
+              <GameControls onNewGame={handleNewGame} onShuffle={handleShuffle} onHint={handleHint} onUndo={handleUndo} canUndo={moveHistory.length > 0} muted={muted} onToggleMute={toggleMute} />
             </div>
           </div>
         </header>
@@ -417,7 +431,7 @@ export default function App() {
               />
             </div>
           </div>
-          <GameControls onNewGame={handleNewGame} onShuffle={handleShuffle} onHint={handleHint} onUndo={handleUndo} canUndo={moveHistory.length > 0} />
+          <GameControls onNewGame={handleNewGame} onShuffle={handleShuffle} onHint={handleHint} onUndo={handleUndo} canUndo={moveHistory.length > 0} muted={muted} onToggleMute={toggleMute} />
         </div>
       )}
 

@@ -164,7 +164,7 @@ In traditional mahjong solitaire, there are 144 tiles:
 
 ---
 
-### [ ] Task 3 — Music and Sound Effects
+### [x] Task 3 — Music and Sound Effects
 
 **Context:** Every polished mahjong app has ambient audio. The game currently plays in complete silence, which makes it feel less like a relaxing experience and more like staring at a static webpage. Gentle audio transforms the feel from "web page" to "gift experience." This is nice-to-have, but it elevates the whole thing.
 
