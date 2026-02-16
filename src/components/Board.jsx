@@ -75,33 +75,6 @@ export default function Board({ tiles, selectedId, freeTileIds, onTileClick }) {
 
   return (
     <div ref={containerRef} className="w-full h-full flex items-center justify-center p-2 sm:p-4 lg:p-6 relative overflow-hidden">
-      {/* Decorative watercolor elements */}
-      <div
-        className="absolute inset-0 pointer-events-none overflow-hidden"
-        style={{ zIndex: 0 }}
-      >
-        <img
-          src="/assets/watercolors/tiles_2.png"
-          alt=""
-          className="absolute -top-10 -left-10 w-96 opacity-10 blur-[1px] rotate-[-15deg] animate-pulse-slow"
-        />
-        <img
-          src="/assets/watercolors/tiles_6.png"
-          alt=""
-          className="absolute -bottom-20 -right-20 w-[30rem] opacity-10 blur-[1px] rotate-[10deg] animate-pulse-slow"
-        />
-      </div>
-
-      <style>{`
-        @keyframes pulse-slow {
-          0%, 100% { opacity: 0.1; transform: scale(1) rotate(-15deg); }
-          50% { opacity: 0.15; transform: scale(1.05) rotate(-12deg); }
-        }
-        .animate-pulse-slow {
-          animation: pulse-slow 12s ease-in-out infinite;
-        }
-      `}</style>
-
       <div
         className="relative flex-shrink-0 z-10"
         style={{ width: boardW, height: boardH }}

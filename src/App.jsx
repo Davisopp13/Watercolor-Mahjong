@@ -123,6 +123,37 @@ export default function App() {
           <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" />
         </filter>
       </svg>
+
+      {/* Global Decorative Background Artwork */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <img
+          src="/assets/watercolors/tiles_2.png"
+          alt=""
+          className="absolute -top-10 -left-10 w-64 sm:w-96 opacity-10 blur-[1px] rotate-[-15deg] animate-pulse-slow"
+        />
+        <img
+          src="/assets/watercolors/tiles_6.png"
+          alt=""
+          className="absolute -bottom-20 -right-20 w-[20rem] sm:w-[30rem] opacity-10 blur-[1px] rotate-[10deg] animate-pulse-slow-reverse"
+        />
+      </div>
+
+      <style>{`
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 0.1; transform: scale(1) rotate(-15deg); }
+          50% { opacity: 0.15; transform: scale(1.05) rotate(-12deg); }
+        }
+        @keyframes pulse-slow-reverse {
+          0%, 100% { opacity: 0.1; transform: scale(1) rotate(10deg); }
+          50% { opacity: 0.15; transform: scale(1.05) rotate(13deg); }
+        }
+        .animate-pulse-slow {
+          animation: pulse-slow 12s ease-in-out infinite;
+        }
+        .animate-pulse-slow-reverse {
+          animation: pulse-slow-reverse 15s ease-in-out infinite;
+        }
+      `}</style>
       {/* Header — compact on mobile, more spacious on desktop */}
       {!showTitle && (
         <header className="flex-shrink-0 flex items-center justify-between px-6 py-4 lg:py-6 overflow-visible">

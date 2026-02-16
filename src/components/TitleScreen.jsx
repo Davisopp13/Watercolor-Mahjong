@@ -12,17 +12,12 @@ export default function TitleScreen({ onPlay }) {
     <div
       className="fixed inset-0 z-[1000] flex flex-col items-center justify-center px-6"
       style={{
-        backgroundColor: 'var(--color-background)',
+        backgroundColor: 'transparent',
         opacity: visible ? 1 : 0,
         transition: 'opacity 600ms ease-in',
       }}
     >
-      {/* Layered background watercolor dabs */}
-      <div className="absolute inset-0 pointer-events-none opacity-20">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-lavender blur-[100px] rounded-full opacity-30 animate-pulse-slow"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-tan blur-[120px] rounded-full opacity-20 animate-pulse-slow-reverse"></div>
-        <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-blue blur-[80px] rounded-full opacity-10 animate-float-slow"></div>
-      </div>
+
 
       {/* Watercolor hero logo */}
       <div
