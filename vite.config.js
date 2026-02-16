@@ -16,7 +16,7 @@ export default defineConfig({
       manifest: {
         name: 'Watercolor Mahjong',
         short_name: 'Mahjong',
-        description: "A tile-matching puzzle featuring Mom's watercolors",
+        description: "A tile-matching puzzle featuring Mama's watercolors",
         start_url: '/',
         display: 'standalone',
         background_color: '#FDF8F0',

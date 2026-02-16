@@ -8,7 +8,7 @@
 
 **What it feels like:** Handmade, warm, elegant, personal. Like receiving a handwritten letter instead of an email.
 
-**Core idea:** "A game wrapped in Mom's art."
+**Core idea:** "A game wrapped in Mama's art."
 
 ---
 
@@ -27,7 +27,7 @@
 
 ## Color Palette
 
-### Primary Colors (from Mom's paintings)
+### Primary Colors (from Mama's paintings)
 
 | Name | Hex | CSS Variable | Use |
 |------|-----|--------------|-----|

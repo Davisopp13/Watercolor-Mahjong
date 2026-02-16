@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide documents Mom's watercolor paintings and how they'll be used in the game. All artwork is original, painted by Jen (Mom).
+This guide documents Mama's watercolor paintings and how they'll be used in the game. All artwork is original, painted by Jen (Mama).
 
 ---
 
@@ -252,13 +252,13 @@ Before integrating, prepare each painting:
 - **Contrast:** All tile symbols must meet WCAG AA contrast ratios against watercolor backgrounds
 - **Fallback:** If images fail to load, show solid color tile with clear symbol
 - **Opacity:** Keep watercolor backgrounds subtle (15-30% opacity) to not interfere with gameplay
-- **Testing:** Test with Mom to ensure she can easily distinguish all tiles
+- **Testing:** Test with Mama to ensure she can easily distinguish all tiles
 
 ---
 
 ## Credits
 
-All watercolor artwork by **Jen** (Mom)
+All watercolor artwork by **Jen** (Mama)
 
 Consider adding a credits screen or "About" section in the game:
 

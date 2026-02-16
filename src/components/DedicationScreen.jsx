@@ -41,7 +41,7 @@ export default function DedicationScreen({ onStartPlaying }) {
       }}
     >
       <div className="text-center max-w-xl">
-        {/* Line 1: Happy 60th Birthday, Mom */}
+        {/* Line 1: Happy 60th Birthday, Mama */}
         <h1
           className="font-serif font-bold mb-6 sm:mb-8"
           style={{
@@ -58,7 +58,7 @@ export default function DedicationScreen({ onStartPlaying }) {
             paddingBottom: '0.2em',
           }}
         >
-          Happy 60th Birthday, Mom
+          Happy 60th Birthday, Mama
         </h1>
 
         {/* Line 2: tile artwork explanation */}
@@ -100,7 +100,7 @@ export default function DedicationScreen({ onStartPlaying }) {
             transition: 'opacity 600ms ease-out, transform 600ms ease-out',
           }}
         >
-          With love, Davis ❤️
+          Love, Davis ❤️
         </p>
 
         {/* Start Playing button */}

@@ -9,7 +9,7 @@ Transform Watercolor Mahjong from a flat tile-matching prototype into a polished
 ## The Problem
 
 **Who has this problem?**
-Jennifer (Davis's mom) — a 60-year-old who loves mahjong solitaire and watercolor painting. She's receiving this game as a personalized birthday gift.
+Jennifer (Davis's mama) — a 60-year-old who loves mahjong solitaire and watercolor painting. She's receiving this game as a personalized birthday gift.
 
 **What's painful about the current situation?**
 The game has a beautiful landing page and working match logic, but the actual gameplay falls short of what any mahjong solitaire player would expect. The board is nearly flat (only 2 z-levels instead of the standard 4-5 layer pyramid), there are no player assists (hint, undo), no feedback when she gets stuck, no progress indicator, tiles vanish without animation, and most critically — there's no birthday celebration moment when she wins. The gift has no payoff.
@@ -167,9 +167,9 @@ Confetti/particle animation:
 - Animation should run continuously while the overlay is visible.
 
 Text content (centered, layered):
-- Line 1 (large, decorative): **"Happy 60th Birthday, Mom!"** — Use a warm serif or handwritten-style font. Suggested: the same serif font used in the "Watercolor Mahjong" title on the landing page. Color: the purple-pink gradient used in the landing page title.
+- Line 1 (large, decorative): **"Happy 60th Birthday, Mama!"** — Use a warm serif or handwritten-style font. Suggested: the same serif font used in the "Watercolor Mahjong" title on the landing page. Color: the purple-pink gradient used in the landing page title.
 - Line 2 (medium, italic): *"Your beautiful artwork made this game possible"*
-- Line 3 (smaller, warm): "With love, Davis ❤️"
+- Line 3 (smaller, warm): "Love, Davis ❤️"
 - Text should fade in sequentially: Line 1 appears first (0-0.5s), Line 2 fades in (0.5-1s), Line 3 fades in (1-1.5s).
 
 Action button:
@@ -325,10 +325,10 @@ After clicking "Begin Journey" on the landing page, show an intermediate dedicat
 Dedication screen content:
 - Soft, warm background consistent with the landing page (cream/off-white with faded watercolor elements).
 - Text centered vertically and horizontally:
-  - Line 1 (large, decorative): **"Happy 60th Birthday, Mom"** — Same font/styling as landing page title.
+  - Line 1 (large, decorative): **"Happy 60th Birthday, Mama"** — Same font/styling as landing page title.
   - Line 2 (medium): "This game features your beautiful watercolor paintings as the tiles."
   - Line 3 (medium): "Each match you make is a little celebration of your art."
-  - Line 4 (small, warm): "With love, Davis ❤️"
+  - Line 4 (small, warm): "Love, Davis ❤️"
 - Button at the bottom: **"Start Playing"** — same watercolor brush-stroke button style as "Begin Journey."
 - Text should fade in gently, either all at once or sequentially (lines appearing one after another over ~2 seconds).
 
@@ -451,7 +451,7 @@ All tasks are designed to be executed sequentially by ralph.sh (Claude Code CLI 
 
 ## Launch Plan
 
-**Initial user:** Jennifer (Davis's mom) — she receives the link on her birthday, February 17.
+**Initial user:** Jennifer (Davis's mama) — she receives the link on her birthday, February 17.
 
 **How to share:** Direct link via birthday text message or card. URL: https://watercolor-mahjong.vercel.app/
 

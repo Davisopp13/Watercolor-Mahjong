@@ -66,9 +66,9 @@ export default function WinScreen({ onNewGame }) {
 
     // Show floating paintings first, then fade them out and show text
     const t1 = setTimeout(() => setShowPaintings(false), 2500)
-    const t2 = setTimeout(() => setShowLine1(true), 3000) // "Happy 60th Birthday, Mom!"
+    const t2 = setTimeout(() => setShowLine1(true), 3000) // "Happy 60th Birthday, Mama!"
     const t3 = setTimeout(() => setShowLine2(true), 3500) // artwork line
-    const t4 = setTimeout(() => setShowLine3(true), 4000) // "With love, Davis"
+    const t4 = setTimeout(() => setShowLine3(true), 4000) // "Love, Davis"
     const t5 = setTimeout(() => setShowButton(true), 4500) // Play Again
 
     return () => {
@@ -159,7 +159,7 @@ export default function WinScreen({ onNewGame }) {
 
       {/* Birthday text — appears sequentially after paintings fade */}
       <div className="text-center px-6 z-10 max-w-2xl">
-        {/* Line 1: Happy 60th Birthday, Mom! */}
+        {/* Line 1: Happy 60th Birthday, Mama! */}
         <h1
           className="font-serif font-bold mb-4 sm:mb-6"
           style={{
@@ -176,7 +176,7 @@ export default function WinScreen({ onNewGame }) {
             paddingBottom: '0.2em',
           }}
         >
-          Happy 60th Birthday, Mom!
+          Happy 60th Birthday, Mama!
         </h1>
 
         {/* Line 2: artwork acknowledgment */}
@@ -204,7 +204,7 @@ export default function WinScreen({ onNewGame }) {
             transition: 'opacity 600ms ease-out, transform 600ms ease-out',
           }}
         >
-          With love, Davis ❤️
+          Love, Davis ❤️
         </p>
 
         {/* Play Again button */}

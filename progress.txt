@@ -294,7 +294,7 @@
   - Sequential text fade-in with translateY animation:
     - 3.0s: "Happy 60th Birthday, Mom!" — gradient text with watercolor filter
     - 3.5s: "Your beautiful artwork made this game possible" — italic serif
-    - 4.0s: "With love, Davis ❤️"
+    - 4.0s: "Love, Davis ❤️"
     - 4.5s: "Play Again" button (organic-button class)
   - All animations CSS-based (keyframes + transitions), no libraries
 - Updated PRD.md: replaced MVP PRD content with Enhancement PRD, marked Tasks 1-3 as [x]
@@ -420,7 +420,7 @@
     - Line 1 (0.4s): "Happy 60th Birthday, Mom" — gradient text with watercolor filter
     - Line 2 (0.9s): "This game features your beautiful watercolor paintings as the tiles."
     - Line 3 (1.4s): "Each match you make is a little celebration of your art."
-    - Line 4 (1.9s): "With love, Davis ❤️"
+    - Line 4 (1.9s): "Love, Davis ❤️"
     - Line 5 (2.4s): "Start Playing" button (organic-button class)
   - Smooth fade-out transition (500ms) when "Start Playing" clicked before showing game
   - App.jsx: Added `showDedication` state variable
