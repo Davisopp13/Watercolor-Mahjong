@@ -380,3 +380,35 @@
   - Using rgba for the track background (tan at 30% opacity) blends nicely with the cream background
   - Build verified with `npx vite build` (643ms + 46ms for SW)
 ---
+
+## Iteration 19 - Match Removal Animation (Enhancement PRD Task 7)
+- Added four CSS-based animations for tile interactions:
+  1. **Match removal dissolve**: Golden glow pulse (200ms) → fade out + scale(0.8) (400ms) = 600ms total
+  2. **Selected tile lift**: translateY(-2px) scale(1.03) with enhanced shadow (already existed, refined)
+  3. **Mismatch flash**: Brief rose/pink glow on both tiles (400ms) when second tile doesn't match
+  4. **Blocked tile shake**: Quick horizontal shake (300ms, 3px displacement) when clicking a blocked tile
+- Implementation:
+  - App.jsx: Added `removingIds`, `mismatchIds`, `shakingId` state variables
+  - App.jsx: Match now starts dissolve animation first, then removes tiles after 600ms via setTimeout
+  - App.jsx: Mismatch clears selection and flashes both tiles pink for 400ms
+  - App.jsx: Added `handleBlockedClick` callback for shake animation on blocked tiles
+  - App.jsx: New states cleared on New Game and Shuffle
+  - Board.jsx: Accepts new props (removingIds, mismatchIds, shakingId, onBlockedClick)
+  - Board.jsx: Creates removingSet/mismatchSet via useMemo for efficient lookup
+  - Board.jsx: Tiles render during removal animation (removed && removing → still visible)
+  - Board.jsx: Blocked tiles now call onBlockedClick instead of being unclickable
+  - Tile.jsx: Accepts `mismatch` and `shaking` props, adds CSS classes
+  - Tile.jsx: Removed `disabled` attribute — blocked tiles now clickable for shake feedback
+  - index.css: Added `match-glow` keyframe (golden glow → fade/scale), `tile-removing` class
+  - index.css: Added `mismatch-flash` keyframe (rose glow pulse), `tile-mismatch` class
+  - index.css: Added `tile-shake` keyframe (horizontal displacement), `tile-shake` class
+  - index.css: Changed `.tile.blocked` from `pointer-events: none` to `cursor: default`
+- Files changed: src/App.jsx, src/components/Board.jsx, src/components/Tile.jsx, src/index.css, PRD.md
+- Learnings for future iterations:
+  - Animation is on the wrapper div (tile-removing class) not the button — this correctly fades the entire tile container
+  - setTimeout in handleTileClick for delayed removal is safe — React state updates inside setTimeout work correctly
+  - Removing `pointer-events: none` from `.tile.blocked` is needed to allow shake feedback on blocked tiles
+  - Mismatch clears selection (returns null) rather than keeping the first tile selected — matches the PRD spec
+  - `animation: ... forwards` keeps the final state (opacity: 0, scale: 0.8) until the tile is actually removed from DOM
+  - Build verified with `npx vite build` (566ms + 46ms for SW)
+---

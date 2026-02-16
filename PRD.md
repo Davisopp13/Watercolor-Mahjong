@@ -273,7 +273,7 @@ Optional enhancement: a subtle thin progress bar beneath the counter, filling le
 
 ---
 
-### Task 7 — Match Removal Animation
+### Task 7 — Match Removal Animation [x]
 
 **Context:** Currently, matched tiles simply vanish from the board. There's no visual satisfaction or feedback that something good happened. Every match should feel like a small reward.
 

@@ -40,6 +40,9 @@ export default function App() {
   const [showTitle, setShowTitle] = useState(true)
   const [hintIds, setHintIds] = useState(null) // [id1, id2] or null
   const [moveHistory, setMoveHistory] = useState([]) // stack of {tileA, tileB} move records
+  const [removingIds, setRemovingIds] = useState(null) // [id1, id2] during dissolve animation
+  const [mismatchIds, setMismatchIds] = useState(null) // [id1, id2] during mismatch flash
+  const [shakingId, setShakingId] = useState(null) // tile id during blocked shake
 
   const { user, loading: authLoading, error: authError, magicLinkSent, signInWithMagicLink, signOut } = useAuth()
   const { saveGame, loadGame, syncStatus } = useCloudSync(user)
@@ -128,6 +131,9 @@ export default function App() {
     setSelectedId(null)
     setHintIds(null)
     setMoveHistory([])
+    setRemovingIds(null)
+    setMismatchIds(null)
+    setShakingId(null)
     saveGame(newTiles)
   }, [saveGame])
 
@@ -150,6 +156,9 @@ export default function App() {
     setSelectedId(null)
     setHintIds(null)
     setMoveHistory([])
+    setRemovingIds(null)
+    setMismatchIds(null)
+    setShakingId(null)
     // Save after state update is queued (shuffledTiles captured from updater)
     if (shuffledTiles) saveGame(shuffledTiles)
   }, [saveGame])
@@ -210,25 +219,39 @@ export default function App() {
       const tileB = tiles.find(t => t.id === id)
 
       if (tileA && tileB && !tileA.removed && !tileB.removed && tilesMatch(tileA, tileB)) {
-        // Match! Record move in history then remove both tiles
-        setMoveHistory(prev => [...prev, {
+        // Match! Record move in history
+        setMoveHistory(h => [...h, {
           tileA: { id: tileA.id, suit: tileA.suit, value: tileA.value, copy: tileA.copy, x: tileA.x, y: tileA.y, z: tileA.z },
           tileB: { id: tileB.id, suit: tileB.suit, value: tileB.value, copy: tileB.copy, x: tileB.x, y: tileB.y, z: tileB.z },
         }])
-        setTiles(current =>
-          current.map(t =>
-            t.id === tileA.id || t.id === tileB.id
-              ? { ...t, removed: true }
-              : t
+        // Start dissolve animation
+        setRemovingIds([tileA.id, tileB.id])
+        // After animation completes, actually remove tiles
+        setTimeout(() => {
+          setTiles(current =>
+            current.map(t =>
+              t.id === tileA.id || t.id === tileB.id
+                ? { ...t, removed: true }
+                : t
+            )
           )
-        )
+          setRemovingIds(null)
+        }, 600)
         return null // Clear selection
       }
 
-      // No match → select the new tile instead
-      return id
+      // No match → flash mismatch on both tiles
+      setMismatchIds([prev, id])
+      setTimeout(() => setMismatchIds(null), 400)
+      return null // Clear selection
     })
   }, [tiles])
+
+  // Blocked tile shake handler
+  const handleBlockedClick = useCallback((id) => {
+    setShakingId(id)
+    setTimeout(() => setShakingId(null), 300)
+  }, [])
 
   return (
     <div
@@ -342,7 +365,11 @@ export default function App() {
             selectedId={selectedId}
             freeTileIds={freeTileIds}
             hintIds={hintIds}
+            removingIds={removingIds}
+            mismatchIds={mismatchIds}
+            shakingId={shakingId}
             onTileClick={handleTileClick}
+            onBlockedClick={handleBlockedClick}
           />
         )}
       </main>

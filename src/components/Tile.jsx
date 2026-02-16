@@ -14,6 +14,8 @@ export default function Tile({
   selected = false,
   free = true,
   hinted = false,
+  mismatch = false,
+  shaking = false,
   onClick,
   tileWidth = 60,
   tileHeight = 80,
@@ -41,10 +43,9 @@ export default function Tile({
 
   return (
     <button
-      onClick={free ? onClick : undefined}
-      disabled={!free}
+      onClick={onClick}
       aria-label={`${suit} ${value}${selected ? ' (selected)' : ''}${free ? '' : ' (blocked)'}`}
-      className={`tile relative group ${selected ? 'selected' : ''} ${!free ? 'blocked' : ''} ${hinted ? 'tile-hinted' : ''} transition-all duration-300`}
+      className={`tile relative group ${selected ? 'selected' : ''} ${!free ? 'blocked' : ''} ${hinted ? 'tile-hinted' : ''} ${mismatch ? 'tile-mismatch' : ''} ${shaking ? 'tile-shake' : ''} transition-all duration-300`}
       style={{
         width: tileWidth,
         height: tileHeight,
@@ -55,7 +56,7 @@ export default function Tile({
           : free
             ? '2px 2px 0px var(--color-tan), 4px 4px 8px rgba(0,0,0,0.1)'
             : '1px 1px 0px var(--color-tan), 2px 2px 4px rgba(0,0,0,0.05)',
-        transform: selected ? 'translateY(-4px) scale(1.02)' : 'none',
+        transform: selected ? 'translateY(-2px) scale(1.03)' : 'none',
       }}
     >
       {/* 3D Side Edge */}

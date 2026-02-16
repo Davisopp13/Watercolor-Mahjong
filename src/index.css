@@ -113,8 +113,7 @@ body {
   /* Slightly desaturate and make transparent */
   filter: saturate(0.7);
   opacity: 0.8;
-  /* Remove pointer events so they can't be clicked */
-  pointer-events: none;
+  cursor: default;
 }
 
 /* --- HINT GLOW ANIMATION --- */
@@ -130,6 +129,54 @@ body {
 .tile.tile-hinted {
   animation: hint-pulse 800ms ease-in-out 3;
   z-index: 1000 !important;
+}
+
+/* --- MATCH REMOVAL DISSOLVE ANIMATION --- */
+@keyframes match-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(245, 200, 66, 0);
+  }
+  30% {
+    box-shadow: 0 0 16px 6px rgba(245, 200, 66, 0.6), 0 0 24px 8px rgba(184, 165, 208, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 8px 2px rgba(245, 200, 66, 0);
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+.tile-removing {
+  animation: match-glow 600ms ease-out forwards;
+  pointer-events: none !important;
+}
+
+/* --- MISMATCH FLASH ANIMATION --- */
+@keyframes mismatch-flash {
+  0%, 100% {
+    box-shadow: 2px 2px 0px var(--color-tan), 4px 4px 8px rgba(0,0,0,0.1);
+  }
+  40% {
+    box-shadow: 0 0 12px 4px rgba(232, 123, 152, 0.6), 0 0 20px 6px rgba(232, 123, 152, 0.3);
+  }
+}
+
+.tile-mismatch {
+  animation: mismatch-flash 400ms ease-out;
+}
+
+/* --- BLOCKED TILE SHAKE ANIMATION --- */
+@keyframes tile-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-3px); }
+  40% { transform: translateX(3px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
+}
+
+.tile-shake {
+  animation: tile-shake 300ms ease-out;
+  pointer-events: none;
 }
 
 /* Desktop hover states — only on pointer devices (not touch) */

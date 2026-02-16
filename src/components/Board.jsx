@@ -16,7 +16,7 @@ const MAX_TILE_H = 80
 // Min tile width to ensure tappable touch targets (44px minimum)
 const MIN_TILE_W = 32
 
-export default function Board({ tiles, selectedId, freeTileIds, hintIds, onTileClick }) {
+export default function Board({ tiles, selectedId, freeTileIds, hintIds, removingIds, mismatchIds, shakingId, onTileClick, onBlockedClick }) {
   const bounds = useMemo(() => getLayoutBounds(), [])
   const containerRef = useRef(null)
   const [tileW, setTileW] = useState(40)
@@ -73,6 +73,8 @@ export default function Board({ tiles, selectedId, freeTileIds, hintIds, onTileC
 
   const freeSet = useMemo(() => new Set(freeTileIds), [freeTileIds])
   const hintSet = useMemo(() => new Set(hintIds || []), [hintIds])
+  const removingSet = useMemo(() => new Set(removingIds || []), [removingIds])
+  const mismatchSet = useMemo(() => new Set(mismatchIds || []), [mismatchIds])
 
   return (
     <div ref={containerRef} className="w-full h-full flex items-center justify-center p-2 sm:p-4 lg:p-6 relative overflow-hidden">
@@ -81,29 +83,32 @@ export default function Board({ tiles, selectedId, freeTileIds, hintIds, onTileC
         style={{ width: boardW, height: boardH }}
       >
         {sortedTiles.map(tile => {
-          if (tile.removed) return null
+          if (tile.removed && !removingSet.has(tile.id)) return null
 
           // Convert grid position to pixel position
           const px = (tile.x - bounds.minX) * tileW + tile.z * layerOffX
           const py = (tile.y - bounds.minY) * tileH + tile.z * layerOffY
+          const isFree = freeSet.has(tile.id)
 
           return (
             <div
               key={tile.id}
+              className={removingSet.has(tile.id) ? 'tile-removing' : ''}
               style={{
                 position: 'absolute',
                 left: px,
                 top: py,
                 zIndex: tile.z * 100 + Math.round(tile.y * 10),
-                transition: 'opacity 300ms ease-out',
               }}
             >
               <Tile
                 tile={tile}
                 selected={tile.id === selectedId}
-                free={freeSet.has(tile.id)}
+                free={isFree}
                 hinted={hintSet.has(tile.id)}
-                onClick={() => onTileClick(tile.id)}
+                mismatch={mismatchSet.has(tile.id)}
+                shaking={tile.id === shakingId}
+                onClick={isFree ? () => onTileClick(tile.id) : () => onBlockedClick(tile.id)}
                 tileWidth={tileW}
                 tileHeight={tileH}
               />
