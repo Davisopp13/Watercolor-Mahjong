@@ -39,6 +39,7 @@ export default function App() {
   const [selectedId, setSelectedId] = useState(null)
   const [showTitle, setShowTitle] = useState(true)
   const [hintIds, setHintIds] = useState(null) // [id1, id2] or null
+  const [moveHistory, setMoveHistory] = useState([]) // stack of {tileA, tileB} move records
 
   const { user, loading: authLoading, error: authError, magicLinkSent, signInWithMagicLink, signOut } = useAuth()
   const { saveGame, loadGame, syncStatus } = useCloudSync(user)
@@ -120,6 +121,7 @@ export default function App() {
     setTiles(newTiles)
     setSelectedId(null)
     setHintIds(null)
+    setMoveHistory([])
     saveGame(newTiles)
   }, [saveGame])
 
@@ -141,6 +143,7 @@ export default function App() {
     })
     setSelectedId(null)
     setHintIds(null)
+    setMoveHistory([])
     // Save after state update is queued (shuffledTiles captured from updater)
     if (shuffledTiles) saveGame(shuffledTiles)
   }, [saveGame])
@@ -169,6 +172,23 @@ export default function App() {
     setHintIds(null)
   }, [tiles, freeTileIds])
 
+  const handleUndo = useCallback(() => {
+    if (moveHistory.length === 0) return
+    const lastMove = moveHistory[moveHistory.length - 1]
+    // Restore the two removed tiles
+    setTiles(current =>
+      current.map(t => {
+        if (t.id === lastMove.tileA.id || t.id === lastMove.tileB.id) {
+          return { ...t, removed: false }
+        }
+        return t
+      })
+    )
+    setMoveHistory(prev => prev.slice(0, -1))
+    setSelectedId(null)
+    setHintIds(null)
+  }, [moveHistory])
+
   const handleTileClick = useCallback((id) => {
     // Dismiss hint on any tile click
     setHintIds(null)
@@ -184,7 +204,11 @@ export default function App() {
       const tileB = tiles.find(t => t.id === id)
 
       if (tileA && tileB && !tileA.removed && !tileB.removed && tilesMatch(tileA, tileB)) {
-        // Match! Remove both tiles
+        // Match! Record move in history then remove both tiles
+        setMoveHistory(prev => [...prev, {
+          tileA: { id: tileA.id, suit: tileA.suit, value: tileA.value, copy: tileA.copy, x: tileA.x, y: tileA.y, z: tileA.z },
+          tileB: { id: tileB.id, suit: tileB.suit, value: tileB.value, copy: tileB.copy, x: tileB.x, y: tileB.y, z: tileB.z },
+        }])
         setTiles(current =>
           current.map(t =>
             t.id === tileA.id || t.id === tileB.id
@@ -271,7 +295,7 @@ export default function App() {
                 onSignIn={signInWithMagicLink}
                 onSignOut={signOut}
               />
-              <GameControls onNewGame={handleNewGame} onShuffle={handleShuffle} onHint={handleHint} />
+              <GameControls onNewGame={handleNewGame} onShuffle={handleShuffle} onHint={handleHint} onUndo={handleUndo} canUndo={moveHistory.length > 0} />
             </div>
           </div>
         </header>
@@ -307,7 +331,7 @@ export default function App() {
               onSignOut={signOut}
             />
           </div>
-          <GameControls onNewGame={handleNewGame} onShuffle={handleShuffle} onHint={handleHint} />
+          <GameControls onNewGame={handleNewGame} onShuffle={handleShuffle} onHint={handleHint} onUndo={handleUndo} canUndo={moveHistory.length > 0} />
         </div>
       )}
 

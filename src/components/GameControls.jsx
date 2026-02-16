@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function GameControls({ onNewGame, onShuffle, onHint }) {
+export default function GameControls({ onNewGame, onShuffle, onHint, onUndo, canUndo = false }) {
   const outlinedButtonStyle = {
     backgroundColor: 'transparent',
     color: 'var(--color-charcoal)',
@@ -63,6 +63,24 @@ export default function GameControls({ onNewGame, onShuffle, onHint }) {
           <path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z" />
         </svg>
         Hint
+      </button>
+      <button
+        onClick={onUndo}
+        disabled={!canUndo}
+        className="flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-400 cursor-pointer border-2 group hover:bg-lavender/5 whitespace-nowrap disabled:opacity-40 disabled:cursor-default disabled:hover:bg-transparent"
+        style={{
+          ...outlinedButtonStyle,
+          borderRadius: '50% 60% 40% 70% / 60% 40% 50% 50%',
+        }}
+        onMouseEnter={e => { if (canUndo) handleHover(e, true) }}
+        onMouseLeave={e => handleHover(e, false)}
+        aria-label="Undo last move"
+      >
+        <svg className="transition-transform group-hover:scale-125 duration-300 opacity-60" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 7v6h6" />
+          <path d="M3 13a9 9 0 0 1 15.36-6.36L21 9" />
+        </svg>
+        Undo
       </button>
     </div>
   )

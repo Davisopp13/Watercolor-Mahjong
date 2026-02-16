@@ -214,7 +214,7 @@ If a tile is already selected (purple border) when the player clicks Hint, desel
 
 ---
 
-### Task 5 — Undo (Last Move)
+### Task 5 — Undo (Last Move) [x]
 
 **Context:** One wrong match can cascade into an unwinnable board. Undo gives a safety net so Jennifer doesn't have to restart the entire game over a single mistake.
 

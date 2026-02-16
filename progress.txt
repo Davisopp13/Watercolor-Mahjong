@@ -340,3 +340,24 @@
   - The handleHint O(n^2) scan over free tiles is fine since there are at most ~26 free tiles
   - Build verified with `npx vite build` (660ms + 49ms for SW)
 ---
+
+## Iteration 17 - Undo System (Enhancement PRD Task 5)
+- Added undo system with move history stack and restore logic
+- Implementation:
+  - App.jsx: Added `moveHistory` state (array of {tileA, tileB} move records)
+  - App.jsx: `handleTileClick` records tile data (id, suit, value, copy, x, y, z) in history on each match
+  - App.jsx: `handleUndo` pops the last move, restores both tiles (removed: false), clears selection/hints
+  - App.jsx: History cleared on New Game and Shuffle (per PRD requirement)
+  - App.jsx: Passes `onUndo` and `canUndo` props to GameControls in both desktop and mobile bars
+  - GameControls.jsx: Added Undo button with curved arrow SVG icon, organic border-radius
+  - GameControls.jsx: Button disabled (opacity 40%, cursor default) when canUndo is false (empty history)
+  - GameControls.jsx: Hover effects only apply when button is enabled
+- Undo restores tiles by simply setting removed: false — free tile detection auto-recalculates via useMemo
+- No need to explicitly track/restore which tiles became unblocked — isTileFree() handles this automatically
+- Files changed: src/App.jsx (updated), src/components/GameControls.jsx (updated), PRD.md
+- Learnings for future iterations:
+  - Undo doesn't need to track blocked state changes — isTileFree recalculates from current tile state
+  - Move history stores full tile data (suit, value, copy, position) even though only id and removed flag are needed for undo — future-proofing for potential replay features
+  - `disabled:opacity-40 disabled:cursor-default disabled:hover:bg-transparent` Tailwind classes handle disabled button styling cleanly
+  - Build verified with `npx vite build` (584ms + 44ms for SW)
+---
