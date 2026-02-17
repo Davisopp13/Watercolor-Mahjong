@@ -39,3 +39,23 @@ Ralph completed two full PRD sprints overnight:
   - logo_tile_icon.png is a hydrangea tile with transparency around rounded rect shape — the cream fill eliminates white gaps
   - icon-192.png and icon-512.png were previously different artwork (lilac) — now they match the primary logo_tile_icon
 ---
+
+## Iteration 2 - Mobile Board — Zoomed-In Scrollable View
+- On mobile (<768px), tiles now render at 55px wide (73px tall) instead of scaling down to fit viewport
+- Board container switches from `overflow: hidden` (desktop) to `overflow: auto` (mobile) for touch scrolling
+- Added `-webkit-overflow-scrolling: touch` and `overscroll-behavior: contain` for smooth iOS momentum scroll
+- Hidden scrollbars on mobile for clean aesthetic (scrollbar-width: none, ::-webkit-scrollbar display: none)
+- Board auto-centers on initial load via `scrollTo()` in a requestAnimationFrame callback
+- Auto-center resets on new game (tracks via tiles.length change)
+- 20px margin around board on mobile so edges are reachable when scrolled
+- Desktop behavior is completely unchanged — still fits board in viewport
+- Fixed header and bottom control bar remain fixed and visible (already implemented via fixed positioning in App.jsx)
+- Files changed: src/components/Board.jsx, src/index.css, PRD.md, progress.txt
+- Learnings for future iterations:
+  - Board bounds: width ~15.5 tile-widths, height ~8.5 tile-heights, 5 layers
+  - At 55px tile width: board is ~863px wide, ~645px tall — requires scrolling on 375px screens
+  - `body { overflow: hidden }` on root does NOT prevent `overflow: auto` on child containers from scrolling
+  - `touch-action: manipulation` on body still allows scroll gestures within scrollable children
+  - The mobile bottom bar is ~80px total (progress row + controls row), header ~50px
+  - `isMobile` state tracks viewport width and switches rendering strategy dynamically on resize
+---

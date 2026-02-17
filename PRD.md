@@ -46,7 +46,7 @@ Watercolor Mahjong is a personalized mahjong solitaire game featuring Jennifer's
 
 ---
 
-### [ ] Task 2: Mobile Board — Zoomed-In Scrollable View
+### [x] Task 2: Mobile Board — Zoomed-In Scrollable View
 
 **Goal:** On mobile viewports (under 768px wide), show the board zoomed in so tiles are large and tappable, with the ability to scroll/pan to see the full board. Do NOT shrink the entire board to fit the screen — that makes tiles too small.
 

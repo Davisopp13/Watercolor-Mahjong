@@ -13,21 +13,35 @@ const TILE_ASPECT = 60 / 80
 const MAX_TILE_W = 60
 const MAX_TILE_H = 80
 
-// Min tile width — tiles overlap in the layout, so effective tap area
-// is larger than individual tile width. 20px allows fitting on 375px screens.
+// Min tile width for desktop — fit board in viewport
 const MIN_TILE_W = 20
+
+// Mobile: minimum tile width for tappable, visible tiles
+const MOBILE_TILE_W = 55
+const MOBILE_BREAKPOINT = 768
 
 export default function Board({ tiles, selectedId, freeTileIds, hintIds, removingIds, mismatchIds, shakingId, onTileClick, onBlockedClick }) {
   const bounds = useMemo(() => getLayoutBounds(), [])
   const containerRef = useRef(null)
   const [tileW, setTileW] = useState(40)
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < MOBILE_BREAKPOINT)
+  const hasCentered = useRef(false)
 
   // Calculate tile size to fit the board within the container
   const computeTileSize = useCallback(() => {
     const el = containerRef.current
     if (!el) return
 
-    // Get content area (clientWidth/Height minus padding)
+    const mobile = window.innerWidth < MOBILE_BREAKPOINT
+    setIsMobile(mobile)
+
+    if (mobile) {
+      // On mobile, use fixed large tile size for tappability
+      setTileW(MOBILE_TILE_W)
+      return
+    }
+
+    // Desktop: fit board within container
     const style = getComputedStyle(el)
     const padX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight)
     const padY = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom)
@@ -72,16 +86,46 @@ export default function Board({ tiles, selectedId, freeTileIds, hintIds, removin
     [tiles]
   )
 
+  // Auto-center the scrollable board on mobile after first render
+  useEffect(() => {
+    if (!isMobile || hasCentered.current) return
+    const el = containerRef.current
+    if (!el || boardW === 0 || boardH === 0) return
+
+    // Wait a frame for layout to settle
+    requestAnimationFrame(() => {
+      const scrollLeft = (el.scrollWidth - el.clientWidth) / 2
+      const scrollTop = (el.scrollHeight - el.clientHeight) / 2
+      el.scrollTo({ left: scrollLeft, top: scrollTop, behavior: 'instant' })
+      hasCentered.current = true
+    })
+  }, [isMobile, boardW, boardH])
+
+  // Reset centering flag when tiles change (new game)
+  useEffect(() => {
+    hasCentered.current = false
+  }, [tiles.length])
+
   const freeSet = useMemo(() => new Set(freeTileIds), [freeTileIds])
   const hintSet = useMemo(() => new Set(hintIds || []), [hintIds])
   const removingSet = useMemo(() => new Set(removingIds || []), [removingIds])
   const mismatchSet = useMemo(() => new Set(mismatchIds || []), [mismatchIds])
 
+  // Mobile: scrollable container. Desktop: fit-to-viewport centered.
+  const containerClasses = isMobile
+    ? "w-full h-full p-2 relative overflow-auto mobile-board-scroll"
+    : "w-full h-full flex items-center justify-center p-2 sm:p-4 lg:p-6 relative overflow-hidden"
+
   return (
-    <div ref={containerRef} className="w-full h-full flex items-center justify-center p-2 sm:p-4 lg:p-6 relative overflow-hidden">
+    <div ref={containerRef} className={containerClasses}>
       <div
         className="relative flex-shrink-0 z-10"
-        style={{ width: boardW, height: boardH }}
+        style={{
+          width: boardW,
+          height: boardH,
+          // On mobile, add margin so user can scroll to edges comfortably
+          margin: isMobile ? '20px' : undefined,
+        }}
       >
         {sortedTiles.map(tile => {
           if (tile.removed && !removingSet.has(tile.id)) return null
