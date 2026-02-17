@@ -207,7 +207,7 @@ When a tile becomes unblocked (because tiles above/beside it were removed), anim
 
 ---
 
-### [ ] Task 5: Final Mobile QA Pass
+### [x] Task 5: Final Mobile QA Pass
 
 **Goal:** End-to-end verification that the complete game works on mobile. Simulate a full playthrough on a 375px viewport.
 

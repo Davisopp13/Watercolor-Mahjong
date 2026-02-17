@@ -59,19 +59,20 @@ export default function AuthUI({ user, loading, error, magicLinkSent, onSignIn, 
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center gap-2">
+    <form onSubmit={handleSubmit} className="flex items-center gap-2 flex-wrap">
       <input
         type="email"
         placeholder="your@email.com"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         autoFocus
-        className="text-sm px-3 py-1.5 rounded-full outline-none border"
+        className="text-sm px-3 py-1.5 rounded-full outline-none border min-w-0"
         style={{
           backgroundColor: 'var(--color-cream)',
           borderColor: 'var(--color-tan)',
           color: 'var(--color-charcoal)',
           width: '180px',
+          maxWidth: '40vw',
         }}
       />
       <button

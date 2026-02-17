@@ -374,7 +374,7 @@ export default function App() {
       )}
 
       {/* Board — fills remaining space, board auto-scales to fit */}
-      <main className="flex-1 min-h-0 pb-14 sm:pb-0">
+      <main className="flex-1 min-h-0 pb-[72px] sm:pb-0">
         {!showTitle && !showDedication && (
           <Board
             tiles={tiles}

@@ -95,3 +95,36 @@ Ralph completed two full PRD sprints overnight:
   - Audio files go in public/audio/ and are referenced as '/audio/filename.mp3' (Vite serves public/ at root)
   - `npm run build` is still the only verification (no test suite)
 ---
+
+## Iteration 5 - Final Mobile QA Pass
+- Systematic code review of all components against the QA checklist (18 items)
+- Found and fixed 3 issues:
+  1. `#root { width: 100vw }` → `width: 100%` — 100vw includes scrollbar width, causing horizontal overflow on mobile
+  2. Mobile bottom bar padding `pb-14` (56px) → `pb-[72px]` — bottom bar is ~68-70px tall, tiles were being hidden behind it
+  3. AuthUI email input: added `maxWidth: '40vw'` and `min-w-0` + `flex-wrap` so expanded sign-in form doesn't overflow on narrow mobile screens
+- All other checklist items verified correct:
+  - Landing page + "Begin Journey" button: 44px min-height, fixed overlay ✓
+  - Dedication screen + "Start Playing" button: 44px min-height ✓
+  - Board at 55px mobile tile width (>50px minimum) ✓
+  - Touch scrolling with -webkit-overflow-scrolling: touch ✓
+  - Tile selection via click handler on Tile buttons ✓
+  - Match removal with 600ms dissolve animation ✓
+  - Open vs blocked tile contrast (opacity 0.45, grayscale, brightness) ✓
+  - Hint pulse animation with 3s auto-dismiss ✓
+  - Undo restores last pair ✓
+  - Shuffle rearranges remaining tiles ✓
+  - New Game resets everything ✓
+  - Progress bar in mobile bottom bar ✓
+  - Stuck detection with overlay ✓
+  - Win celebration with birthday message and confetti ✓
+  - Mute toggle defaults muted, persists via localStorage ✓
+  - All buttons ≥ 44×44px tap targets ✓
+  - Decorative backgrounds contained in overflow-hidden ✓
+  - PWA manifest with cream background color ✓
+- Files changed: src/index.css, src/App.jsx, src/components/AuthUI.jsx, PRD.md, progress.txt
+- Learnings for future iterations:
+  - Never use 100vw for width — it includes scrollbar width on some browsers. Use 100% instead.
+  - When using fixed bottom bars on mobile, measure actual bar height (including all rows + padding + border) and set padding-bottom accordingly
+  - AuthUI form needs responsive constraints since it renders in the cramped mobile bottom bar
+  - `npm run build` is the only verification (no test suite)
+---
