@@ -1,300 +1,265 @@
 # Watercolor Mahjong — Final Polish PRD
 
-## One-Liner
-
-Final refinements to make Watercolor Mahjong feel like a personal, polished birthday gift — putting Jen's paintings front and center, making gameplay crystal clear, and adding ambient audio.
-
----
-
-## The Problem
-
-**Who has this problem?**
-Jennifer (Davis's mom) — turning 60 tomorrow (February 17, 2026). She's receiving this custom mahjong solitaire game featuring her own watercolor paintings as a birthday gift.
-
-**What's painful about the current situation?**
-Ralph built out the core game overnight and it's close to ready. Three issues remain: (1) The tiles still show traditional Chinese mahjong symbols overlaying the watercolor art — the paintings are buried as backgrounds when they should BE the game. (2) It's hard to tell which tiles are playable vs blocked — they all look roughly the same. (3) The game is silent, which makes it feel less alive and polished than the mahjong apps she's used to.
-
-**Why does this matter enough to build something?**
-This is tomorrow. These three fixes turn "neat prototype" into "thoughtful, polished gift she'll show everyone at the party."
+> **Deadline:** February 17, 2026 (Jennifer's 60th birthday — TODAY)
+> **Live:** https://watercolor-mahjong.vercel.app/
+> **Stack:** Vite + React + Tailwind CSS → Vercel
 
 ---
 
-## Current State (What Ralph Already Built)
+## Context
 
-Ralph completed the initial PRD tasks overnight. The game now has:
+Watercolor Mahjong is a personalized mahjong solitaire game featuring Jennifer's watercolor paintings on every tile. It's her 60th birthday gift. The core game is fully functional — tile redesign with paintings, matching logic, hint/undo/shuffle, win celebration, birthday dedication, progress bar, all working and deployed.
 
-- ✅ Proper 4-5 layer Turtle layout with visual depth
-- ✅ Stuck detection and no-moves handling
-- ✅ Win celebration with birthday message
-- ✅ Hint system
-- ✅ Undo system
-- ✅ Progress indicator
-- ✅ Match removal animations
-- ✅ Birthday dedication screen
-- ✅ Mobile responsiveness
-- ✅ Landing page, PWA support, Vercel deployment
-
-**What remains:** Tile redesign, playable tile clarity, and audio.
+**Remaining issues:**
+1. PWA icon has a harsh white background — needs warm cream to match the game aesthetic
+2. Mobile board is zoomed out so far that tiles are tiny and untappable
+3. Hard to tell which tiles are playable vs blocked
+4. Audio uses synthesized Web Audio API tones that sound like buzzing instead of real music
 
 ---
 
-## The Solution
+## Tasks
 
-**Core user loop (unchanged):**
-1. Jennifer opens the link on her birthday → sees a personal dedication
-2. She plays mahjong solitaire matching her own watercolor paintings, with clear visual guidance on which tiles are playable
-3. She clears the board → birthday celebration surprises her
+### [x] Task 1: PWA Icon — Warm Cream Background
 
----
+**Goal:** Replace the harsh white background on the PWA/home screen icon with a warm cream color that matches the game's aesthetic, so the icon looks intentional and cohesive when installed on a phone's home screen.
 
-## Success Metrics
-
-**How will we know if this works?**
-- Primary: Jennifer can look at the board and immediately identify matching tiles by the paintings without needing to decode symbols
-- Secondary: She never clicks a blocked tile wondering why nothing happened
-- Secondary: The audio makes her smile (or at least doesn't blast her in front of family)
-
-**What does success look like tomorrow?**
-She opens it, instantly understands "oh I'm matching my paintings!", plays through a game with assists, and hits the birthday celebration screen. Zero confusion about what's clickable.
-
----
-
-## Scope: What's IN
-
-### [x] Task 1 — Tile Redesign: Paintings First, Symbols Gone
-
-**Context:** The current tiles show traditional mahjong symbols (large Chinese characters and numbers) overlaid on top of the watercolor paintings. The paintings — which are the entire emotional hook of this gift — are reduced to faded backgrounds. Jennifer shouldn't need to know what 八萬 means to play a game featuring her own art. The paintings should be the primary visual element players scan and match on.
-
-**Tile math:**
-- 9 unique watercolor paintings (suits)
-- Each painting has 4 numbered variants (1, 2, 3, 4)
-- 9 paintings × 4 variants = 36 unique tile types
-- Each tile type appears exactly 4 times on the board
-- 36 × 4 = 144 tiles total (standard mahjong solitaire board)
-
-**Tile face layout:**
-- The watercolor painting fills the entire tile face — edge to edge, no margin, no border inset. The painting IS the tile. It should be displayed at maximum size within the tile bounds, maintaining aspect ratio and using `object-fit: cover` or `background-size: cover` to fill without distortion.
-- Remove ALL Chinese characters (萬, 筒, 索, 龍, 風, etc.) from the tile face entirely. No traditional mahjong symbols anywhere.
-- Remove the large colored numbers that currently overlay the art.
-- Add a small variant number (1, 2, 3, or 4) in the **bottom-right corner** of the tile. This number differentiates variants within the same painting.
-  - Style: ~10-12px font size, semi-bold weight.
-  - Place it inside a small semi-transparent white pill/badge (`background: rgba(255, 255, 255, 0.75)`, `border-radius: 8px`, `padding: 1px 5px`).
-  - This makes the number readable over any painting color without competing for attention.
-  - The number is a secondary confirmation — players primarily match by recognizing the painting, then glance at the corner number to confirm.
-
-**Matching rules:**
-- Two tiles match if and only if they share the **same painting AND the same variant number**.
-- Example: "Hydrangea 3" matches with the other "Hydrangea 3" — NOT with "Hydrangea 2" or "Sunflower 3."
-- Each tile type has exactly 4 copies on the board, forming 2 matchable pairs (same as standard mahjong: you can match either copy with either other copy of the same type).
-
-**Painting assignment:**
-- Map each of the 9 watercolor image assets to a suit number (0-8).
-- Within each suit, assign variant numbers 1-4 to the four tiles, then duplicate each variant once more to get 4 copies per variant... 
-
-Actually, let me correct the math to match standard mahjong tile distribution:
-
-**Corrected tile math (standard mahjong solitaire distribution):**
-
-In traditional mahjong solitaire, there are 144 tiles:
-- 3 suits (Dots, Bamboo, Characters) × 9 ranks × 4 copies = 108 tiles
-- 4 Winds × 4 copies = 16 tiles
-- 3 Dragons × 4 copies = 12 tiles
-- 4 Flowers (1 copy each) = 4 tiles (match any flower to any flower)
-- 4 Seasons (1 copy each) = 4 tiles (match any season to any season)
-- Total: 108 + 16 + 12 + 4 + 4 = 144
-
-**Simplified model using 9 paintings:**
-- 9 paintings, each with 4 variants = 36 unique tile types
-- Each unique tile type appears exactly **4 times** on the board
-- 36 × 4 = 144 tiles
-- Two tiles match when they have the **same painting + same variant number**
-- This gives 72 pairs total (144 ÷ 2), which is standard
-
-**Image assets:**
-- The 9 watercolor painting images should already exist in the `/assets/` or public directory (or will be added by Davis before this task runs).
-- Name them consistently: `painting-1.webp` through `painting-9.webp` (or whatever the existing naming convention is in the project).
-- If the current project already maps tile types to background images, update that mapping to use the 9 paintings instead of the traditional mahjong symbol set.
+**Requirements:**
+- Change the icon background color from pure white (#FFFFFF) to warm cream (#FDF8F0) — this is the same off-white/cream used on the game's landing page and board background.
+- The hydrangea tile artwork stays centered and unchanged — only the background behind it changes.
+- Regenerate all PWA icon sizes with the new background:
+  - 192×192 (standard PWA icon)
+  - 512×512 (PWA splash / large icon)
+  - apple-touch-icon (180×180 for iOS home screen)
+  - favicon if applicable
+- Update the web app manifest (`manifest.json` or `manifest.webmanifest`):
+  - Set `"background_color": "#FDF8F0"`
+  - Set `"theme_color": "#FDF8F0"` (or keep the existing purple `#9B8BB8` if it looks better for the status bar — use your judgment)
+- Update the `<meta name="theme-color">` tag in `index.html` to match the manifest.
+- If the icon source is an SVG or a large PNG, edit the background fill directly. If it's a generated asset, update the generation config/script.
 
 **Acceptance criteria:**
-- Every tile on the board prominently shows one of Jennifer's watercolor paintings as the full tile face.
-- No Chinese characters or traditional mahjong symbols appear anywhere on any tile.
-- A small variant number (1-4) appears in the bottom-right corner inside a subtle white pill badge.
-- Tiles are easily distinguishable: different paintings look different, and the variant number is legible.
-- Matching logic works correctly: only tiles with same painting + same number can be matched.
-- All 144 tiles are accounted for: 9 paintings × 4 variants × 4 copies.
+- Home screen icon shows the hydrangea tile on a warm cream background instead of white.
+- No white border or white square visible around the icon when installed on iOS or Android.
+- Manifest background_color matches so the PWA splash screen is consistent.
+- Icon looks good at all sizes (check 192 and 512 at minimum).
 
 ---
 
-### [x] Task 2 — Playable Tile Visibility
+### [ ] Task 2: Mobile Board — Zoomed-In Scrollable View
 
-**Context:** It's hard to tell which tiles are currently open/playable and which are blocked. The visual difference between the two states needs to be dramatic enough to read instantly at a glance, especially for someone who might not know mahjong rules intuitively. This is the difference between "fun puzzle" and "frustrating guessing game."
+**Goal:** On mobile viewports (under 768px wide), show the board zoomed in so tiles are large and tappable, with the ability to scroll/pan to see the full board. Do NOT shrink the entire board to fit the screen — that makes tiles too small.
 
-**Requirements for OPEN (playable) tiles:**
-- Full opacity (`opacity: 1`).
-- A subtle warm drop shadow to make them feel "lifted" off the board: `box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15)`.
-- Slight upward offset: `transform: translateY(-1px)`.
-- On hover (desktop only — gate with `@media (hover: hover)`):
-  - Slight additional lift: `transform: translateY(-3px) scale(1.02)`.
-  - Enhanced shadow: `box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2)`.
-  - A subtle bright border or soft glow to confirm "yes, you can click this": `outline: 2px solid rgba(155, 139, 184, 0.5)` (using the existing purple theme color).
-  - Smooth transition: `transition: all 0.2s ease`.
-- Cursor: `pointer`.
+**The problem right now:**
+The board scales down to fit the full 144-tile layout into a ~375px wide viewport. This makes each tile roughly 25-30px wide — far too small to see the paintings, read the numbers, or tap accurately. The game is effectively unplayable on phone.
 
-**Requirements for BLOCKED (not playable) tiles:**
-- Reduced opacity: `opacity: 0.5`.
-- Apply a slight desaturation: `filter: grayscale(30%)`.
-- Flatten the shadow to almost nothing: `box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05)`.
-- No transform offset (they sit flat against the board).
-- On hover: **no visual change**. No lift, no glow, no scale. Completely inert.
-- Cursor: `default` (not pointer — signals non-interactive).
-- If clicked: subtle shake animation (the one Ralph may have already added from the original PRD). Quick horizontal oscillation, ~200ms: `@keyframes shake { 0%, 100% { translateX(0) } 25% { translateX(-3px) } 75% { translateX(3px) } }`.
+**Reference behavior:**
+Mahjong Club on mobile shows tiles at a large, comfortable size (~60-70px wide). The full board does not fit on screen at once. The player sees a focused portion of the board and scrolls/pans to navigate. Tiles are big enough to clearly see the artwork, easily tap, and distinguish open from blocked.
 
-**The contrast must be obvious.** If you squint at the board, the playable tiles should visually "pop" out of the pile while blocked tiles fade into the background. Think of it like open tiles are on a lit stage and blocked tiles are in the dim audience.
+**Implementation — scrollable container approach:**
 
-**Transition between states:**
-- When a tile becomes unblocked (because tiles above it or beside it were removed), it should transition smoothly from blocked to open styling over ~300ms. This creates a satisfying "tiles waking up" effect as the player clears the board.
+On viewports under 768px:
+1. Remove any `transform: scale()` or viewport-fitting logic that shrinks the board to fit the screen width.
+2. Render the board at its natural/desktop size (or a minimum where tiles are ~55-65px wide — large enough to see paintings clearly and tap accurately).
+3. Wrap the board in a scrollable container:
+   - `overflow: auto` (allows both horizontal and vertical scrolling)
+   - `-webkit-overflow-scrolling: touch` (smooth momentum scrolling on iOS)
+   - The container should fill the available viewport height between the header and the bottom controls.
+4. On initial load, auto-scroll to center the board so the player sees the middle/top of the pyramid first (the most actionable area).
+
+**Touch interaction:**
+- Single tap selects a tile (existing behavior — keep this).
+- Dragging/swiping scrolls the board (native scroll behavior — this should work automatically with the overflow container).
+- Make sure tile taps and scroll gestures don't conflict. The browser's native scroll handling should distinguish between a tap (no movement) and a drag (movement). If there are issues, add a small touch-move threshold (~10px) before treating a gesture as a scroll vs a tap.
+
+**Fixed header and controls:**
+- The title "Watercolor Mahjong" and the progress bar / control buttons at the bottom should remain fixed and always visible — NOT scroll with the board.
+- Layout structure on mobile:
+  ```
+  ┌─────────────────────────┐
+  │ Watercolor Mahjong      │  ← fixed header
+  ├─────────────────────────┤
+  │                         │
+  │   (scrollable board)    │  ← overflow: auto, fills remaining height
+  │                         │
+  ├─────────────────────────┤
+  │ 72 pairs left ━━━━━━━━  │  ← fixed progress bar
+  │  ⟳  ✕  💡  ↩  🔇      │  ← fixed control buttons
+  └─────────────────────────┘
+  ```
+- Use a flex layout with `flex: 1` on the scrollable area and fixed heights on header/footer.
+
+**Tile size on mobile:**
+- Minimum tile width: 50px (absolute floor — paintings must be recognizable).
+- Target tile width: 55-65px (comfortable for tapping and viewing).
+- If the current desktop tile size is too small, scale the board UP on mobile so tiles hit the 55-65px range. Use CSS `transform: scale()` on the board to enlarge it within the scrollable container.
+- All tap targets must be at least 44×44px (Apple HIG standard).
+
+**Desktop (768px+) — no changes:**
+- Keep the current desktop behavior where the full board fits in the viewport without scrolling.
+
+**Acceptance criteria:**
+- On a 375px wide viewport (iPhone SE/standard), tiles are large enough to clearly see the watercolor paintings and read the variant numbers.
+- Tiles are at least 50px wide on mobile, ideally 55-65px.
+- The board scrolls smoothly in both directions with touch momentum.
+- Header and bottom controls remain fixed and visible at all times while the board scrolls.
+- Tapping a tile works reliably without accidentally scrolling.
+- Board is auto-centered on load so the player sees the pyramid center first.
+- Desktop layout is unchanged.
+- Game is fully playable end-to-end on mobile.
+
+---
+
+### [ ] Task 3: Playable vs Blocked Tile Contrast
+
+**Goal:** Make the visual difference between open/playable tiles and blocked tiles dramatically obvious at a glance. A player should never need to click a tile to find out if it's interactive.
+
+**Open (playable) tiles — alive and lifted:**
+- `opacity: 1`
+- `box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15)`
+- `transform: translateY(-1px)`
+- `cursor: pointer`
+- On hover (desktop only — wrap in `@media (hover: hover)`):
+  - `transform: translateY(-3px) scale(1.02)`
+  - `box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2)`
+  - `outline: 2px solid rgba(155, 139, 184, 0.5)` (soft purple glow)
+  - `transition: all 0.2s ease`
+
+**Blocked (not playable) tiles — receded and inert:**
+- `opacity: 0.45`
+- `filter: grayscale(30%) brightness(0.9)`
+- `box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05)` (nearly flat)
+- No transform offset — sits flat against the board
+- `cursor: default`
+- On hover: NO visual change whatsoever. No lift, no glow, no scale.
+- On click: quick shake animation (200ms, ±3px horizontal oscillation):
+  ```css
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
+  }
+  ```
+
+**State transition animation:**
+When a tile becomes unblocked (because tiles above/beside it were removed), animate smoothly from blocked styling to open styling over ~300ms using CSS transitions. This creates a satisfying "tiles waking up" effect as the board is cleared.
+
+**The squint test:** If you squint at the board, open tiles should visually pop out while blocked tiles fade into the background. The difference should be stark and immediate.
 
 **Acceptance criteria:**
 - At a glance, any player can immediately identify which tiles are playable without clicking.
-- Blocked tiles are visually distinct: dimmer, flatter, desaturated.
+- Blocked tiles are visually distinct: dimmer, flatter, slightly desaturated.
 - Open tiles feel lively: full color, lifted, responsive to hover.
-- Transition from blocked → open is animated smoothly.
-- Hover effects only apply to open tiles on devices with hover capability.
-- Blocked tiles show no hover response and use default cursor.
+- The blocked → open transition is animated smoothly when tiles become unblocked.
+- Hover effects only fire on open tiles on hover-capable devices.
+- Blocked tile click triggers shake feedback.
 
 ---
 
-### [x] Task 3 — Music and Sound Effects
+### [ ] Task 4: Replace Synthesized Audio with Real Music Files
 
-**Context:** Every polished mahjong app has ambient audio. The game currently plays in complete silence, which makes it feel less like a relaxing experience and more like staring at a static webpage. Gentle audio transforms the feel from "web page" to "gift experience." This is nice-to-have, but it elevates the whole thing.
+**Goal:** Replace ALL Web Audio API generated/synthesized tones with real mp3 files. The current synthesized audio sounds like buzzing and is not pleasant. Real recorded audio files have been placed in `public/audio/`.
 
-**Audio assets to source:**
-Find and download royalty-free audio files. Suggested sources: pixabay.com/music, freesound.org, or use Web Audio API to generate simple tones. All audio must be royalty-free / Creative Commons.
+**IMPORTANT:** Davis will manually download and place the following royalty-free mp3 files in `public/audio/` BEFORE this task runs:
+- `public/audio/background.mp3` — calm ambient piano loop (~2-3 min)
+- `public/audio/select.mp3` — soft click/wood tap (~100-200ms)
+- `public/audio/match.mp3` — gentle chime/bell (~300-500ms)
+- `public/audio/mismatch.mp3` — subtle low tone (~200-300ms)
+- `public/audio/win.mp3` — celebration music box/wind chimes (~3-5 sec)
 
-Required sounds:
-1. **Ambient background loop** — Gentle, relaxing music. Soft piano, acoustic guitar, or nature sounds (light rain, garden birds). Should feel meditative and warm, matching the "Meditative Journey" tagline. Duration: 1-3 minutes, seamless loop. Format: mp3, compressed to keep file size small (<500KB if possible).
-2. **Tile select** — A soft, short click or tap. Think wooden tile being picked up. Duration: ~100-200ms.
-3. **Successful match** — A gentle chime, soft bell, or pleasant two-note ascending tone. Warm and rewarding. Duration: ~300-500ms.
-4. **Mismatch** — A subtle low tone or soft "nope" sound. Not harsh or punishing. Duration: ~200-300ms.
-5. **Win celebration** — A longer celebratory sound. Gentle music box melody, wind chime cascade, or ascending chord progression. Warm and emotional, not generic party horn. Duration: ~3-5 seconds. This plays when the birthday celebration overlay appears.
-
-**Implementation:**
-
-Audio engine:
-- Use the Web Audio API or simple HTML5 `<Audio>` elements. No heavy audio libraries.
+**Requirements:**
+- Remove ALL Web Audio API oscillator, tone generation, and synthesized audio code. Delete it entirely — no fallbacks to generated tones.
+- Load all audio files using `new Audio()` or HTML5 `<audio>` elements.
 - Preload all sound effect files on game load so there's no delay on first trigger.
-- Background music should use a looping `<Audio>` element with `loop: true`.
-- Sound effects should be fire-and-forget (can overlap if matches happen rapidly).
 
-Mute/unmute toggle:
-- Add a small speaker icon button in the top-right corner of the game header (or near the existing control buttons).
-- Icon states: 🔊 (unmuted) / 🔇 (muted). Use simple SVG icons or unicode characters.
-- Clicking toggles ALL audio on/off (background music + sound effects together).
-- **Default state: MUTED.** This is critical — she will likely open the link around family or in a quiet setting. Audio should be opt-in, not surprise-blast.
-- Persist the mute preference in `localStorage` so it survives page refreshes. Key: `watercolor-mahjong-muted`, value: `true` / `false`.
+**Audio configuration:**
+- `background.mp3`: Loop continuously (`audio.loop = true`). Volume: 0.3.
+- `select.mp3`: Fire-and-forget on tile selection. Volume: 0.5.
+- `match.mp3`: Fire-and-forget on successful pair match. Volume: 0.5.
+- `mismatch.mp3`: Fire-and-forget on failed match attempt. Volume: 0.5.
+- `win.mp3`: Play once when the win celebration overlay appears. Volume: 0.6. Fade out background music over ~1 second before playing, or layer on top.
+- All sound effects should allow overlapping playback (if matches happen rapidly, multiple chimes can play simultaneously).
 
-Trigger points:
-- Background music: starts playing when the game board first renders (respecting mute state). If muted, music is loaded but paused — it begins when the user unmutes.
-- Tile select sound: plays when a playable tile is clicked/tapped (first selection).
-- Match sound: plays when two tiles are successfully matched (at the moment of the match animation starting).
-- Mismatch sound: plays when a second selected tile doesn't match the first.
-- Win sound: plays when the celebration overlay appears, instead of (or layered on top of) the background music. Fade out background music over ~1 second, then play win sound.
-- No sound on: clicking blocked tiles (the shake animation is sufficient feedback), using Hint, using Undo, using Shuffle, opening menus/modals.
+**Mute toggle (keep existing behavior):**
+- Mute/unmute toggle button remains in the controls.
+- Default state: MUTED on first visit.
+- Unmuting starts background music and enables sound effects.
+- Muting pauses background music and disables sound effects.
+- Persist mute preference in localStorage (use whatever key is already in the codebase).
 
-Volume levels:
-- Background music: 0.3 (30% volume) — subtle, not dominant.
-- Sound effects: 0.5 (50% volume) — noticeable but not loud.
-- Win celebration: 0.6 (60% volume) — slightly more prominent for the special moment.
+**iOS Safari considerations:**
+- Audio won't play until after a user interaction. The "Begin Journey" or "Start Playing" button clicks satisfy this requirement. Create/resume the audio context on one of those clicks.
+- If audio fails to load (file not found), fail silently — don't break the game. Log a console warning.
+
+**If the audio files are not found in `public/audio/`:**
+- Do NOT fall back to synthesized audio.
+- Simply have no audio — the game should work perfectly fine in silence.
+- Log a console warning: "Audio files not found in public/audio/. Game will run without sound."
 
 **Acceptance criteria:**
-- Mute toggle is visible and functional with correct icon states.
-- Game defaults to muted on first visit.
-- Unmuting starts background music and enables sound effects.
-- Each trigger point plays the correct sound at the right moment.
-- Audio doesn't lag or pop on first play.
-- Background music loops seamlessly.
-- Mute preference persists across page refreshes.
-- All audio files are royalty-free.
+- Zero synthesized/oscillator audio code remains in the codebase.
+- All audio playback uses the real mp3 files from `public/audio/`.
+- Background music loops seamlessly at low volume.
+- Each sound effect fires at the correct moment without lag.
+- Mute toggle works correctly, defaults to muted, persists preference.
+- Game works perfectly with or without audio files present.
+- No audio pops, clicks, or buzzing sounds.
+
+---
+
+### [ ] Task 5: Final Mobile QA Pass
+
+**Goal:** End-to-end verification that the complete game works on mobile. Simulate a full playthrough on a 375px viewport.
+
+**Checklist to verify:**
+- Landing page ("Begin Journey") renders correctly and button is tappable
+- Birthday dedication screen displays and "Start Playing" works
+- Board loads at playable tile size (50px+ wide)
+- Board scrolls smoothly with touch in both directions
+- Tapping a tile selects it reliably (no conflict with scroll)
+- Matching two tiles removes them with animation
+- Open tiles are visually distinct from blocked tiles
+- Hint button highlights a valid pair
+- Undo restores the last pair
+- Shuffle rearranges remaining tiles
+- New Game resets everything
+- Progress bar updates correctly
+- Stuck detection fires when no moves remain
+- Win celebration overlay appears on completion with birthday message
+- Mute/unmute toggle works
+- All buttons have minimum 44×44px tap targets
+- No horizontal overflow causing unwanted page-level scrolling (only the board container should scroll)
+- No elements overlap or get cut off
+- PWA icon shows correctly with cream background when installed
+
+**If any issue is found**, fix it. If everything passes, mark complete.
+
+**Acceptance criteria:**
+- Every feature works correctly on a 375px mobile viewport.
+- The game is fully playable end-to-end on mobile without any UX issues.
 
 ---
 
 ## Scope: What's OUT
 
-**Explicitly NOT building:**
+- Additional board layouts
+- Difficulty levels
+- Score tracking / leaderboards
+- Tutorial / how-to-play overlay
+- Share button
+- Multiple music tracks or music selection
 - Volume slider (just mute/unmute toggle)
 - Separate music vs SFX controls
-- Multiple music tracks / music selection
-- Spatial audio or panning effects
-- Additional board layouts
-- Timer or scoring changes
 - Any new game mechanics
-- Tutorial / how-to-play
-- Share button
-
-**Why not?** Ship day is tomorrow. These three tasks are all that stand between the current build and a polished gift.
+- Tile art changes (paintings are final)
 
 ---
 
-## Technical Approach
+## Technical Notes
 
-**Stack (unchanged):**
-- Vite + React
-- Tailwind CSS
-- Vercel deployment
-
-**Key decisions:**
-- Tile redesign is a data mapping change + CSS update. The tile component structure (button with child divs) stays the same — we're just changing what renders inside.
-- Playable tile visibility is pure CSS. No logic changes needed — the `blocked` class already exists, we're just making the visual difference more dramatic.
-- Audio uses native Web Audio API / HTML5 Audio. No libraries. Keep total audio asset size under 2MB.
-- All audio files go in the `/public/audio/` directory so they're served statically.
-
-**What could go wrong:**
-1. The 9th painting asset might not be in the repo yet. Davis will add it before running Task 1. If it's missing, Ralph should use 8 paintings and adjust tile count to 128 (32 unique types × 4 copies), which still works with a slightly smaller board layout.
-2. iOS Safari has autoplay restrictions on audio. Background music won't start until the user interacts with the page. Since the game requires clicking "Begin Journey" → "Start Playing" before gameplay, the user will have interacted before music needs to play. Ensure the audio context is created/resumed on one of those button clicks.
-
----
-
-## Open Questions
-
-- [x] Paintings only or keep symbols? **Decision: Paintings only. Ditch all Chinese characters and traditional symbols.**
-- [x] How many paintings needed? **Decision: 9 paintings × 4 variants × 4 copies = 144 tiles.**
-- [x] Audio default state? **Decision: Muted by default. Opt-in.**
-
----
-
-## Timeline
-
-**Hard deadline: Monday, February 17, 2026 (tomorrow)**
-
-- **Task 1:** Tile redesign — paintings first, remove symbols. **PRIORITY 1** (this changes how the game feels most dramatically).
-- **Task 2:** Playable tile visibility — open vs blocked contrast. **PRIORITY 2** (critical gameplay clarity).
-- **Task 3:** Music and sound effects. **PRIORITY 3** (nice-to-have polish, do if time allows after 1 and 2 are solid).
-
-**Minimum shippable:** Tasks 1 + 2. If Task 3 doesn't make it in time, the game is still a great gift. Audio is the cherry on top, not the cake.
-
----
-
-## Launch Plan
-
-**Initial user:** Jennifer — tomorrow, February 17, 2026, her 60th birthday.
-
-**How to share:** Direct link via birthday text or card: https://watercolor-mahjong.vercel.app/
-
-**First feedback loop:** Watch her play at the birthday gathering. Does she immediately recognize the paintings? Does she understand which tiles to click? Does she smile?
-
----
-
-## V2 Backlog
-
-- Additional board layouts (Butterfly, Pyramid, Simple)
-- Difficulty levels (fewer tiles for easy, more layers for hard)
-- Multiple music tracks / ambient sound selection
-- Volume slider (separate music and SFX controls)
-- How-to-play tutorial overlay
-- More of Jennifer's artwork as she paints new pieces
-- Seasonal themes (spring, autumn, holiday variants)
-- Score tracking / personal bests
-- Daily puzzle mode
-- Share button for results
-
-**Remember:** These stay here until Jennifer proves we need them.
+- **Mobile breakpoint:** 768px. Below = mobile with scrollable board. Above = desktop (unchanged).
+- **iOS Safari:** `-webkit-overflow-scrolling: touch` for smooth scrolling. Audio autoplay requires prior user interaction.
+- **Viewport meta** already set: `width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no`.
+- **Theme color:** Currently `#9B8BB8` (purple). Icon background uses `#FDF8F0` (cream).
+- **CSS-only approach preferred** for all visual changes. No new JS libraries.
+- **Audio files:** Must be placed manually by Davis in `public/audio/` before Task 4 runs. Ralph should not attempt to download files from the internet.
