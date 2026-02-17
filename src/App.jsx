@@ -10,32 +10,15 @@ import SyncIndicator from './components/SyncIndicator.jsx'
 import useAuth from './hooks/useAuth.js'
 import useCloudSync from './hooks/useCloudSync.js'
 import useAudio from './hooks/useAudio.js'
-import { generateTileSet, tilesMatch } from './data/tiles.js'
+import { tilesMatch } from './data/tiles.js'
 import { DESKTOP_LAYOUT, MOBILE_LAYOUT, isTileFree } from './data/layout.js'
+import { generateSolvableGame, solvableShuffle } from './data/solver.js'
 
-// Fisher-Yates shuffle
-function shuffle(arr) {
-  const a = [...arr]
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-      ;[a[i], a[j]] = [a[j], a[i]]
-  }
-  return a
-}
-
-// Create a new game: shuffle tiles and assign to layout positions
+// Create a new game with guaranteed solvability
 function createGame(isMobile) {
   const layout = isMobile ? MOBILE_LAYOUT : DESKTOP_LAYOUT
   const copiesPerVariant = isMobile ? 2 : 4
-  const tileDefs = shuffle(generateTileSet(copiesPerVariant))
-  return tileDefs.map((def, i) => ({
-    ...def,
-    id: i,
-    x: layout[i].x,
-    y: layout[i].y,
-    z: layout[i].z,
-    removed: false,
-  }))
+  return generateSolvableGame(layout, copiesPerVariant)
 }
 
 function getLayoutForTiles(tiles) {
@@ -160,17 +143,7 @@ export default function App() {
   const handleShuffle = useCallback(() => {
     let shuffledTiles
     setTiles(current => {
-      const remaining = current.filter(t => !t.removed)
-      const removedTiles = current.filter(t => t.removed)
-      // Shuffle the tile faces among remaining positions
-      const faces = shuffle(remaining.map(t => ({ suit: t.suit, value: t.value, copy: t.copy })))
-      const shuffled = remaining.map((t, i) => ({
-        ...t,
-        suit: faces[i].suit,
-        value: faces[i].value,
-        copy: faces[i].copy,
-      }))
-      shuffledTiles = [...shuffled, ...removedTiles].sort((a, b) => a.id - b.id)
+      shuffledTiles = solvableShuffle(current)
       return shuffledTiles
     })
     setSelectedId(null)
@@ -179,7 +152,6 @@ export default function App() {
     setRemovingIds(null)
     setMismatchIds(null)
     setShakingId(null)
-    // Save after state update is queued (shuffledTiles captured from updater)
     if (shuffledTiles) saveGame(shuffledTiles)
   }, [saveGame])
 
