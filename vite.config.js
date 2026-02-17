@@ -19,8 +19,8 @@ export default defineConfig({
         description: "A tile-matching puzzle featuring Mama's watercolors",
         start_url: '/',
         display: 'standalone',
-        background_color: '#FDF8F0',
-        theme_color: '#9B8BB8',
+        background_color: '#B8A5D0',
+        theme_color: '#B8A5D0',
         icons: [
           {
             src: '/icons/icon-192.png',

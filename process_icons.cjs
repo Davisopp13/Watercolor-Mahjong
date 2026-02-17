@@ -5,7 +5,7 @@ const path = require('path');
 
 const ICON_DIR = '/Users/davis/Desktop/Vibin/Personal Projects/Mama\'s Birthday/Watercolor Mahjong/public/icons';
 const SOURCE_IMAGE = path.join(ICON_DIR, 'logo_tile_icon.png');
-const BACKGROUND_COLOR = 0xFDF8F0FF; // Warm Cream (#FDF8F0)
+const BACKGROUND_COLOR = 0xB8A5D0FF; // Lavender Mist (#B8A5D0)
 
 async function processIcons() {
     try {
@@ -44,7 +44,7 @@ async function processIcons() {
 
             const outputPath = path.join(ICON_DIR, name);
             await icon.writeAsync(outputPath);
-            console.log(`Generated ${name} (${size}x${size}) with Warm Cream background`);
+            console.log(`Generated ${name} (${size}x${size}) with Lavender Mist background`);
         }
 
         console.log('Icon processing complete!');
@@ -56,4 +56,3 @@ async function processIcons() {
 }
 
 processIcons();
-
