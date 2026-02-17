@@ -65,6 +65,7 @@ body {
 .mobile-board-scroll {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
+  touch-action: none;
   /* Hide scrollbars but keep scrollability */
   scrollbar-width: none;
   /* Firefox */

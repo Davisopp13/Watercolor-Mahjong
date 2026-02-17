@@ -20,12 +20,31 @@ const MIN_TILE_W = 20
 const MOBILE_TILE_W = 55
 const MOBILE_BREAKPOINT = 768
 
+// Pinch-to-zoom limits
+const MIN_ZOOM = 0.5
+const MAX_ZOOM = 2.5
+const BOARD_MARGIN = 20
+
 export default function Board({ tiles, selectedId, freeTileIds, hintIds, removingIds, mismatchIds, shakingId, onTileClick, onBlockedClick }) {
   const bounds = useMemo(() => getLayoutBounds(), [])
   const containerRef = useRef(null)
+  const boardRef = useRef(null)
+  const zoomWrapperRef = useRef(null)
   const [tileW, setTileW] = useState(40)
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < MOBILE_BREAKPOINT)
   const hasCentered = useRef(false)
+  const [zoomScale, setZoomScale] = useState(1)
+  const gestureRef = useRef({
+    scale: 1,
+    isPanning: false,
+    isPinching: false,
+    panStartX: 0,
+    panStartY: 0,
+    scrollStartX: 0,
+    scrollStartY: 0,
+    pinchStartDist: 0,
+    pinchStartScale: 1,
+  })
 
   // Calculate tile size to fit the board within the container
   const computeTileSize = useCallback(() => {
@@ -101,10 +120,114 @@ export default function Board({ tiles, selectedId, freeTileIds, hintIds, removin
     })
   }, [isMobile, boardW, boardH])
 
-  // Reset centering flag when tiles change (new game)
+  // Reset centering flag and zoom when tiles change (new game)
   useEffect(() => {
     hasCentered.current = false
+    gestureRef.current.scale = 1
+    setZoomScale(1)
   }, [tiles.length])
+
+  // Mobile pinch-to-zoom and pan gesture handling
+  useEffect(() => {
+    if (!isMobile) return
+    const container = containerRef.current
+    const board = boardRef.current
+    const wrapper = zoomWrapperRef.current
+    if (!container || !board || !wrapper) return
+
+    const g = gestureRef.current
+
+    const getDistance = (t1, t2) =>
+      Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY)
+
+    const getMidpoint = (t1, t2) => ({
+      x: (t1.clientX + t2.clientX) / 2,
+      y: (t1.clientY + t2.clientY) / 2,
+    })
+
+    const updateWrapperSize = () => {
+      wrapper.style.width = `${boardW * g.scale + BOARD_MARGIN * 2}px`
+      wrapper.style.height = `${boardH * g.scale + BOARD_MARGIN * 2}px`
+    }
+
+    const handleTouchStart = (e) => {
+      if (e.touches.length === 2) {
+        g.isPinching = true
+        g.isPanning = false
+        g.pinchStartDist = getDistance(e.touches[0], e.touches[1])
+        g.pinchStartScale = g.scale
+        e.preventDefault()
+      } else if (e.touches.length === 1) {
+        g.isPanning = true
+        g.panStartX = e.touches[0].clientX
+        g.panStartY = e.touches[0].clientY
+        g.scrollStartX = container.scrollLeft
+        g.scrollStartY = container.scrollTop
+      }
+    }
+
+    const handleTouchMove = (e) => {
+      if (g.isPinching && e.touches.length === 2) {
+        e.preventDefault()
+        const dist = getDistance(e.touches[0], e.touches[1])
+        const newScale = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM,
+          g.pinchStartScale * (dist / g.pinchStartDist)))
+
+        // Keep pinch midpoint stable
+        const mid = getMidpoint(e.touches[0], e.touches[1])
+        const rect = container.getBoundingClientRect()
+        const viewX = mid.x - rect.left
+        const viewY = mid.y - rect.top
+
+        // Content point under midpoint (unscaled board coordinates)
+        const contentX = (viewX + container.scrollLeft - BOARD_MARGIN) / g.scale
+        const contentY = (viewY + container.scrollTop - BOARD_MARGIN) / g.scale
+
+        g.scale = newScale
+        board.style.transform = `scale(${newScale})`
+        updateWrapperSize()
+
+        // Adjust scroll to keep content under midpoint
+        container.scrollLeft = contentX * newScale + BOARD_MARGIN - viewX
+        container.scrollTop = contentY * newScale + BOARD_MARGIN - viewY
+      } else if (g.isPanning && e.touches.length === 1) {
+        e.preventDefault()
+        const dx = e.touches[0].clientX - g.panStartX
+        const dy = e.touches[0].clientY - g.panStartY
+        container.scrollLeft = g.scrollStartX - dx
+        container.scrollTop = g.scrollStartY - dy
+      }
+    }
+
+    const handleTouchEnd = (e) => {
+      if (e.touches.length < 2 && g.isPinching) {
+        g.isPinching = false
+        // Commit final scale to React state for consistency on re-renders
+        setZoomScale(g.scale)
+      }
+      if (e.touches.length === 0) {
+        g.isPanning = false
+      }
+      // Transition from pinch to pan with remaining finger
+      if (e.touches.length === 1) {
+        g.isPanning = true
+        g.panStartX = e.touches[0].clientX
+        g.panStartY = e.touches[0].clientY
+        g.scrollStartX = container.scrollLeft
+        g.scrollStartY = container.scrollTop
+      }
+    }
+
+    container.addEventListener('touchstart', handleTouchStart, { passive: false })
+    container.addEventListener('touchmove', handleTouchMove, { passive: false })
+    container.addEventListener('touchend', handleTouchEnd)
+
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart)
+      container.removeEventListener('touchmove', handleTouchMove)
+      container.removeEventListener('touchend', handleTouchEnd)
+    }
+  }, [isMobile, boardW, boardH])
 
   const freeSet = useMemo(() => new Set(freeTileIds), [freeTileIds])
   const hintSet = useMemo(() => new Set(hintIds || []), [hintIds])
@@ -116,51 +239,76 @@ export default function Board({ tiles, selectedId, freeTileIds, hintIds, removin
     ? "w-full h-full p-2 relative overflow-auto mobile-board-scroll"
     : "w-full h-full flex items-center justify-center p-2 sm:p-4 lg:p-6 relative overflow-hidden"
 
-  return (
-    <div ref={containerRef} className={containerClasses}>
+  const tileElements = sortedTiles.map(tile => {
+    if (tile.removed && !removingSet.has(tile.id)) return null
+
+    // Convert grid position to pixel position
+    const px = (tile.x - bounds.minX) * tileW + tile.z * layerOffX
+    const py = (tile.y - bounds.minY) * tileH + tile.z * layerOffY
+    const isFree = freeSet.has(tile.id)
+
+    return (
       <div
-        className="relative flex-shrink-0 z-10"
+        key={tile.id}
+        className={removingSet.has(tile.id) ? 'tile-removing' : ''}
         style={{
-          width: boardW,
-          height: boardH,
-          // On mobile, add margin so user can scroll to edges comfortably
-          margin: isMobile ? '20px' : undefined,
+          position: 'absolute',
+          left: px,
+          top: py,
+          zIndex: tile.z * 100 + Math.round(tile.y * 10),
         }}
       >
-        {sortedTiles.map(tile => {
-          if (tile.removed && !removingSet.has(tile.id)) return null
-
-          // Convert grid position to pixel position
-          const px = (tile.x - bounds.minX) * tileW + tile.z * layerOffX
-          const py = (tile.y - bounds.minY) * tileH + tile.z * layerOffY
-          const isFree = freeSet.has(tile.id)
-
-          return (
-            <div
-              key={tile.id}
-              className={removingSet.has(tile.id) ? 'tile-removing' : ''}
-              style={{
-                position: 'absolute',
-                left: px,
-                top: py,
-                zIndex: tile.z * 100 + Math.round(tile.y * 10),
-              }}
-            >
-              <Tile
-                tile={tile}
-                selected={tile.id === selectedId}
-                free={isFree}
-                hinted={hintSet.has(tile.id)}
-                mismatch={mismatchSet.has(tile.id)}
-                shaking={tile.id === shakingId}
-                onClick={isFree ? () => onTileClick(tile.id) : () => onBlockedClick(tile.id)}
-                tileWidth={tileW}
-                tileHeight={tileH}
-              />
-            </div>
-          )
-        })}
+        <Tile
+          tile={tile}
+          selected={tile.id === selectedId}
+          free={isFree}
+          hinted={hintSet.has(tile.id)}
+          mismatch={mismatchSet.has(tile.id)}
+          shaking={tile.id === shakingId}
+          onClick={isFree ? () => onTileClick(tile.id) : () => onBlockedClick(tile.id)}
+          tileWidth={tileW}
+          tileHeight={tileH}
+        />
       </div>
+    )
+  })
+
+  return (
+    <div ref={containerRef} className={containerClasses}>
+      {isMobile ? (
+        <div
+          ref={zoomWrapperRef}
+          className="flex-shrink-0"
+          style={{
+            width: boardW * zoomScale + BOARD_MARGIN * 2,
+            height: boardH * zoomScale + BOARD_MARGIN * 2,
+          }}
+        >
+          <div
+            ref={boardRef}
+            className="relative z-10"
+            style={{
+              width: boardW,
+              height: boardH,
+              margin: BOARD_MARGIN,
+              transformOrigin: '0 0',
+              transform: `scale(${zoomScale})`,
+            }}
+          >
+            {tileElements}
+          </div>
+        </div>
+      ) : (
+        <div
+          className="relative flex-shrink-0 z-10"
+          style={{
+            width: boardW,
+            height: boardH,
+          }}
+        >
+          {tileElements}
+        </div>
+      )}
     </div>
   )
 }
