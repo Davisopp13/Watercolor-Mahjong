@@ -112,8 +112,8 @@ body {
 /* --- BLOCKED STATE --- */
 /* Dimmed, flat, desaturated — clearly non-interactive */
 .tile.blocked {
-  opacity: 0.5;
-  filter: grayscale(30%);
+  opacity: 0.45;
+  filter: grayscale(30%) brightness(0.9);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   transform: none;
   cursor: default;

@@ -59,3 +59,20 @@ Ralph completed two full PRD sprints overnight:
   - The mobile bottom bar is ~80px total (progress row + controls row), header ~50px
   - `isMobile` state tracks viewport width and switches rendering strategy dynamically on resize
 ---
+
+## Iteration 3 - Playable vs Blocked Tile Contrast
+- Most of the styling was already implemented in a previous iteration (likely during Sprint 2 tile redesign)
+- Open tiles: opacity 1, lifted shadow, translateY(-1px), pointer cursor — already correct
+- Blocked tiles: dimmed, flat, desaturated, no transform, default cursor — already correct
+- Hover states: properly wrapped in @media (hover: hover) and (pointer: fine), excluded from blocked tiles — already correct
+- Shake animation on blocked click: keyframe + handler in App.jsx + shakingId state — already correct
+- State transition: 300ms ease-out transition on .tile base class — already correct
+- TWO small refinements applied:
+  - Blocked opacity: 0.5 → 0.45 (PRD spec for starker contrast)
+  - Blocked filter: added brightness(0.9) alongside existing grayscale(30%)
+- Files changed: src/index.css, PRD.md, progress.txt
+- Learnings for future iterations:
+  - The tile visual system was mostly built during Sprint 2 — check existing CSS before assuming work is needed
+  - All tile states (selected, blocked, hinted, mismatch, shaking) use CSS classes toggled by React props
+  - No test/typecheck scripts — `npm run build` is the only verification (confirmed again)
+---

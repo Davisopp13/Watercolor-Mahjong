@@ -110,7 +110,7 @@ On viewports under 768px:
 
 ---
 
-### [ ] Task 3: Playable vs Blocked Tile Contrast
+### [x] Task 3: Playable vs Blocked Tile Contrast
 
 **Goal:** Make the visual difference between open/playable tiles and blocked tiles dramatically obvious at a glance. A player should never need to click a tile to find out if it's interactive.
 
