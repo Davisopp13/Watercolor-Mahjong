@@ -156,7 +156,7 @@ When a tile becomes unblocked (because tiles above/beside it were removed), anim
 
 ---
 
-### [ ] Task 4: Replace Synthesized Audio with Real Music Files
+### [x] Task 4: Replace Synthesized Audio with Real Music Files
 
 **Goal:** Replace ALL Web Audio API generated/synthesized tones with real mp3 files. The current synthesized audio sounds like buzzing and is not pleasant. Real recorded audio files have been placed in `public/audio/`.
 

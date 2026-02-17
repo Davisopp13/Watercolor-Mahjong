@@ -76,3 +76,22 @@ Ralph completed two full PRD sprints overnight:
   - All tile states (selected, blocked, hinted, mismatch, shaking) use CSS classes toggled by React props
   - No test/typecheck scripts — `npm run build` is the only verification (confirmed again)
 ---
+
+## Iteration 4 - Replace Synthesized Audio with Real Music Files
+- Completely rewrote src/hooks/useAudio.js — removed ALL Web Audio API code (AudioContext, oscillators, createGain, createBuffer, etc.)
+- New implementation uses HTML5 Audio with `new Audio()` for all sound playback
+- Preloads 5 mp3 files on mount: background.mp3, select.mp3, match.mp3, mismatch.mp3, win.mp3
+- Background music: loops continuously at volume 0.3, starts on unmute, pauses on mute
+- Sound effects: fire-and-forget via cloneNode() for overlapping playback support
+- Win sound: fades out background music over ~1s (10 steps via setInterval), then plays win.mp3 at 0.6 volume
+- Mute toggle: defaults to muted, persists via localStorage key 'watercolor-mahjong-muted' (unchanged)
+- iOS Safari: play() calls wrapped in .catch() to handle autoplay restrictions silently
+- If audio files are missing (public/audio/ doesn't exist yet): game runs silently, console warning logged
+- No changes needed in App.jsx or GameControls.jsx — the useAudio hook API (return signature) is identical
+- Files changed: src/hooks/useAudio.js, PRD.md, progress.txt
+- Learnings for future iterations:
+  - The hook's return API { muted, toggleMute, playSelect, playMatchSound, playMismatchSound, playWinSound } is stable — callers don't need updating when internals change
+  - HTML5 Audio cloneNode() is the simplest way to allow overlapping sound effects without managing a pool
+  - Audio files go in public/audio/ and are referenced as '/audio/filename.mp3' (Vite serves public/ at root)
+  - `npm run build` is still the only verification (no test suite)
+---
