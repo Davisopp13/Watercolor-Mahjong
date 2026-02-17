@@ -61,23 +61,6 @@ body {
   height: 100dvh;
 }
 
-/* --- MOBILE SCROLLABLE BOARD --- */
-.mobile-board-scroll {
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-  touch-action: none;
-  /* Hide scrollbars but keep scrollability */
-  scrollbar-width: none;
-  /* Firefox */
-  -ms-overflow-style: none;
-  /* IE/Edge */
-}
-
-.mobile-board-scroll::-webkit-scrollbar {
-  display: none;
-  /* Chrome/Safari */
-}
-
 /* --- TILE BASE STYLE --- */
 .tile {
   background-color: var(--color-cream);

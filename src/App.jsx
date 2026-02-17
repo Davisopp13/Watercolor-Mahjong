@@ -11,7 +11,7 @@ import useAuth from './hooks/useAuth.js'
 import useCloudSync from './hooks/useCloudSync.js'
 import useAudio from './hooks/useAudio.js'
 import { generateTileSet, tilesMatch } from './data/tiles.js'
-import { TURTLE_LAYOUT, isTileFree } from './data/layout.js'
+import { DESKTOP_LAYOUT, MOBILE_LAYOUT, isTileFree } from './data/layout.js'
 
 // Fisher-Yates shuffle
 function shuffle(arr) {
@@ -24,20 +24,26 @@ function shuffle(arr) {
 }
 
 // Create a new game: shuffle tiles and assign to layout positions
-function createGame() {
-  const tileDefs = shuffle(generateTileSet())
+function createGame(isMobile) {
+  const layout = isMobile ? MOBILE_LAYOUT : DESKTOP_LAYOUT
+  const copiesPerVariant = isMobile ? 2 : 4
+  const tileDefs = shuffle(generateTileSet(copiesPerVariant))
   return tileDefs.map((def, i) => ({
     ...def,
     id: i,
-    x: TURTLE_LAYOUT[i].x,
-    y: TURTLE_LAYOUT[i].y,
-    z: TURTLE_LAYOUT[i].z,
+    x: layout[i].x,
+    y: layout[i].y,
+    z: layout[i].z,
     removed: false,
   }))
 }
 
+function getLayoutForTiles(tiles) {
+  return tiles.length === 64 ? MOBILE_LAYOUT : DESKTOP_LAYOUT
+}
+
 export default function App() {
-  const [tiles, setTiles] = useState(() => createGame())
+  const [tiles, setTiles] = useState(() => createGame(window.innerWidth < 768))
   const [selectedId, setSelectedId] = useState(null)
   const [showTitle, setShowTitle] = useState(true)
   const [showDedication, setShowDedication] = useState(false)
@@ -61,12 +67,20 @@ export default function App() {
     let cancelled = false
     loadGame().then(savedTiles => {
       if (cancelled || !savedTiles) return
+      // Check if saved game matches current device's layout size
+      const currentLayout = getLayoutForTiles(savedTiles)
+      const isMobile = window.innerWidth < 768
+      const expectedSize = isMobile ? 64 : 128
+      if (savedTiles.length !== expectedSize) {
+        // Layout mismatch (e.g., desktop save on mobile) — discard and start fresh
+        return
+      }
       // Re-hydrate: map saved tile data back onto layout positions
       const hydrated = savedTiles.map(saved => ({
         ...saved,
-        x: TURTLE_LAYOUT[saved.id].x,
-        y: TURTLE_LAYOUT[saved.id].y,
-        z: TURTLE_LAYOUT[saved.id].z,
+        x: currentLayout[saved.id].x,
+        y: currentLayout[saved.id].y,
+        z: currentLayout[saved.id].z,
       }))
       setTiles(hydrated)
       // If game is in progress, skip title screen
@@ -109,11 +123,12 @@ export default function App() {
     return active.filter(t => isTileFree(t, tiles)).map(t => t.id)
   }, [tiles])
 
-  // Pairs remaining (72 total pairs, each match removes 1 pair)
+  // Pairs remaining (dynamic based on tile count)
+  const totalPairs = tiles.length / 2
   const pairsRemaining = useMemo(() => {
     const removedCount = tiles.filter(t => t.removed).length
-    return 72 - removedCount / 2
-  }, [tiles])
+    return totalPairs - removedCount / 2
+  }, [tiles, totalPairs])
 
   // Win detection: all tiles removed
   const gameWon = useMemo(() => tiles.every(t => t.removed), [tiles])
@@ -131,7 +146,7 @@ export default function App() {
   }, [tiles, freeTileIds, gameWon])
 
   const handleNewGame = useCallback(() => {
-    const newTiles = createGame()
+    const newTiles = createGame(window.innerWidth < 768)
     setTiles(newTiles)
     setSelectedId(null)
     setHintIds(null)
@@ -349,7 +364,7 @@ export default function App() {
                   <div
                     className="h-full rounded-full transition-all duration-500 ease-out"
                     style={{
-                      width: `${((72 - pairsRemaining) / 72) * 100}%`,
+                      width: `${((totalPairs - pairsRemaining) / totalPairs) * 100}%`,
                       background: 'linear-gradient(90deg, var(--color-lavender), var(--color-rose))',
                     }}
                   />
@@ -377,6 +392,7 @@ export default function App() {
       <main className="flex-1 min-h-0 pb-[72px] sm:pb-0">
         {!showTitle && !showDedication && (
           <Board
+            layout={getLayoutForTiles(tiles)}
             tiles={tiles}
             selectedId={selectedId}
             freeTileIds={freeTileIds}
@@ -415,7 +431,7 @@ export default function App() {
                 <div
                   className="h-full rounded-full transition-all duration-500 ease-out"
                   style={{
-                    width: `${((72 - pairsRemaining) / 72) * 100}%`,
+                    width: `${((totalPairs - pairsRemaining) / totalPairs) * 100}%`,
                     background: 'linear-gradient(90deg, var(--color-lavender), var(--color-rose))',
                   }}
                 />
